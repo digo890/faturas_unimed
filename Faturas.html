@@ -444,13 +444,15 @@
     cursor: pointer;
     flex-shrink: 0;
   }
-  .check.checked { background: var(--color-primary); border-color: var(--color-primary); }
-  .check.checked::after {
+  .check::after {
     content: '';
     width: 9px; height: 5px;
     border-left: 2px solid #fff; border-bottom: 2px solid #fff;
     transform: rotate(-45deg) translate(1px, -1px);
+    opacity: 0;
   }
+  .check.checked { background: var(--color-primary); border-color: var(--color-primary); }
+  .check.checked::after { opacity: 1; }
 
   /* Footer of panel */
   .panel-foot {
@@ -668,6 +670,69 @@
   .pay-opt .pm-name { font-size: 14px; font-weight: 600; color: var(--color-neutral-900); }
   .pay-opt .pm-desc { font-size: 12px; color: var(--color-neutral-600); margin-top: 2px; }
   .pay-opt .pm-radio { display: none; }
+
+  /* Saved cards accordion */
+  .saved-cards {
+    display: none;
+    flex-direction: column;
+    border-top: 1px solid var(--border-default);
+    background: var(--color-primary-surface);
+  }
+  .pay-opt.selected + .saved-cards { display: flex; }
+  .saved-card {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px 12px 20px;
+    border-bottom: 1px solid var(--border-default);
+    cursor: pointer;
+    background: transparent;
+    border-left: none; border-right: none; border-top: none;
+    font-family: inherit; text-align: left; width: 100%;
+  }
+  .saved-card:last-child { border-bottom: none; }
+  .saved-card:hover { background: rgba(0,0,0,.03); }
+  .saved-card .sc-radio {
+    width: 18px; height: 18px; flex-shrink: 0;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-neutral-400);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .saved-card.selected .sc-radio {
+    border-color: var(--color-primary);
+  }
+  .saved-card.selected .sc-radio::after {
+    content: '';
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--color-primary);
+  }
+  .saved-card .sc-brand { height: 22px; width: auto; flex-shrink: 0; }
+  .saved-card .sc-label { flex: 1; font-size: 14px; font-weight: 500; color: var(--color-neutral-900); }
+  .saved-card .sc-actions {
+    display: flex; gap: 2px; align-items: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 120ms ease;
+  }
+  .saved-card:hover .sc-actions { opacity: 1; pointer-events: auto; }
+  .saved-card .sc-action {
+    display: flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; border-radius: 8px;
+    border: none; background: transparent; cursor: pointer;
+    color: var(--color-neutral-500);
+    transition: background 120ms ease, color 120ms ease;
+    font-size: 16px;
+  }
+  .saved-card .sc-action:hover { background: rgba(0,0,0,.07); color: var(--color-neutral-900); }
+  .saved-card .sc-action.del:hover { background: #fef2f2; color: #dc2626; }
+  .saved-card-add {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 16px 12px 20px;
+    cursor: pointer;
+    background: transparent;
+    border: none; font-family: inherit; text-align: left; width: 100%;
+    font-size: 14px; font-weight: 500; color: var(--color-primary);
+  }
+  .saved-card-add:hover { background: rgba(0,0,0,.03); }
+  .saved-card-add i { font-size: 18px; }
 
   /* Card form (conditional) — modern unified-border layout */
   .card-form {
@@ -1180,7 +1245,7 @@
           <table class="invoices">
             <thead>
               <tr>
-                <th style="width:40px"><span class="check" aria-label="Selecionar todas"></span></th>
+                <th style="width:40px"><span class="check check-all" aria-label="Selecionar todas"></span></th>
                 <th>Ref.</th>
                 <th id="th-address" style="display:none">Endereço</th>
                 <th class="sortable"><span class="arrow">Vencimento <i class="ph ph-caret-down" style="font-size:12px"></i></span></th>
@@ -1314,6 +1379,31 @@
           <div class="pm-radio"></div>
         </button>
 
+        <!-- Saved cards accordion (shows when credito is selected) -->
+        <div class="saved-cards" id="saved-cards">
+          <button class="saved-card selected" data-card="0" type="button">
+            <span class="sc-radio"></span>
+            <img src="assets/MasterCard.svg" class="sc-brand" alt="Mastercard">
+            <span class="sc-label">Mastercard · 8820</span>
+            <span class="sc-actions">
+              <span class="sc-action" title="Editar cartão" data-sc-edit="0"><i class="ph ph-pencil-simple"></i></span>
+              <span class="sc-action del" title="Excluir cartão" data-sc-del="0"><i class="ph ph-trash"></i></span>
+            </span>
+          </button>
+          <button class="saved-card" data-card="1" type="button">
+            <span class="sc-radio"></span>
+            <img src="assets/MasterCard.svg" class="sc-brand" alt="Mastercard">
+            <span class="sc-label">Mastercard · 4242</span>
+            <span class="sc-actions">
+              <span class="sc-action" title="Editar cartão" data-sc-edit="1"><i class="ph ph-pencil-simple"></i></span>
+              <span class="sc-action del" title="Excluir cartão" data-sc-del="1"><i class="ph ph-trash"></i></span>
+            </span>
+          </button>
+          <button class="saved-card-add" id="add-new-card" type="button">
+            <i class="ph ph-plus-circle"></i> Adicionar novo cartão
+          </button>
+        </div>
+
         <button class="pay-opt" data-pm="pix" type="button">
           <div class="pm-icon"><i class="ph ph-qr-code" style="font-size:22px"></i></div>
           <div class="pm-body">
@@ -1443,6 +1533,32 @@
         </div>
         <div class="pm-radio"></div>
       </button>
+
+      <!-- Saved cards accordion (checkout) -->
+      <div class="saved-cards" id="co-saved-cards">
+        <button class="saved-card selected" data-card="0" type="button">
+          <span class="sc-radio"></span>
+          <img src="assets/MasterCard.svg" class="sc-brand" alt="Mastercard">
+          <span class="sc-label">Mastercard · 8820</span>
+          <span class="sc-actions">
+            <span class="sc-action" title="Editar cartão" data-sc-edit="0"><i class="ph ph-pencil-simple"></i></span>
+            <span class="sc-action del" title="Excluir cartão" data-sc-del="0"><i class="ph ph-trash"></i></span>
+          </span>
+        </button>
+        <button class="saved-card" data-card="1" type="button">
+          <span class="sc-radio"></span>
+          <img src="assets/MasterCard.svg" class="sc-brand" alt="Mastercard">
+          <span class="sc-label">Mastercard · 4242</span>
+          <span class="sc-actions">
+            <span class="sc-action" title="Editar cartão" data-sc-edit="1"><i class="ph ph-pencil-simple"></i></span>
+            <span class="sc-action del" title="Excluir cartão" data-sc-del="1"><i class="ph ph-trash"></i></span>
+          </span>
+        </button>
+        <button class="saved-card-add" id="co-add-new-card" type="button">
+          <i class="ph ph-plus-circle"></i> Adicionar novo cartão
+        </button>
+      </div>
+
       <button class="pay-opt" data-co-pm="pix" type="button">
         <div class="pm-icon"><i class="ph ph-qr-code" style="font-size:22px"></i></div>
         <div class="pm-body">
@@ -1639,7 +1755,7 @@
     open:    '<span class="pill pill-info"><i class="ph ph-clock" style="font-size:12px"></i> Em aberto</span>',
     paid:    '<span class="pill pill-positive"><i class="ph-fill ph-check-circle" style="font-size:12px"></i> Paga</span>'
   };
-  const PM_ICON = { pix:'ph-qr-code', credito:'ph-credit-card', debito:'ph-bank', boleto:'ph-barcode' };
+  const PM_ICON = { pix:'ph-qr-code', credito:'ph-credit-card', debito:'ph-credit-card', boleto:'ph-barcode' };
 
   const plans = document.querySelectorAll('.plan');
   const panelIcon = document.getElementById('panel-icon');
@@ -1650,6 +1766,15 @@
   let currentPlanTitle = 'Unimed Saúde';
   let currentFilter = 'all';
   let currentPlanKey = 'saude';
+
+  // Defined early so render function can call it after populating tbody
+  function syncCheckAll() {
+    const checkAllEl = document.querySelector('.check-all');
+    if (!checkAllEl) return;
+    const rows = invoicesBody.querySelectorAll('.check');
+    const allChecked = rows.length > 0 && [...rows].every(c => c.classList.contains('checked'));
+    checkAllEl.classList.toggle('checked', allChecked);
+  }
 
   // Insight CTA delegation — some CTAs open the drawer
   insightBar.addEventListener('click', e => {
@@ -1734,10 +1859,8 @@
           <td><div class="row-actions">${action}</div></td>
         </tr>`;
     }).join('');
-    // Re-bind dynamic listeners
-    invoicesBody.querySelectorAll('.check').forEach(c => {
-      c.addEventListener('click', e => { e.stopPropagation(); c.classList.toggle('checked'); });
-    });
+    // Re-bind dynamic listeners — row checks use delegated listener on tbody, no re-bind needed
+    syncCheckAll();
     invoicesBody.querySelectorAll('[data-open-drawer="payment"]').forEach(el => {
       el.addEventListener('click', e => { e.stopPropagation(); openDrawer('payment'); });
     });
@@ -1892,12 +2015,22 @@
     });
   });
 
-  // Checkbox toggle
-  document.querySelectorAll('.check').forEach(c => {
-    c.addEventListener('click', e => {
-      e.stopPropagation();
-      c.classList.toggle('checked');
-    });
+  // Checkbox — delegated on table to avoid duplicate listeners after re-render
+  const checkAllEl = document.querySelector('.check-all');
+
+  checkAllEl.addEventListener('click', e => {
+    e.stopPropagation();
+    const willCheck = !checkAllEl.classList.contains('checked');
+    checkAllEl.classList.toggle('checked', willCheck);
+    invoicesBody.querySelectorAll('.check').forEach(c => c.classList.toggle('checked', willCheck));
+  });
+
+  invoicesBody.addEventListener('click', e => {
+    const c = e.target.closest('.check');
+    if (!c) return;
+    e.stopPropagation();
+    c.classList.toggle('checked');
+    syncCheckAll();
   });
 
   // ─────────── DRAWER ───────────
@@ -1984,13 +2117,63 @@
     drawerFoot.style.display = (dirty && onPaymentTab) ? 'flex' : 'none';
   }
 
+  const savedCardsEl = document.getElementById('saved-cards');
+  const addNewCardBtn = document.getElementById('add-new-card');
+
+  // Saved card selection — ignore clicks on action buttons
+  savedCardsEl.querySelectorAll('.saved-card').forEach(sc => {
+    sc.addEventListener('click', e => {
+      if (e.target.closest('.sc-action')) return;
+      savedCardsEl.querySelectorAll('.saved-card').forEach(x => x.classList.remove('selected'));
+      sc.classList.add('selected');
+      cardForm.classList.remove('on');
+      checkDirty();
+    });
+  });
+
+  // Action buttons — stop propagation so they don't select the card
+  savedCardsEl.querySelectorAll('[data-sc-del]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const card = btn.closest('.saved-card');
+      card.remove();
+    });
+  });
+  savedCardsEl.querySelectorAll('[data-sc-edit]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const card = btn.closest('.saved-card');
+      savedCardsEl.querySelectorAll('.saved-card').forEach(x => x.classList.remove('selected'));
+      card.classList.add('selected');
+      cardForm.classList.add('on');
+      checkDirty();
+    });
+  });
+
+  // "Adicionar novo cartão" expands the card form
+  addNewCardBtn.addEventListener('click', () => {
+    savedCardsEl.querySelectorAll('.saved-card').forEach(x => x.classList.remove('selected'));
+    cardForm.classList.add('on');
+    checkDirty();
+  });
+
   document.querySelectorAll('.pay-opt').forEach(opt => {
     opt.addEventListener('click', () => {
       document.querySelectorAll('.pay-opt').forEach(x => x.classList.remove('selected'));
       opt.classList.add('selected');
       const pm = opt.dataset.pm;
-      const needsCard = pm === 'credito' || pm === 'debito';
-      cardForm.classList.toggle('on', needsCard);
+      // For credito: show accordion, hide form (a saved card is already selected)
+      // For debito: show form directly (no saved cards accordion)
+      if (pm === 'credito') {
+        cardForm.classList.remove('on');
+        // restore first saved card as selected
+        const first = savedCardsEl.querySelector('.saved-card');
+        if (first) { savedCardsEl.querySelectorAll('.saved-card').forEach(x => x.classList.remove('selected')); first.classList.add('selected'); }
+      } else if (pm === 'debito') {
+        cardForm.classList.add('on');
+      } else {
+        cardForm.classList.remove('on');
+      }
       checkDirty();
     });
   });
@@ -2079,11 +2262,13 @@
     // CTA amount
     coPayBtn.innerHTML = `<i class="ph ph-lock-key" style="font-size:16px"></i> Pagar ${amountStr}`;
 
-    // Reset payment method to Crédito + show card form (initial state)
+    // Reset payment method to Crédito + show saved cards accordion (not form)
     coPayMethods.querySelectorAll('[data-co-pm]').forEach(x => x.classList.remove('selected'));
     const creditoOpt = coPayMethods.querySelector('[data-co-pm="credito"]');
     if (creditoOpt) creditoOpt.classList.add('selected');
-    coCardForm.classList.add('on');
+    coCardForm.classList.remove('on');
+    const coSavedCards = document.getElementById('co-saved-cards');
+    coSavedCards.querySelectorAll('.saved-card').forEach((x, i) => x.classList.toggle('selected', i === 0));
 
     // Open drawer
     checkoutDrawer.classList.add('open');
@@ -2100,13 +2285,53 @@
   coCollapseToggle.addEventListener('click', () => coCollapse.classList.toggle('on'));
 
   // Payment methods in checkout
+  const coSavedCardsEl = document.getElementById('co-saved-cards');
+  const coAddNewCardBtn = document.getElementById('co-add-new-card');
+
   coPayMethods.querySelectorAll('[data-co-pm]').forEach(opt => {
     opt.addEventListener('click', () => {
       coPayMethods.querySelectorAll('[data-co-pm]').forEach(x => x.classList.remove('selected'));
       opt.classList.add('selected');
       const pm = opt.dataset.coPm;
-      coCardForm.classList.toggle('on', pm === 'credito');
+      if (pm === 'credito') {
+        coCardForm.classList.remove('on');
+        const first = coSavedCardsEl.querySelector('.saved-card');
+        if (first) { coSavedCardsEl.querySelectorAll('.saved-card').forEach(x => x.classList.remove('selected')); first.classList.add('selected'); }
+      } else if (pm === 'debito') {
+        coCardForm.classList.add('on');
+      } else {
+        coCardForm.classList.remove('on');
+      }
     });
+  });
+
+  // Saved card selection in checkout
+  coSavedCardsEl.querySelectorAll('.saved-card').forEach(sc => {
+    sc.addEventListener('click', e => {
+      if (e.target.closest('.sc-action')) return;
+      coSavedCardsEl.querySelectorAll('.saved-card').forEach(x => x.classList.remove('selected'));
+      sc.classList.add('selected');
+      coCardForm.classList.remove('on');
+    });
+  });
+
+  coSavedCardsEl.querySelectorAll('[data-sc-del]').forEach(btn => {
+    btn.addEventListener('click', e => { e.stopPropagation(); btn.closest('.saved-card').remove(); });
+  });
+
+  coSavedCardsEl.querySelectorAll('[data-sc-edit]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const card = btn.closest('.saved-card');
+      coSavedCardsEl.querySelectorAll('.saved-card').forEach(x => x.classList.remove('selected'));
+      card.classList.add('selected');
+      coCardForm.classList.add('on');
+    });
+  });
+
+  coAddNewCardBtn.addEventListener('click', () => {
+    coSavedCardsEl.querySelectorAll('.saved-card').forEach(x => x.classList.remove('selected'));
+    coCardForm.classList.add('on');
   });
 
   // Installments

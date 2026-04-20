@@ -170,16 +170,6 @@
       transform: none;
     }
 
-    .loading-spinner {
-      display: none;
-      width: 20px; height: 20px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 700ms linear infinite;
-      flex-shrink: 0;
-    }
-    .quick-card.loading .loading-spinner { display: block; }
     .quick-card.loading .card-icon { display: none; }
     .quick-card.loading .card-label { display: none; }
 
@@ -273,7 +263,6 @@
           <i class="ph ph-currency-circle-dollar card-icon"></i>
           <span class="card-label">Financeiro</span>
           <div class="loading-body">
-            <div class="loading-spinner"></div>
             <span class="loading-msg"></span>
             <div class="loading-dots"><span></span><span></span><span></span></div>
           </div>
