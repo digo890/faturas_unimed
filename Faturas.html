@@ -432,7 +432,7 @@
   .pay-method i { color: var(--color-neutral-600); font-size: 18px; }
 
   .row-actions { display: inline-flex; align-items: center; gap: 4px; justify-content: flex-end; }
-  .scheduled { display: inline-flex; align-items: center; gap: 6px; color: var(--color-info-dark); font-size: 13px; font-weight: 500; }
+  .scheduled { display: inline-flex; align-items: center; gap: 6px; color: var(--color-info-dark); font-size: 13px; font-weight: 600; height: 36px; padding: 0 14px; border-radius: 8px; }
 
   /* Checkbox */
   .check {
@@ -997,6 +997,109 @@
   .ins-more i { transition: transform 200ms ease; }
   .ins-more.on i { transform: rotate(180deg); }
 
+  /* ── PIX SECTION ── */
+  .pix-section {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .pix-section.on { display: flex; }
+  .pix-qr-wrap {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    background: var(--color-neutral-50, #f8fafc);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .pix-qr {
+    width: 88px; height: 88px; flex-shrink: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--border-default);
+  }
+  .pix-qr img { width: 88px; height: 88px; display: block; }
+  .pix-qr-info { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .pix-qr-info p {
+    font-size: 13px;
+    color: var(--color-neutral-600);
+    line-height: 1.4;
+    margin: 0;
+  }
+  .pix-copy {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    background: #fff;
+    border: 1px solid var(--border-default);
+    border-radius: 10px;
+    padding: 10px 14px;
+    width: 100%;
+    cursor: pointer;
+    transition: border-color 150ms;
+  }
+  .pix-copy:hover { border-color: var(--color-primary); }
+  .pix-copy-info { min-width: 0; }
+  .pix-copy-label { font-size: 12px; font-weight: 600; color: var(--color-neutral-700); margin-bottom: 2px; }
+  .pix-copy-code {
+    font-size: 11px; color: var(--color-neutral-500);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    max-width: 200px;
+  }
+  .pix-copy-btn {
+    flex-shrink: 0;
+    width: 32px; height: 32px; border-radius: 8px;
+    border: 1px solid var(--border-default);
+    background: var(--color-neutral-100);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--color-neutral-600);
+    transition: background 150ms, color 150ms;
+  }
+  .pix-copy-btn:hover { background: var(--color-primary-surface); color: var(--color-primary); }
+  .pix-copy-btn.copied { background: var(--color-positive-surface); color: var(--color-positive-dark); border-color: var(--color-positive-surface); }
+  .pix-notice {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--color-info-surface, #eff6ff);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--color-info-dark, #1d4ed8);
+  }
+  .pix-notice i { flex-shrink: 0; font-size: 15px; }
+
+  /* ── BOLETO SECTION ── */
+  .boleto-section {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .boleto-section.on { display: flex; }
+  .boleto-barcode-wrap {
+    background: var(--color-neutral-50, #f8fafc);
+    border: 1px solid var(--border-default);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .boleto-barcode-img {
+    width: 100%;
+    height: 56px;
+    overflow: hidden;
+    border-radius: 6px;
+  }
+  .boleto-barcode-img svg { width: 100%; height: 56px; display: block; }
+  .boleto-barcode-wrap p {
+    font-size: 13px;
+    color: var(--color-neutral-600);
+    margin: 0;
+    line-height: 1.4;
+  }
+
   /* Clickable pay-method cell */  .pay-method.clickable {
     cursor: pointer;
     border-bottom: 1px dashed transparent;
@@ -1500,7 +1603,6 @@
       <div>
         <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--color-neutral-600);margin-bottom:8px">Valor a pagar</div>
         <div class="amount-big" id="co-amount">R$ 220,00</div>
-        <div class="due-line" id="co-due">Vencida em 25/01/2026</div>
       </div>
       <button class="download-btn" aria-label="Baixar boleto"><i class="ph ph-download-simple" style="font-size:20px"></i></button>
     </div>
@@ -1575,6 +1677,80 @@
         </div>
         <div class="pm-radio"></div>
       </button>
+    </div>
+
+    <!-- Pix section -->
+    <div class="pix-section" id="co-pix-section">
+      <div class="pix-qr-wrap">
+        <div class="pix-qr">
+          <img src="assets/qr-code.svg" alt="QR Code Pix" width="88" height="88">
+        </div>
+        <div class="pix-qr-info">
+          <p>Escaneie com o app do seu banco ou copie o código abaixo</p>
+        </div>
+      </div>
+      <div class="pix-copy" id="co-pix-copy">
+        <div class="pix-copy-info">
+          <div class="pix-copy-label">Copie o código Pix</div>
+          <div class="pix-copy-code" id="co-pix-code">00020101021226860014BR.GOV.BCB.PIX2564qrpix.bradesco.com.br/qr/v2/cobv/9d36b84f</div>
+        </div>
+        <button class="pix-copy-btn" id="co-pix-copy-btn" type="button" title="Copiar código Pix">
+          <i class="ph ph-copy" style="font-size:16px"></i>
+        </button>
+      </div>
+      <div class="pix-notice">
+        <i class="ph-fill ph-info"></i>
+        Aguarde alguns segundos para a confirmação do pagamento
+      </div>
+    </div>
+
+    <!-- Boleto section -->
+    <div class="boleto-section" id="co-boleto-section">
+      <div class="boleto-barcode-wrap">
+        <div class="boleto-barcode-img">
+          <svg viewBox="0 0 200 56" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <rect width="200" height="56" fill="#fff"/>
+            <g fill="#000">
+              <rect x="0" width="2" height="56"/><rect x="3" width="1" height="56"/><rect x="5" width="2" height="56"/>
+              <rect x="9" width="1" height="56"/><rect x="11" width="3" height="56"/><rect x="15" width="1" height="56"/>
+              <rect x="17" width="2" height="56"/><rect x="21" width="1" height="56"/><rect x="23" width="2" height="56"/>
+              <rect x="27" width="3" height="56"/><rect x="31" width="1" height="56"/><rect x="33" width="2" height="56"/>
+              <rect x="37" width="1" height="56"/><rect x="39" width="3" height="56"/><rect x="43" width="1" height="56"/>
+              <rect x="45" width="2" height="56"/><rect x="49" width="1" height="56"/><rect x="51" width="2" height="56"/>
+              <rect x="55" width="3" height="56"/><rect x="59" width="1" height="56"/><rect x="61" width="2" height="56"/>
+              <rect x="65" width="1" height="56"/><rect x="67" width="3" height="56"/><rect x="71" width="1" height="56"/>
+              <rect x="73" width="2" height="56"/><rect x="77" width="1" height="56"/><rect x="79" width="2" height="56"/>
+              <rect x="83" width="3" height="56"/><rect x="87" width="1" height="56"/><rect x="89" width="2" height="56"/>
+              <rect x="93" width="1" height="56"/><rect x="95" width="3" height="56"/><rect x="99" width="1" height="56"/>
+              <rect x="101" width="2" height="56"/><rect x="105" width="1" height="56"/><rect x="107" width="2" height="56"/>
+              <rect x="111" width="3" height="56"/><rect x="115" width="1" height="56"/><rect x="117" width="2" height="56"/>
+              <rect x="121" width="1" height="56"/><rect x="123" width="3" height="56"/><rect x="127" width="1" height="56"/>
+              <rect x="129" width="2" height="56"/><rect x="133" width="1" height="56"/><rect x="135" width="2" height="56"/>
+              <rect x="139" width="3" height="56"/><rect x="143" width="1" height="56"/><rect x="145" width="2" height="56"/>
+              <rect x="149" width="1" height="56"/><rect x="151" width="3" height="56"/><rect x="155" width="1" height="56"/>
+              <rect x="157" width="2" height="56"/><rect x="161" width="1" height="56"/><rect x="163" width="2" height="56"/>
+              <rect x="167" width="3" height="56"/><rect x="171" width="1" height="56"/><rect x="173" width="2" height="56"/>
+              <rect x="177" width="1" height="56"/><rect x="179" width="2" height="56"/><rect x="183" width="3" height="56"/>
+              <rect x="187" width="1" height="56"/><rect x="189" width="2" height="56"/><rect x="193" width="1" height="56"/>
+              <rect x="195" width="2" height="56"/><rect x="198" width="2" height="56"/>
+            </g>
+          </svg>
+        </div>
+        <p>Escaneie o código de barras com o app do seu banco</p>
+      </div>
+      <div class="pix-copy" id="co-boleto-copy">
+        <div class="pix-copy-info">
+          <div class="pix-copy-label">Copie o código</div>
+          <div class="pix-copy-code" id="co-boleto-code">00020101021226860014BR.GOV.BCB.PIX2564qrpix.bradesco.com.br/qr/v2/cobv/9d36b84f</div>
+        </div>
+        <button class="pix-copy-btn" id="co-boleto-copy-btn" type="button" title="Copiar código do boleto">
+          <i class="ph ph-copy" style="font-size:16px"></i>
+        </button>
+      </div>
+      <div class="pix-notice">
+        <i class="ph-fill ph-info"></i>
+        Pagamento confirmado em até 3 dias úteis
+      </div>
     </div>
 
     <!-- Card fields (credito only) -->
@@ -1829,7 +2005,7 @@
                   <button class="btn-icon-md" style="width:36px;height:36px;border-radius:8px" aria-label="Baixar boleto"><i class="ph ph-download-simple" style="font-size:16px"></i></button>`;
       } else if (inv.status === 'open') {
         action = inv.scheduled
-          ? `<span class="scheduled"><i class="ph ph-calendar-check" style="font-size:16px"></i> Agendado</span>
+          ? `<span class="scheduled"><i class="ph ph-calendar-check" style="font-size:16px"></i> Agend.</span>
              <button class="btn-icon-md" style="width:36px;height:36px;border-radius:8px" aria-label="Baixar boleto"><i class="ph ph-download-simple" style="font-size:16px"></i></button>`
           : `<button class="btn btn-sm btn-primary" data-pay-invoice data-amount="${inv.amount}" data-due="${inv.due}" data-ref="${inv.m} ${inv.y}" data-reffull="${inv.ref}" data-status="open" data-duenote="${inv.dueNote}">Pagar</button>
              <button class="btn-icon-md" style="width:36px;height:36px;border-radius:8px" aria-label="Baixar boleto"><i class="ph ph-download-simple" style="font-size:16px"></i></button>`;
@@ -2236,11 +2412,6 @@
     // Fill in summary
     const amountStr = `R$ ${data.amount}`;
     document.getElementById('co-amount').textContent = amountStr;
-    const dueLine = data.status === 'overdue'
-      ? `Vencida em ${data.due} · ${data.dueNote}`
-      : `Vencimento ${data.due}`;
-    document.getElementById('co-due').textContent = dueLine;
-
     document.getElementById('co-ref').textContent = `${data.ref}`;
     document.getElementById('co-ref-full').textContent = data.refFull;
     document.getElementById('co-due-date').textContent = data.due;
@@ -2267,6 +2438,8 @@
     const creditoOpt = coPayMethods.querySelector('[data-co-pm="credito"]');
     if (creditoOpt) creditoOpt.classList.add('selected');
     coCardForm.classList.remove('on');
+    document.getElementById('co-pix-section').classList.remove('on');
+    document.getElementById('co-boleto-section').classList.remove('on');
     const coSavedCards = document.getElementById('co-saved-cards');
     coSavedCards.querySelectorAll('.saved-card').forEach((x, i) => x.classList.toggle('selected', i === 0));
 
@@ -2287,21 +2460,24 @@
   // Payment methods in checkout
   const coSavedCardsEl = document.getElementById('co-saved-cards');
   const coAddNewCardBtn = document.getElementById('co-add-new-card');
+  const coPixSection = document.getElementById('co-pix-section');
+  const coBoletoSection = document.getElementById('co-boleto-section');
+
+  function coShowPm(pm) {
+    coCardForm.classList.toggle('on', pm === 'debito');
+    coPixSection.classList.toggle('on', pm === 'pix');
+    coBoletoSection.classList.toggle('on', pm === 'boleto');
+    if (pm === 'credito') {
+      const first = coSavedCardsEl.querySelector('.saved-card');
+      if (first) { coSavedCardsEl.querySelectorAll('.saved-card').forEach(x => x.classList.remove('selected')); first.classList.add('selected'); }
+    }
+  }
 
   coPayMethods.querySelectorAll('[data-co-pm]').forEach(opt => {
     opt.addEventListener('click', () => {
       coPayMethods.querySelectorAll('[data-co-pm]').forEach(x => x.classList.remove('selected'));
       opt.classList.add('selected');
-      const pm = opt.dataset.coPm;
-      if (pm === 'credito') {
-        coCardForm.classList.remove('on');
-        const first = coSavedCardsEl.querySelector('.saved-card');
-        if (first) { coSavedCardsEl.querySelectorAll('.saved-card').forEach(x => x.classList.remove('selected')); first.classList.add('selected'); }
-      } else if (pm === 'debito') {
-        coCardForm.classList.add('on');
-      } else {
-        coCardForm.classList.remove('on');
-      }
+      coShowPm(opt.dataset.coPm);
     });
   });
 
@@ -2343,6 +2519,32 @@
   });
 
   coInsMore.addEventListener('click', () => coInsMore.classList.toggle('on'));
+
+  // Pix copy button
+  document.getElementById('co-pix-copy-btn').addEventListener('click', () => {
+    const code = document.getElementById('co-pix-code').textContent;
+    navigator.clipboard.writeText(code).catch(() => {});
+    const btn = document.getElementById('co-pix-copy-btn');
+    btn.classList.add('copied');
+    btn.innerHTML = '<i class="ph-fill ph-check" style="font-size:18px"></i>';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<i class="ph ph-copy" style="font-size:18px"></i>';
+    }, 2000);
+  });
+
+  // Boleto copy button
+  document.getElementById('co-boleto-copy-btn').addEventListener('click', () => {
+    const code = document.getElementById('co-boleto-code').textContent;
+    navigator.clipboard.writeText(code).catch(() => {});
+    const btn = document.getElementById('co-boleto-copy-btn');
+    btn.classList.add('copied');
+    btn.innerHTML = '<i class="ph-fill ph-check" style="font-size:16px"></i>';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<i class="ph ph-copy" style="font-size:16px"></i>';
+    }, 2000);
+  });
 
   // Pay-with segmented (inside card-form, both drawers)
   document.querySelectorAll('.pay-with-seg').forEach(seg => {
