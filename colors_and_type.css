@@ -1,0 +1,228 @@
+/*
+ * Unimed DSU — Colors & Type Foundations
+ * Core design tokens + semantic CSS variables.
+ */
+
+/* Inter from Google Fonts is used for BOTH the brand (headings/body) and
+   the UI system (labels/inputs). Unimed Sans is proprietary and not
+   available publicly — Inter is the sanctioned substitute. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* ─────────── BRAND — PRIMARY (Corporate Blue) ─────────── */
+  --color-primary-900: #001e4c;   /* hover / pressed */
+  --color-primary-800: #002c74;
+  --color-primary:     #002d74;   /* default button / links / active */
+  --color-primary-hover:   #d6e6ff;  /* light hover surface */
+  --color-primary-surface: #f2f7ff;  /* tag-neutral bg */
+
+  /* ─────────── BRAND — UNIMED GREEN ─────────── */
+  --color-green-900:   #005231;
+  --color-green-700:   #00804c;
+  --color-green:       #00995d;   /* toggles/progress/radio selected */
+  --color-green-light: #00bd71;
+  --color-green-surface: #effbf3;
+
+  /* ─────────── SEMANTIC / FEEDBACK ─────────── */
+  --color-info-dark:      #004a66;
+  --color-info:           #0084b8;
+  --color-info-surface:   #ebf9ff;
+
+  --color-positive-dark:  var(--color-green-900);
+  --color-positive:       var(--color-green);
+  --color-positive-surface: var(--color-green-surface);
+
+  --color-warning-dark:   #833a07;
+  --color-warning:        #db610c;
+  --color-warning-surface:#fff3eb;
+
+  --color-negative-dark:  #760909;
+  --color-negative:       #dd4040;
+  --color-negative-danger:#c12929;
+  --color-negative-surface:#fcf3f3;
+
+  --color-promote-dark:   #4d2593;
+  --color-promote:        #7d4bd2;
+  --color-promote-light:  #a329cc;
+  --color-promote-surface:#f2ebff;
+  --color-promote-surface-2:#f5d9ff;
+
+  /* ─────────── NEUTRALS ─────────── */
+  --color-neutral-900: #18191a;   /* primary text */
+  --color-neutral-800: #2e3138;   /* secondary body */
+  --color-neutral-700: #333333;
+  --color-neutral-600: #494f59;
+  --color-neutral-500: #8993a3;   /* placeholder / inactive border */
+  --color-neutral-400: #9f9f9f;
+  --color-neutral-300: #d3d7df;   /* disabled border / divider */
+  --color-neutral-200: #e6eaf2;   /* default input/card border */
+  --color-neutral-100: #f8f9fc;   /* alt-row background */
+  --color-neutral-white: #ffffff;
+
+  /* Card-bandeira e pontual */
+  --color-badge-orange: #f47920;
+
+  /* ─────────── OVERLAYS ─────────── */
+  --color-overlay:       rgba(73, 79, 89, 0.5);
+  --color-overlay-white: rgba(255, 255, 255, 0.8);
+  --color-disabled-opacity: 0.32;
+
+  /* ─────────── SEMANTIC FG/BG ALIASES ─────────── */
+  --fg-1:    var(--color-neutral-900);
+  --fg-2:    var(--color-neutral-800);
+  --fg-3:    var(--color-neutral-600);
+  --fg-muted:var(--color-neutral-500);
+  --fg-brand:var(--color-primary);
+  --fg-inverse: var(--color-neutral-white);
+
+  --bg-base:    var(--color-neutral-white);
+  --bg-subtle:  var(--color-neutral-100);
+  --bg-brand:   var(--color-primary);
+  --bg-brand-surface: var(--color-primary-surface);
+
+  --border-default: var(--color-neutral-200);
+  --border-subtle:  var(--color-neutral-300);
+  --border-brand:   var(--color-primary);
+
+  /* ─────────── TYPOGRAPHY ─────────── */
+  --font-family-brand:  'Inter', system-ui, -apple-system, sans-serif;
+  --font-family-system: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --font-size-2xs: 10px;
+  --font-size-xs:  12px;
+  --font-size-sm:  14px;
+  --font-size-md:  16px;
+  --font-size-lg:  20px;
+  --font-size-xl:  24px;
+  --font-size-2xl: 32px;
+  --font-size-3xl: 40px;
+  --font-size-4xl: 48px;
+  --font-size-5xl: 64px;
+  --font-size-6xl: 80px;
+
+  --font-weight-regular:  400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 600;
+
+  --line-height-tight:   1.24;
+  --line-height-normal:  1.32;
+  --line-height-relaxed: 1.6;
+  --line-height-compact: 1;
+
+  /* ─────────── SPACING ─────────── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-7:  32px;
+  --space-8:  40px;
+  --space-9:  48px;
+  --space-10: 64px;
+  --space-11: 80px;
+
+  /* ─────────── RADIUS ─────────── */
+  --radius-none: 0px;
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   16px;
+  --radius-xl:   16px;  /* card radius; Figma notes sometimes show 32 — we use 16 per tokens.css */
+  --radius-full: 9999px;
+
+  /* ─────────── BORDERS ─────────── */
+  --border-width-sm: 1px;
+  --border-width-md: 3px;
+
+  /* ─────────── COMPONENT SIZES ─────────── */
+  --size-icon-sm: 16px;
+  --size-icon-md: 24px;
+  --size-icon-lg: 32px;
+  --size-touch-target: 48px;
+  --size-btn-sm-h: 48px;
+  --size-btn-sm-px: 32px;
+  --size-btn-lg-h: 64px;
+  --size-btn-lg-px: 40px;
+  --size-input-h: 64px;
+  --size-input-px: 16px;
+  --size-checkbox: 24px;
+  --size-radio: 24px;
+  --size-switch-w: 40px;
+  --size-switch-h: 24px;
+  --size-switch-dot: 16px;
+  --size-badge-dot: 8px;
+  --size-badge-value: 16px;
+  --size-progress-h: 4px;
+  --size-toast-w: 400px;
+  --size-modal-w: 640px;
+
+  /* ─────────── SHADOWS (not defined in Figma — conservative defaults) ─────────── */
+  --shadow-card:  0 1px 2px rgba(24,25,26,0.04);
+  --shadow-floating: 0 4px 16px rgba(24,25,26,0.10);
+  --shadow-dialog: 0 16px 48px rgba(24,25,26,0.16);
+
+  /* ─────────── Z-INDEX ─────────── */
+  --z-index-base: 0;
+  --z-index-sticky: 100;
+  --z-index-dropdown: 200;
+  --z-index-drawer: 300;
+  --z-index-modal: 400;
+  --z-index-toast: 500;
+  --z-index-tooltip: 600;
+}
+
+/* ═══════════════════════════════════════════════
+ * TYPE CLASSES
+ * Unimed Sans → headings, body, descriptions
+ * Inter       → UI labels (buttons, inputs, chips)
+ * ═══════════════════════════════════════════════ */
+
+.heading-2xl, .heading-xl, .heading-lg, .heading-sm, .heading-xs, .heading-2xs,
+.paragraph-lg, .paragraph-sm, .description {
+  font-family: var(--font-family-brand);
+  letter-spacing: 0;
+  margin: 0;
+}
+
+.heading-2xl { font-size: 64px; font-weight: 400; line-height: 1.24; }
+.heading-xl  { font-size: 48px; font-weight: 400; line-height: 1.24; }
+.heading-lg  { font-size: 40px; font-weight: 400; line-height: 1.24; }
+.heading-sm  { font-size: 24px; font-weight: 400; line-height: 1.24; }
+.heading-xs  { font-size: 20px; font-weight: 600; line-height: 1.24; }
+.heading-2xs { font-size: 16px; font-weight: 600; line-height: 1.24; }
+
+.paragraph-lg { font-size: 20px; font-weight: 400; line-height: 1.6; }
+.paragraph-sm { font-size: 16px; font-weight: 400; line-height: 1.6; }
+.description  { font-size: 14px; font-weight: 400; line-height: 1.32; }
+
+.label-lg-1, .label-lg-2, .label-lg-3,
+.label-md-1, .label-md-2, .label-md-3,
+.label-sm-1, .label-sm-2, .label-sm-3,
+.placeholder-text, .support-text {
+  font-family: var(--font-family-system);
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.label-lg-1 { font-size: 20px; font-weight: 400; }
+.label-lg-2 { font-size: 20px; font-weight: 500; }
+.label-lg-3 { font-size: 20px; font-weight: 600; }
+.label-md-1 { font-size: 16px; font-weight: 400; }
+.label-md-2 { font-size: 16px; font-weight: 500; }
+.label-md-3 { font-size: 16px; font-weight: 600; }
+.label-sm-1 { font-size: 14px; font-weight: 400; }
+.label-sm-2 { font-size: 14px; font-weight: 500; }
+.label-sm-3 { font-size: 14px; font-weight: 600; }
+
+.placeholder-text { font-size: 16px; font-weight: 400; color: var(--color-neutral-500); }
+.support-text     { font-size: 14px; font-weight: 400; line-height: 1.32; color: var(--color-neutral-900); }
+
+/* Semantic HTML defaults */
+h1 { font-family: var(--font-family-brand); font-size: 48px; font-weight: 400; line-height: 1.24; color: var(--color-primary); margin: 0; }
+h2 { font-family: var(--font-family-brand); font-size: 32px; font-weight: 400; line-height: 1.24; color: var(--color-primary); margin: 0; }
+h3 { font-family: var(--font-family-brand); font-size: 24px; font-weight: 400; line-height: 1.24; color: var(--color-primary); margin: 0; }
+h4 { font-family: var(--font-family-brand); font-size: 20px; font-weight: 600; line-height: 1.24; color: var(--color-neutral-900); margin: 0; }
+h5 { font-family: var(--font-family-brand); font-size: 16px; font-weight: 600; line-height: 1.24; color: var(--color-neutral-900); margin: 0; }
+p  { font-family: var(--font-family-brand); font-size: 16px; font-weight: 400; line-height: 1.6; color: var(--color-neutral-800); margin: 0; }
+small { font-family: var(--font-family-brand); font-size: 14px; line-height: 1.32; color: var(--color-neutral-600); }
+code { font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: 14px; background: var(--color-neutral-100); padding: 2px 6px; border-radius: 4px; }

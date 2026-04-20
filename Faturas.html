@@ -1,0 +1,2159 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Faturas dos planos — Unimed</title>
+<link rel="stylesheet" href="colors_and_type.css">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.2"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg-subtle);
+    color: var(--fg-1);
+    font-family: var(--font-family-system);
+    min-height: 100vh;
+  }
+
+  /* ─────────── LAYOUT ─────────── */
+  .app { display: flex; min-height: 100vh; }
+  .main { flex: 1; min-width: 0; }
+
+  /* ─────────── SIDE MENU ─────────── */
+  .sidemenu {
+    width: 5rem; /* 80px */
+    background: #fff;
+    border-right: 1px solid var(--border-default);
+    padding: 20px 0;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    position: sticky; top: 0; height: 100vh;
+    flex-shrink: 0;
+  }
+  .sidemenu .logo {
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 28px;
+    color: var(--color-primary);
+  }
+  .sidemenu .logo img { width: 36px; height: 36px; }
+  .sidemenu .nav-item {
+    width: 44px; height: 44px;
+    border: none; background: transparent;
+    border-radius: 9999px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--color-neutral-500);
+    cursor: pointer;
+    transition: background 150ms ease, color 150ms ease;
+  }
+  .sidemenu .nav-item:hover:not(.active) { color: var(--color-primary); background: var(--color-primary-surface); }
+  .sidemenu .nav-item.active { color: #fff; background: var(--color-primary); }
+  .sidemenu .spacer { flex: 1; }
+
+  /* ─────────── TOP BAR ─────────── */
+  .topbar {
+    height: 80px;
+    background: #fff;
+    border-bottom: 1px solid var(--border-default);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 64px;
+  }
+  .crumbs { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--color-neutral-600); }
+  .crumbs .sep { color: var(--color-neutral-300); }
+  .crumbs .here { color: var(--color-neutral-900); font-weight: 500; }
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .icon-btn {
+    width: 48px; height: 48px;
+    border: none; background: transparent;
+    border-radius: 16px;
+    color: var(--color-primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; position: relative;
+    transition: background 150ms ease;
+  }
+  .icon-btn:hover { background: var(--color-primary-surface); }
+  .icon-btn .badge {
+    position: absolute; top: 8px; right: 8px;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--color-badge-orange);
+    border: 2px solid #fff;
+  }
+  .user-chip {
+    display: flex; align-items: center; gap: 12px;
+    padding: 6px 16px 6px 6px;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background 150ms ease;
+  }
+  .user-chip > div:last-child {
+    display: flex; flex-direction: column; gap: 2px;
+    text-align: left;
+  }
+  .user-chip:hover { background: var(--bg-subtle); }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--color-neutral-200);
+    color: var(--color-neutral-700);
+    font-weight: 600; font-size: 12px;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .user-chip .name { font-size: 13px; font-weight: 500; color: var(--color-neutral-900); line-height: 1.2; margin: 0; padding: 0; }
+  .user-chip .role { font-size: 11px; color: var(--color-neutral-500); line-height: 1.2; margin: 0; padding: 0; }
+
+  /* ─────────── PAGE ─────────── */
+  .page { padding: 48px 64px 80px; max-width: 1440px; }
+  .page-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 32px;
+  }
+  .page-head .eyebrow {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--color-primary);
+    margin-bottom: 8px;
+  }
+  .page-head h1 {
+    font-size: 40px; font-weight: 400; color: var(--color-primary);
+    line-height: 1.24; margin: 0;
+  }
+  .page-head .lede {
+    font-size: 16px; color: var(--color-neutral-600);
+    margin-top: 8px; max-width: 540px;
+  }
+  .summary-card {
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-default);
+    border-radius: 16px;
+    padding: 16px 24px;
+    display: flex; align-items: center; gap: 24px;
+    min-width: 280px;
+  }
+  .summary-card .lab { font-size: 12px; color: var(--color-neutral-600); margin-bottom: 4px; }
+  .summary-card .val { font-size: 24px; font-weight: 600; color: var(--color-primary); line-height: 1.2; }
+  .summary-card .val.warn { color: var(--color-negative); }
+  .summary-card .vsep { width: 1px; height: 40px; background: var(--border-default); }
+
+  /* ─────────── PLAN CARDS ─────────── */
+  .plans {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .plan {
+    background: #fff;
+    border: 1.5px solid var(--border-default);
+    border-radius: 16px;
+    padding: 24px;
+    cursor: pointer;
+    transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+    display: flex; flex-direction: column; gap: 20px;
+    position: relative;
+    text-align: left;
+    font-family: inherit;
+  }
+  .plan { padding: 20px; gap: 14px; }
+  .plan:hover { border-color: var(--color-neutral-500); }
+  .plan.active {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-surface);
+  }
+  .plan .head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .plan .title-row { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .plan .title-row i { flex-shrink: 0; }
+  .plan .name {
+    font-size: 18px; font-weight: 600;
+    color: var(--color-neutral-900);
+    line-height: 1.24;
+  }
+  .plan .body { display: flex; flex-direction: column; gap: 4px; }
+  .plan .body .label { font-size: 13px; color: var(--color-neutral-600); }
+  .plan .body .value { font-size: 22px; font-weight: 600; color: var(--color-neutral-900); line-height: 1.2; }
+  .plan .footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-default);
+  }
+  .plan .footer .left { display: flex; align-items: center; gap: 8px; }
+  .plan .footer .open {
+    font-size: 13px; font-weight: 600; color: var(--color-primary);
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .plan .footer .open i { transition: transform 200ms ease; }
+  .plan.active .footer .open i { transform: rotate(90deg);
+  }
+
+  /* Status color applied directly to icon + value */
+  .plan.alert .title-row i { color: var(--color-negative); }
+  .plan.healthy .title-row i { color: var(--color-green); }
+  .plan.upcoming .title-row i { color: var(--color-info); }
+  .plan.alert .body .value { color: var(--color-negative); }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 9999px;
+    font-size: 12px; font-weight: 500; line-height: 1;
+    height: 22px;
+  }
+  .pill-positive { background: var(--color-positive-surface); color: var(--color-positive-dark); }
+  .pill-negative { background: var(--color-negative-surface); color: var(--color-negative-dark); }
+  .pill-info { background: var(--color-info-surface); color: var(--color-info-dark); }
+  .pill-warning { background: var(--color-warning-surface); color: var(--color-warning-dark); }
+  .pill-neutral { background: var(--color-primary-surface); color: var(--color-primary); }
+
+  /* ─────────── INVOICE PANEL ─────────── */
+  .invoice-panel {
+    background: #fff;
+    border: 1px solid var(--border-default);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .panel-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--border-default);
+    gap: 24px; flex-wrap: wrap;
+  }
+  .panel-head .left { display: flex; align-items: center; gap: 16px; min-width: 0; }
+  .panel-head .plan-icon {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: var(--color-negative-surface);
+    color: var(--color-negative-dark);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .panel-head .ttl { font-size: 20px; font-weight: 600; color: var(--color-neutral-900); line-height: 1.24; }
+  .panel-head .sub { font-size: 13px; color: var(--color-neutral-600); margin-top: 2px; }
+  .panel-head .right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+  .seg {
+    display: inline-flex; padding: 4px;
+    background: var(--bg-subtle);
+    border-radius: 12px;
+    border: 1px solid var(--border-default);
+  }
+  .seg button {
+    border: none; background: transparent;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    color: var(--color-neutral-600);
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .seg button.on {
+    background: #fff;
+    color: var(--color-primary);
+    box-shadow: var(--shadow-card);
+    font-weight: 600;
+  }
+
+  /* ── Custom dropdown ── */
+  .custom-select {
+    position: relative;
+    display: inline-block;
+  }
+  .custom-select-trigger {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 44px; padding: 0 14px;
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    background: #fff;
+    font-family: inherit; font-size: 14px; color: var(--color-neutral-900);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+    user-select: none;
+  }
+  .custom-select-trigger:hover { border-color: var(--color-neutral-400); }
+  .custom-select-trigger.open {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-surface);
+  }
+  .custom-select-trigger .cst-arrow {
+    flex-shrink: 0;
+    color: var(--color-neutral-500);
+    transition: transform 200ms ease;
+  }
+  .custom-select-trigger.open .cst-arrow { transform: rotate(180deg); }
+
+  .custom-select-list {
+    position: absolute;
+    margin: 0;
+    top: calc(100% + 4px);
+    left: 0;
+    min-width: 100%;
+    background: #fff;
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.10), 0 1px 4px rgba(0,0,0,.06);
+    padding: 6px;
+    z-index: 200;
+    opacity: 0; pointer-events: none;
+    transform: translateY(-2px);
+    transition: opacity 150ms ease, transform 150ms ease;
+  }
+  .custom-select-list.open {
+    opacity: 1; pointer-events: auto;
+    transform: translateY(0);
+  }
+  .custom-select-list li {
+    list-style: none;
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 14px; color: var(--color-neutral-900);
+    cursor: pointer;
+    transition: background 100ms ease;
+    white-space: nowrap;
+  }
+  .custom-select-list li:hover { background: var(--color-neutral-100); color: var(--color-primary); }
+  .custom-select-list li.selected {
+    background: var(--color-primary-surface);
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    border: none; cursor: pointer;
+    font-family: inherit; font-weight: 600;
+    transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+  }
+  .btn-md { height: 44px; padding: 0 18px; border-radius: 12px; font-size: 14px; }
+  .btn-sm { height: 36px; padding: 0 14px; border-radius: 8px; font-size: 13px; }
+  .btn-primary { background: var(--color-primary); color: #fff; }
+  .btn-primary:hover { background: var(--color-primary-900); }
+  .btn-secondary { background: transparent; color: var(--color-primary); border: 1px solid var(--color-primary); }
+  .btn-secondary:hover { background: var(--color-primary-surface); }
+  .btn-ghost { background: transparent; color: var(--color-primary); }
+  .btn-ghost:hover { background: var(--color-primary-surface); }
+  .btn-icon-md {
+    width: 44px; height: 44px;
+    border: 1px solid var(--border-default); background: #fff;
+    border-radius: 12px; color: var(--color-neutral-600);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background 150ms ease, color 150ms ease;
+  }
+  .btn-icon-md:hover { background: var(--color-primary-surface); color: var(--color-primary); border-color: var(--color-primary-surface); }
+
+  .promo-btn {
+    background: var(--color-primary);
+    color: #fff;
+    height: 44px; padding: 0 18px;
+    border-radius: 12px; border: none; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: inherit; font-size: 14px; font-weight: 600;
+  }
+  .promo-btn:hover { background: var(--color-primary-900); }
+  .promo-btn .off-tag {
+    background: var(--color-green); color: #fff;
+    font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  /* ─────────── INSIGHT ROW ─────────── */
+  .insight {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 32px;
+    background: var(--color-negative-surface);
+    border-bottom: 1px solid var(--border-default);
+    gap: 16px;
+  }
+  .insight .left { display: flex; align-items: center; gap: 12px; color: var(--color-negative-dark); }
+  .insight .left strong { font-weight: 600; }
+  .insight .actions { display: flex; gap: 8px; }
+  .insight .text { font-size: 14px; }
+
+  /* ─────────── TABLE ─────────── */
+  .tbl-wrap { overflow-x: auto; }
+  table.invoices {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-family: var(--font-family-system);
+  }
+  table.invoices thead th {
+    background: var(--bg-subtle);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-neutral-600);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-align: left;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-default);
+    white-space: nowrap;
+  }
+  table.invoices thead th:first-child { padding-left: 32px; }
+  table.invoices thead th:last-child { padding-right: 32px; text-align: right; }
+  table.invoices thead th.sortable { cursor: pointer; }
+  table.invoices thead th .arrow {
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  table.invoices tbody td {
+    padding: 18px 16px;
+    border-bottom: 1px solid var(--border-default);
+    font-size: 14px;
+    color: var(--color-neutral-900);
+    vertical-align: middle;
+  }
+  table.invoices tbody tr:last-child td { border-bottom: none; }
+  table.invoices tbody td:first-child { padding-left: 32px; }
+  table.invoices tbody td:last-child { padding-right: 32px; text-align: right; }
+  table.invoices tbody tr { transition: background 120ms ease; }
+  table.invoices tbody tr:hover { background: var(--bg-subtle); }
+  table.invoices tbody tr.overdue { background: rgba(252, 243, 243, 0.4); }
+  table.invoices tbody tr.overdue:hover { background: var(--color-negative-surface); }
+
+  .ref-cell {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .ref-month {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-default);
+    display: inline-flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    line-height: 1;
+  }
+  .ref-month .m { font-size: 11px; font-weight: 700; color: var(--color-primary); text-transform: uppercase; }
+  .ref-month .y { font-size: 10px; color: var(--color-neutral-600); margin-top: 2px; }
+  .ref-cell .meta-text { display: flex; flex-direction: column; gap: 2px; }
+  .ref-cell .ref-name { font-weight: 600; color: var(--color-neutral-900); font-size: 14px; }
+  .ref-cell .ref-id { font-size: 12px; color: var(--color-neutral-600); font-family: 'SF Mono', Menlo, Consolas, monospace; }
+
+  .due-cell { display: flex; flex-direction: column; gap: 2px; }
+  .due-cell .date { font-weight: 500; }
+  .due-cell .late { font-size: 12px; color: var(--color-negative); font-weight: 500; }
+  .due-cell .upcoming { font-size: 12px; color: var(--color-neutral-600); }
+
+  .amount { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .amount .cur { color: var(--color-neutral-500); font-weight: 500; margin-right: 2px; font-size: 12px; }
+
+  .pay-method { display: inline-flex; align-items: center; gap: 8px; }
+  .pay-method i { color: var(--color-neutral-600); font-size: 18px; }
+
+  .row-actions { display: inline-flex; align-items: center; gap: 4px; justify-content: flex-end; }
+  .scheduled { display: inline-flex; align-items: center; gap: 6px; color: var(--color-info-dark); font-size: 13px; font-weight: 500; }
+
+  /* Checkbox */
+  .check {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--color-neutral-500);
+    border-radius: 4px;
+    background: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .check.checked { background: var(--color-primary); border-color: var(--color-primary); }
+  .check.checked::after {
+    content: '';
+    width: 9px; height: 5px;
+    border-left: 2px solid #fff; border-bottom: 2px solid #fff;
+    transform: rotate(-45deg) translate(1px, -1px);
+  }
+
+  /* Footer of panel */
+  .panel-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 32px;
+    border-top: 1px solid var(--border-default);
+    background: var(--bg-subtle);
+    font-size: 13px; color: var(--color-neutral-600);
+    flex-wrap: wrap; gap: 16px;
+  }
+  .panel-foot .pager { display: flex; align-items: center; gap: 4px; }
+  .pager button {
+    width: 32px; height: 32px;
+    border: 1px solid var(--border-default);
+    background: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--color-neutral-600);
+    font-family: inherit; font-size: 13px; font-weight: 500;
+  }
+  .pager button:hover { color: var(--color-primary); border-color: var(--color-primary); }
+  .pager button.on { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+
+  /* ANS footer */
+  .ans-foot {
+    margin-top: 48px;
+    padding: 24px 0;
+    border-top: 1px solid var(--border-default);
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px; color: var(--color-neutral-600);
+    gap: 24px; flex-wrap: wrap;
+  }
+  .ans-foot .seal {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--color-primary-surface);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--color-primary); font-weight: 700; font-size: 10px;
+  }
+  .ans-foot .left { display: flex; align-items: center; gap: 12px; }
+
+  @media (max-width: 1100px) {
+    .plans { grid-template-columns: 1fr; }
+    .page { padding: 32px 24px 64px; }
+    .topbar { padding: 0 24px; }
+  }
+
+  /* ─────────── DRAWER ─────────── */
+  .scrim {
+    position: fixed; inset: 0;
+    background: var(--color-overlay);
+    opacity: 0; pointer-events: none;
+    transition: opacity 200ms ease;
+    z-index: 400;
+  }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: fixed; top: 0; right: 0;
+    width: 520px; max-width: 100vw; height: 100vh;
+    background: #fff;
+    border-left: 1px solid var(--border-default);
+    box-shadow: none;
+    transform: translateX(100%);
+    transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 240ms ease;
+    z-index: 410;
+    display: flex; flex-direction: column;
+  }
+  .drawer.open { transform: translateX(0); box-shadow: var(--shadow-dialog); }
+  .drawer-head {
+    padding: 24px 28px 0;
+    border-bottom: 1px solid var(--border-default);
+    flex-shrink: 0;
+  }
+  .drawer-head .top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .drawer-head .ico {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--color-primary-surface);
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+  .drawer-head .ttl { font-size: 20px; font-weight: 600; color: var(--color-neutral-900); line-height: 1.24; }
+  .drawer-head .sub { font-size: 13px; color: var(--color-neutral-600); margin-top: 4px; }
+  .drawer-head .meta-row { display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+  .drawer .close {
+    width: 36px; height: 36px;
+    border: 1px solid var(--border-default);
+    background: #fff;
+    border-radius: 10px;
+    color: var(--color-neutral-600);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .drawer .close:hover { color: var(--color-primary); border-color: var(--color-primary); }
+  .drawer-tabs {
+    display: flex;
+    margin-top: 20px;
+    gap: 4px;
+  }
+  .drawer-tabs button {
+    padding: 14px 4px;
+    border: none; background: transparent;
+    font-family: inherit; font-size: 14px; font-weight: 500;
+    color: var(--color-neutral-600);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-right: 24px;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .drawer-tabs button.on {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+    font-weight: 600;
+  }
+  .drawer-body {
+    flex: 1; overflow-y: auto;
+    padding: 24px 28px 32px;
+  }
+  .drawer-body .tab-pane { display: none; }
+  .drawer-body .tab-pane.on { display: block; }
+  .drawer-foot {
+    padding: 16px 28px;
+    border-top: 1px solid var(--border-default);
+    background: #fff;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    flex-shrink: 0;
+  }
+
+  /* Info list */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 24px;
+    background: #fff;
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    padding: 18px 20px;
+    position: relative;
+  }
+  .info-grid .status-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+  }
+  .info-grid .full { grid-column: 1 / -1; }
+  .info-item { padding: 8px 0; }
+  .info-item .k { font-size: 12px; color: var(--color-neutral-600); margin-bottom: 4px; }
+  .info-item .v { font-size: 14px; font-weight: 500; color: var(--color-neutral-900); font-variant-numeric: tabular-nums; }
+  .info-item .v.mono { font-family: 'SF Mono', Menlo, Consolas, monospace; font-weight: 500; }
+
+  .section-title {
+    font-size: 12px; font-weight: 600; color: var(--color-neutral-600);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin: 24px 0 12px;
+  }
+  .section-title:first-child { margin-top: 0; }
+
+  .dependents {
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .dep-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-default);
+  }
+  .dep-row:last-child { border-bottom: none; }
+  .dep-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--color-primary-surface);
+    color: var(--color-primary);
+    font-size: 13px; font-weight: 600;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .dep-name { font-size: 14px; font-weight: 500; color: var(--color-neutral-900); }
+  .dep-meta { font-size: 12px; color: var(--color-neutral-600); margin-top: 2px; }
+
+  /* Payment methods */
+  .pay-methods {
+    display: flex; flex-direction: column;
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .pay-opt {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    border: none;
+    border-top: 1px solid var(--border-default);
+    border-radius: 0;
+    cursor: pointer;
+    background: #fff;
+    transition: background 150ms ease;
+    text-align: left;
+    width: 100%;
+    font-family: inherit;
+  }
+  .pay-opt:first-child { border-top: none; }
+  .pay-opt:hover { background: var(--bg-subtle); }
+  .pay-opt.selected { background: var(--color-primary-surface); }
+  .pay-opt.selected:hover { background: var(--color-primary-surface); }
+  .pay-opt .pm-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid var(--border-default);
+    color: var(--color-primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .pay-opt.selected .pm-icon { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+  .pay-opt .pm-body { flex: 1; min-width: 0; }
+  .pay-opt .pm-name { font-size: 14px; font-weight: 600; color: var(--color-neutral-900); }
+  .pay-opt .pm-desc { font-size: 12px; color: var(--color-neutral-600); margin-top: 2px; }
+  .pay-opt .pm-radio { display: none; }
+
+  /* Card form (conditional) — modern unified-border layout */
+  .card-form {
+    margin-top: 16px;
+    display: none;
+    width: 100%;
+    max-width: 100%;
+  }
+  .card-form * { box-sizing: border-box; }
+  .card-form.on { display: block; }
+  .card-form .card-box {
+    border: 1px solid var(--border-default);
+    border-radius: 16px;
+    background: #fff;
+    overflow: hidden;
+  }
+  .card-form .card-row {
+    display: flex; align-items: center;
+    border-bottom: 1px solid var(--border-default);
+  }
+  .card-form .card-row:last-child { border-bottom: 0; }
+  .card-form .card-cell {
+    flex: 1; min-width: 0;
+    padding: 4px 18px;
+  }
+  .card-form .card-cell + .card-cell { border-left: 1px solid var(--border-default); }
+  .card-form .card-cell label {
+    display: block;
+    font-size: 11px; font-weight: 500;
+    color: var(--color-neutral-600);
+    margin-top: 10px;
+    letter-spacing: 0.01em;
+  }
+  .card-form .card-cell input {
+    width: 100%;
+    border: none; outline: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--color-neutral-900);
+    padding: 2px 0 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .card-form .card-cell input::placeholder { color: var(--color-neutral-500); }
+  .card-form .brand-icons {
+    display: flex; align-items: center; gap: 8px;
+    padding-right: 18px;
+    flex-shrink: 0;
+  }
+  .card-form .brand-icon {
+    height: 24px;
+    width: auto;
+    border-radius: 4px;
+    transition: opacity 200ms ease, filter 200ms ease;
+    opacity: 1;
+  }
+  .card-form .brand-icon.dim {
+    opacity: 0.2;
+    filter: grayscale(1);
+  }
+
+  .pay-with-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 14px 18px;
+    background: var(--bg-subtle);
+  }
+  .pay-with-row .lbl { font-size: 14px; color: var(--color-neutral-900); font-weight: 500; }
+  .pay-with-seg {
+    display: inline-flex; background: #fff;
+    border: 1px solid var(--border-default);
+    border-radius: 10px;
+    padding: 3px;
+  }
+  .pay-with-seg button {
+    border: none; background: transparent;
+    padding: 6px 18px;
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    color: var(--color-neutral-700);
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 150ms ease, color 150ms ease;
+  }
+  .pay-with-seg button.on {
+    background: var(--color-primary);
+    color: #fff;
+    font-weight: 600;
+  }
+  .field-row {
+    display: grid; gap: 12px;
+    grid-template-columns: 1fr;
+    margin-bottom: 12px;
+  }
+  .field-row.two { grid-template-columns: 1fr 1fr; }
+  .field-row:last-child { margin-bottom: 0; }
+  .field {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .field label {
+    font-size: 12px; font-weight: 500;
+    color: var(--color-neutral-900);
+  }
+  .field input {
+    height: 44px; padding: 0 14px;
+    border: 1px solid var(--border-default);
+    border-radius: 10px;
+    background: #fff;
+    font-family: inherit; font-size: 14px;
+    color: var(--color-neutral-900);
+    transition: border-color 150ms ease;
+  }
+  .field input:focus { outline: none; border-color: var(--color-primary); }
+  .field input::placeholder { color: var(--color-neutral-500); }
+
+  /* Autopay toggle row */
+  .autopay {
+    margin-top: 14px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+    padding: 14px 16px;
+    background: #fff;
+    border: 1px solid var(--border-default);
+    border-radius: 10px;
+  }
+  .autopay .lbl { display: flex; gap: 10px; align-items: flex-start; }
+  .autopay .lbl i { color: var(--color-green); font-size: 20px; margin-top: 1px; }
+  .autopay .t { font-size: 14px; font-weight: 500; color: var(--color-neutral-900); }
+  .autopay .d { font-size: 12px; color: var(--color-neutral-600); margin-top: 2px; }
+  .toggle {
+    width: 40px; height: 24px;
+    border-radius: 9999px;
+    background: var(--color-neutral-300);
+    position: relative; cursor: pointer;
+    transition: background 150ms ease;
+    flex-shrink: 0;
+    border: none;
+  }
+  .toggle::after {
+    content: '';
+    position: absolute; left: 4px; top: 4px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #fff;
+    transition: transform 150ms ease;
+  }
+  .toggle.on { background: var(--color-green); }
+  .toggle.on::after { transform: translateX(16px); }
+
+  /* ─────────── CHECKOUT DRAWER (LEFT) ─────────── */
+  .drawer.left {
+    right: 0; left: auto;
+    transform: translateX(100%);
+  }
+  .drawer.left.open { transform: translateX(0); }
+  .checkout-head {
+    padding: 24px 28px;
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border-default);
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    flex-shrink: 0;
+  }
+  .checkout-head .ttl { font-size: 20px; font-weight: 600; color: var(--color-primary-900); line-height: 1.24; }
+
+  .invoice-summary {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+    margin-bottom: 16px;
+  }
+  .invoice-summary .amount-big {
+    font-size: 30px; font-weight: 700; color: var(--color-primary-900);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .invoice-summary .due-line { font-size: 14px; color: var(--color-neutral-700); margin-top: 6px; }
+  .invoice-summary .download-btn {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-default);
+    color: var(--color-primary-900);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .invoice-summary .download-btn:hover { background: var(--color-primary-surface); }
+
+  .collapse {
+    border-radius: 12px;
+    background: var(--bg-subtle);
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .collapse-head {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    border: none; background: none; width: 100%;
+    text-align: left;
+    font-family: inherit;
+  }
+  .collapse-head .dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .collapse-head.overdue .dot { background: var(--color-warning); color: #fff; }
+  .collapse-head.open .dot { background: var(--color-info); color: #fff; }
+  .collapse-head .label {
+    flex: 1; font-size: 14px; color: var(--color-neutral-900);
+  }
+  .collapse-head .label strong { color: var(--color-primary-900); font-weight: 700; }
+  .collapse-head .caret {
+    transition: transform 200ms ease;
+    color: var(--color-neutral-700);
+  }
+  .collapse.on .collapse-head .caret { transform: rotate(180deg); }
+  .collapse-body {
+    display: none;
+    padding: 0 16px 16px;
+    font-size: 13px; color: var(--color-neutral-700);
+    line-height: 1.5;
+  }
+  .collapse.on .collapse-body { display: block; }
+  .collapse-body .kv { display: flex; justify-content: space-between; padding: 6px 0; border-top: 1px dashed var(--border-default); }
+  .collapse-body .kv:first-child { border-top: 0; }
+  .collapse-body .kv .k { color: var(--color-neutral-600); }
+  .collapse-body .kv .v { color: var(--color-neutral-900); font-weight: 500; }
+
+  /* Installments grid */
+  .installment-wrap {
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    padding: 10px 12px 4px;
+  }
+  .installments {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+  }
+  .ins-opt {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border-default);
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    transition: border-color 150ms ease, background 150ms ease;
+  }
+  .ins-opt:hover { border-color: var(--color-neutral-500); }
+  .ins-opt.selected {
+    border-color: var(--color-primary);
+    background: var(--color-primary-surface);
+  }
+  .ins-radio { display: none; }
+  .ins-info .top { font-size: 14px; font-weight: 700; color: var(--color-primary-900); font-variant-numeric: tabular-nums; }
+  .ins-info .bot { font-size: 11px; color: var(--color-neutral-600); margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .ins-more {
+    margin-top: 8px;
+    padding: 10px 4px 8px;
+    border-top: none;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 14px; font-weight: 600; color: var(--color-primary);
+    cursor: pointer; background: none; border: 0;
+    width: 100%; font-family: inherit;
+  }
+  .ins-more i { transition: transform 200ms ease; }
+  .ins-more.on i { transform: rotate(180deg); }
+
+  /* Clickable pay-method cell */  .pay-method.clickable {
+    cursor: pointer;
+    border-bottom: 1px dashed transparent;
+    padding-bottom: 1px;
+    transition: color 150ms ease, border-color 150ms ease;
+  }
+  .pay-method.clickable:hover {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+  }
+  .pay-method.clickable:hover i { color: var(--color-primary); }
+
+  .btn-icon-info {
+    width: 36px; height: 36px; border-radius: 8px;
+    border: 1px solid var(--border-default); background: #fff;
+    color: var(--color-neutral-600);
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: color 150ms ease, border-color 150ms ease, background 150ms ease;
+  }
+  .btn-icon-info:hover { color: var(--color-primary); border-color: var(--color-primary); background: var(--color-primary-surface); }
+
+  /* Modern scrollbar */
+  html { scrollbar-width: thin; scrollbar-color: transparent transparent; }
+  html.is-scrolling { scrollbar-color: rgba(0,45,116,.2) transparent; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #fff; box-shadow: none; border: none; }
+  ::-webkit-scrollbar-corner { background: #fff; }
+  ::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 9999px;
+    transition: background 400ms ease;
+    box-shadow: none;
+    border: none;
+  }
+  html.is-scrolling::-webkit-scrollbar-thumb { background: rgba(0,45,116,.22); }
+  .drawer-body.is-scrolling::-webkit-scrollbar-thumb { background: rgba(0,45,116,.22); }
+
+  /* Address column */
+  .addr-wrap {
+    position: relative;
+    display: inline-block;
+    max-width: 200px;
+    vertical-align: middle;
+    cursor: default;
+  }
+  .addr-wrap .addr-text {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+  }
+  .addr-wrap::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 0; top: calc(100% + 6px);
+    background: var(--color-neutral-900);
+    color: #fff;
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 6px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+    z-index: 200;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 120ms ease;
+  }
+  .addr-wrap:hover::after { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ─────────── SIDE MENU ─────────── -->
+  <aside class="sidemenu" aria-label="Navegação principal">
+    <div class="logo" title="Unimed">
+      <img src="assets/unimed-symbol.svg" alt="Unimed" width="36" height="36">
+    </div>
+    <button class="nav-item active" title="Início" aria-label="Início"><i class="ph ph-house" style="font-size:22px"></i></button>
+    <button class="nav-item" title="Saúde" aria-label="Saúde"><i class="ph ph-heartbeat" style="font-size:22px"></i></button>
+    <button class="nav-item" title="Odonto" aria-label="Odonto"><i class="ph ph-tooth" style="font-size:22px"></i></button>
+    <button class="nav-item" title="Financeiro" aria-label="Financeiro"><i class="ph ph-piggy-bank" style="font-size:22px"></i></button>
+    <button class="nav-item" title="Atendimento" aria-label="Atendimento"><i class="ph ph-headset" style="font-size:22px"></i></button>
+    <div class="spacer"></div>
+    <button class="nav-item" title="Ajuda" aria-label="Ajuda"><i class="ph ph-question" style="font-size:22px"></i></button>
+    <button class="nav-item" title="Configurações" aria-label="Configurações"><i class="ph ph-gear" style="font-size:22px"></i></button>
+  </aside>
+
+  <div class="main">
+
+    <!-- ─────────── TOP BAR ─────────── -->
+    <header class="topbar">
+      <div class="user-chip">
+        <div class="avatar">LS</div>
+        <div>
+          <div class="name">Lucas Salgado</div>
+          <div class="role">CPF: 000.000.000-00</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button class="icon-btn" aria-label="Carteirinha virtual"><i class="ph ph-identification-card" style="font-size:22px"></i></button>
+        <button class="icon-btn" aria-label="Notificações"><i class="ph ph-bell" style="font-size:22px"></i><span class="badge"></span></button>
+      </div>
+    </header>
+
+    <!-- ─────────── PAGE ─────────── -->
+    <div class="page">
+
+      <div class="page-head">
+        <div>
+          <div class="eyebrow">
+</div>
+          <h1>Suas faturas</h1>
+          <p class="lede">
+</p>
+        </div>
+        <div class="summary-card" role="group" aria-label="Resumo financeiro">
+          <div>
+            <div class="lab">Em aberto</div>
+            <div class="val warn">R$ 660,00</div>
+          </div>
+          <div class="vsep"></div>
+          <div>
+            <div class="lab">Próximo vencimento</div>
+            <div class="val">10/05/2026</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─────────── PLAN CARDS ─────────── -->
+      <div class="plans" role="tablist" aria-label="Planos contratados">
+
+        <button class="plan alert active" role="tab" aria-selected="true" data-plan="saude">
+          <div class="head">
+            <div class="title-row">
+              <i class="ph ph-heartbeat" style="font-size:22px"></i>
+              <div class="name">Unimed Saúde</div>
+            </div>
+            <span class="pill pill-negative"><i class="ph-fill ph-warning-circle" style="font-size:14px"></i> 3 vencidas</span>
+          </div>
+          <div class="body">
+            <span class="label">Total em aberto</span>
+            <span class="value">R$ 660,00</span>
+          </div>
+          <div class="footer">
+            <div class="left">
+              <i class="ph ph-calendar-blank" style="font-size:16px;color:var(--color-neutral-600)"></i>
+              <span style="font-size:13px;color:var(--color-neutral-600)">Mensal · venc. dia 25</span>
+            </div>
+            <span class="open">Ver faturas <i class="ph ph-arrow-right plan-arrow" style="font-size:14px"></i></span>
+          </div>
+        </button>
+
+        <button class="plan healthy" role="tab" aria-selected="false" data-plan="odonto">
+          <div class="head">
+            <div class="title-row">
+              <i class="ph ph-tooth" style="font-size:22px"></i>
+              <div class="name">Unimed Odonto</div>
+            </div>
+            <span class="pill pill-positive"><i class="ph-fill ph-check-circle" style="font-size:14px"></i> Em dia</span>
+          </div>
+          <div class="body">
+            <span class="label">Próximo pagamento</span>
+            <span class="value">R$ 89,90</span>
+          </div>
+          <div class="footer">
+            <div class="left">
+              <i class="ph ph-credit-card" style="font-size:16px;color:var(--color-neutral-600)"></i>
+              <span style="font-size:13px;color:var(--color-neutral-600)">Débito automático</span>
+            </div>
+            <span class="open">Ver faturas <i class="ph ph-arrow-right plan-arrow" style="font-size:14px"></i></span>
+          </div>
+        </button>
+
+        <button class="plan upcoming" role="tab" aria-selected="false" data-plan="residencial">
+          <div class="head">
+            <div class="title-row">
+              <i class="ph ph-house-line" style="font-size:22px"></i>
+              <div class="name">Seguros Unimed</div>
+            </div>
+            <span class="pill pill-info"><i class="ph ph-clock" style="font-size:14px"></i> Próximo dia 10</span>
+          </div>
+          <div class="body">
+            <span class="label">Valor a pagar</span>
+            <span class="value">R$ 135,00</span>
+          </div>
+          <div class="footer">
+            <div class="left">
+              <i class="ph ph-barcode" style="font-size:16px;color:var(--color-neutral-600)"></i>
+              <span style="font-size:13px;color:var(--color-neutral-600)">Boleto · 10/05/2026</span>
+            </div>
+            <span class="open">Ver faturas <i class="ph ph-arrow-right plan-arrow" style="font-size:14px"></i></span>
+          </div>
+        </button>
+
+      </div>
+
+      <!-- ─────────── INVOICE PANEL ─────────── -->
+      <section class="invoice-panel" id="invoice-panel" aria-label="Faturas do plano selecionado">
+
+        <header class="panel-head">
+          <div class="left">
+            <div class="plan-icon" id="panel-icon"><i class="ph ph-heartbeat" style="font-size:22px"></i></div>
+            <div>
+              <div class="ttl" id="panel-title">Unimed Saúde</div>
+              <div class="sub" id="panel-sub">Apólice 0021 8334 002 · 12 faturas no ciclo 2026</div>
+            </div>
+          </div>
+          <div class="right">
+            <div class="custom-select" data-cselect="situacao">
+              <button type="button" class="custom-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Situação">
+                <span class="cst-label">Todas as faturas (6)</span>
+                <i class="ph ph-caret-down cst-arrow" style="font-size:14px"></i>
+              </button>
+              <ul class="custom-select-list" role="listbox" aria-label="Situação">
+                <li role="option" class="selected" data-value="all">Todas as faturas (6)</li>
+                <li role="option" data-value="overdue">Vencidas (3)</li>
+                <li role="option" data-value="open">Em aberto (1)</li>
+                <li role="option" data-value="paid">Pagas (2)</li>
+              </ul>
+            </div>
+            <div class="custom-select" data-cselect="periodo">
+              <button type="button" class="custom-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Período">
+                <span class="cst-label">Ano de 2026</span>
+                <i class="ph ph-caret-down cst-arrow" style="font-size:14px"></i>
+              </button>
+              <ul class="custom-select-list" role="listbox" aria-label="Período">
+                <li role="option" class="selected" data-value="2026">Ano de 2026</li>
+                <li role="option" data-value="2025">Ano de 2025</li>
+                <li role="option" data-value="6m">Últimos 6 meses</li>
+              </ul>
+            </div>
+            <button class="btn-icon-md" aria-label="Detalhes do plano" data-open-drawer="info"><i class="ph ph-info" style="font-size:18px"></i></button>
+            <button class="btn-icon-md" aria-label="Baixar todas"><i class="ph ph-download-simple" style="font-size:18px"></i></button>
+          </div>
+        </header>
+
+        <!-- INSIGHT BAR (dynamic) -->
+        <div class="insight" id="insight-bar"></div>
+
+        <!-- TABLE -->
+        <div class="tbl-wrap">
+          <table class="invoices">
+            <thead>
+              <tr>
+                <th style="width:40px"><span class="check" aria-label="Selecionar todas"></span></th>
+                <th>Ref.</th>
+                <th id="th-address" style="display:none">Endereço</th>
+                <th class="sortable"><span class="arrow">Vencimento <i class="ph ph-caret-down" style="font-size:12px"></i></span></th>
+                <th>Valor</th>
+                <th>Situação</th>
+                <th>Forma de pagto</th>
+                <th>Pago em</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody id="invoices-body"></tbody>
+          </table>
+        </div>
+
+
+        <footer class="panel-foot" id="panel-foot">
+          <div>Mostrando <strong style="color:var(--color-neutral-900)">6</strong> de <strong style="color:var(--color-neutral-900)">12</strong> faturas · 3 selecionadas</div>
+          <div class="pager" aria-label="Paginação">
+            <button aria-label="Anterior"><i class="ph ph-caret-left" style="font-size:14px"></i></button>
+            <button class="on">1</button>
+            <button>2</button>
+            <button aria-label="Próxima"><i class="ph ph-caret-right" style="font-size:14px"></i></button>
+          </div>
+        </footer>
+
+      </section>
+
+      <!-- ANS Footer -->
+      <div class="ans-foot">
+        <div class="left">
+          <span>Unimed Seguradora S.A. · CNPJ 92.863.505/0001-06</span>
+        </div>
+        <div>© 2026 Unimed do Brasil — Todos os direitos reservados</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ─────────── DRAWER SCRIM ─────────── -->
+<div class="scrim" id="scrim"></div>
+
+<!-- ─────────── DRAWER ─────────── -->
+<aside class="drawer" id="drawer" aria-label="Detalhes do plano" aria-hidden="true">
+  <header class="drawer-head">
+    <div class="top">
+      <div style="min-width:0">
+        <div class="ttl" id="drawer-title">Unimed Saúde</div>
+      </div>
+      <button class="close" id="drawer-close" aria-label="Fechar"><i class="ph ph-x" style="font-size:18px"></i></button>
+    </div>
+    <nav class="drawer-tabs" role="tablist">
+      <button class="on" data-tab="info" role="tab">Informações do plano</button>
+      <button data-tab="payment" role="tab">Forma de pagamento</button>
+    </nav>
+  </header>
+
+  <div class="drawer-body">
+
+    <!-- TAB: INFO -->
+    <div class="tab-pane on" data-pane="info">
+
+      <div class="info-grid">
+        <span class="status-badge pill pill-positive"><i class="ph-fill ph-check-circle" style="font-size:12px"></i> Ativo</span>
+        <div class="info-item full">
+          <div class="k">Titular</div>
+          <div class="v">Lucas Salgado</div>
+        </div>
+        <div class="info-item">
+          <div class="k">Apólice</div>
+          <div class="v mono">0021 8334 002</div>
+        </div>
+        <div class="info-item">
+          <div class="k">Código do plano</div>
+          <div class="v mono">UNI-EMPD-026</div>
+        </div>
+        <div class="info-item">
+          <div class="k">Vigência</div>
+          <div class="v">01/01/24 até 31/12/26</div>
+        </div>
+        <div class="info-item">
+          <div class="k">Certificado</div>
+          <div class="v mono">CRT 88213-4</div>
+        </div>
+        <div class="info-item full">
+          <div class="k">Endereço de correspondência</div>
+          <div class="v">Rua das Palmeiras, 1280, apto 72 · Pinheiros · São Paulo/SP · 05422-020</div>
+        </div>
+      </div>
+
+      <div class="section-title">Dependentes (3)</div>
+      <div class="dependents">
+        <div class="dep-row">
+          <div class="dep-avatar">MS</div>
+          <div style="flex:1;min-width:0">
+            <div class="dep-name">Mariana Salgado</div>
+            <div class="dep-meta">Cônjuge · Carteirinha 0 000 0000 000001-2</div>
+          </div>
+          <span class="pill pill-positive"><i class="ph-fill ph-check-circle" style="font-size:12px"></i> Ativa</span>
+        </div>
+        <div class="dep-row">
+          <div class="dep-avatar">TS</div>
+          <div style="flex:1;min-width:0">
+            <div class="dep-name">Theo Salgado</div>
+            <div class="dep-meta">Filho(a) · Carteirinha 0 000 0000 000002-0</div>
+          </div>
+          <span class="pill pill-positive"><i class="ph-fill ph-check-circle" style="font-size:12px"></i> Ativo</span>
+        </div>
+        <div class="dep-row">
+          <div class="dep-avatar">LS</div>
+          <div style="flex:1;min-width:0">
+            <div class="dep-name">Laura Salgado</div>
+            <div class="dep-meta">Filha · Carteirinha 0 000 0000 000003-9</div>
+          </div>
+          <span class="pill pill-positive"><i class="ph-fill ph-check-circle" style="font-size:12px"></i> Ativa</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: PAYMENT -->
+    <div class="tab-pane" data-pane="payment">
+      <div class="section-title">Forma de pagamento preferencial</div>
+      <div class="pay-methods">
+
+        <button class="pay-opt selected" data-pm="credito" type="button">
+          <div class="pm-icon"><i class="ph ph-credit-card" style="font-size:22px"></i></div>
+          <div class="pm-body">
+            <div class="pm-name">Cartão de crédito</div>
+            <div class="pm-desc">Parcelamento em até 12x · pagamento automático opcional</div>
+          </div>
+          <div class="pm-radio"></div>
+        </button>
+
+        <button class="pay-opt" data-pm="pix" type="button">
+          <div class="pm-icon"><i class="ph ph-qr-code" style="font-size:22px"></i></div>
+          <div class="pm-body">
+            <div class="pm-name">Pix</div>
+            <div class="pm-desc">Pagamento instantâneo · sem taxas · confirmação imediata</div>
+          </div>
+          <div class="pm-radio"></div>
+        </button>
+
+        <button class="pay-opt" data-pm="boleto" type="button">
+          <div class="pm-icon"><i class="ph ph-barcode" style="font-size:22px"></i></div>
+          <div class="pm-body">
+            <div class="pm-name">Boleto bancário</div>
+            <div class="pm-desc">Gerado no dia do vencimento · compensação em até 3 dias úteis</div>
+          </div>
+          <div class="pm-radio"></div>
+        </button>
+
+      </div>
+
+      <!-- Card form (appears for credito/debito) -->
+      <div class="card-form" id="card-form">
+        <div class="section-title" style="margin-top:0">Dados do cartão</div>
+        <div class="card-box">
+          <div class="card-row">
+            <div class="card-cell">
+              <label>Número do cartão</label>
+              <input type="text" placeholder="0000 0000 0000 0000" maxlength="19" data-card-input>
+            </div>
+            <div class="brand-icons">
+              <img src="assets/MasterCard.svg" class="brand-icon" data-brand="master" alt="Mastercard">
+              <img src="assets/Visa.svg"       class="brand-icon" data-brand="visa"   alt="Visa">
+              <img src="assets/Elo.svg"        class="brand-icon" data-brand="elo"    alt="Elo">
+              <img src="assets/Amex.svg"       class="brand-icon" data-brand="amex"   alt="Amex">
+            </div>
+          </div>
+          <div class="card-row">
+            <div class="card-cell">
+              <label>Nome igual ao cartão</label>
+              <input type="text" placeholder="Como está no cartão">
+            </div>
+          </div>
+          <div class="card-row">
+            <div class="card-cell">
+              <label>Validade</label>
+              <input type="text" placeholder="MM/AA" maxlength="5">
+            </div>
+            <div class="card-cell">
+              <label>CVV</label>
+              <input type="text" placeholder="000" maxlength="4">
+            </div>
+          </div>
+          <div class="card-row">
+            <div class="card-cell">
+              <label>CPF do titular</label>
+              <input type="text" placeholder="000.000.000-00">
+            </div>
+          </div>
+          <div class="pay-with-row">
+            <span class="lbl">Pagar com:</span>
+            <div class="pay-with-seg" role="tablist">
+              <button type="button" class="on" data-pay-with="credito">Crédito</button>
+              <button type="button" data-pay-with="debito">Débito</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="autopay" style="margin-top:20px">
+          <div class="lbl">
+            <div>
+              <div class="t">Ativar pagamento automático</div>
+              <div class="d">Débito automático no dia do vencimento.</div>
+            </div>
+          </div>
+          <button class="toggle on" id="autopay-toggle" aria-label="Pagamento automático" aria-pressed="true"></button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <footer class="drawer-foot" id="drawer-foot" style="display:none">
+    <button class="btn btn-md btn-primary" id="drawer-save" style="margin-left:auto">Salvar alterações</button>
+  </footer>
+</aside>
+
+<!-- ─────────── CHECKOUT DRAWER (LEFT) ─────────── -->
+<aside class="drawer left" id="checkout-drawer" aria-label="Pagamento" aria-hidden="true">
+
+  <div class="drawer-body">
+
+    <div class="invoice-summary">
+      <div>
+        <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--color-neutral-600);margin-bottom:8px">Valor a pagar</div>
+        <div class="amount-big" id="co-amount">R$ 220,00</div>
+        <div class="due-line" id="co-due">Vencida em 25/01/2026</div>
+      </div>
+      <button class="download-btn" aria-label="Baixar boleto"><i class="ph ph-download-simple" style="font-size:20px"></i></button>
+    </div>
+
+    <!-- Collapsible invoice details -->
+    <div class="collapse" id="co-collapse">
+      <button class="collapse-head overdue" id="co-collapse-toggle" type="button">
+        <span class="dot"><i class="ph-fill ph-warning-circle" style="font-size:16px"></i></span>
+        <span class="label">Fatura <strong id="co-ref">Jan 2026</strong> · <span id="co-plan">Unimed Saúde</span></span>
+        <i class="ph ph-caret-down caret" style="font-size:14px"></i>
+      </button>
+      <div class="collapse-body">
+        <div class="kv"><span class="k">Titular</span><span class="v">Lucas Salgado</span></div>
+        <div class="kv"><span class="k">Apólice</span><span class="v">0021 8334 002</span></div>
+        <div class="kv"><span class="k">Referência</span><span class="v" id="co-ref-full">Janeiro 2026</span></div>
+        <div class="kv"><span class="k">Vencimento</span><span class="v" id="co-due-date">25/01/2026</span></div>
+        <div class="kv"><span class="k">Valor original</span><span class="v">R$ 220,00</span></div>
+        <div class="kv"><span class="k">Multa + juros</span><span class="v" id="co-fees">—</span></div>
+        <div class="kv"><span class="k">Total</span><span class="v" id="co-total">R$ 220,00</span></div>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:0">Forma de pagamento</div>
+    <div class="pay-methods" id="co-pay-methods">
+      <button class="pay-opt selected" data-co-pm="credito" type="button">
+        <div class="pm-icon"><i class="ph ph-credit-card" style="font-size:22px"></i></div>
+        <div class="pm-body">
+          <div class="pm-name">Cartão de crédito</div>
+          <div class="pm-desc">Parcele em até 12x · confirmação imediata</div>
+        </div>
+        <div class="pm-radio"></div>
+      </button>
+      <button class="pay-opt" data-co-pm="pix" type="button">
+        <div class="pm-icon"><i class="ph ph-qr-code" style="font-size:22px"></i></div>
+        <div class="pm-body">
+          <div class="pm-name">Pix</div>
+          <div class="pm-desc">Pagamento instantâneo · sem taxas</div>
+        </div>
+        <div class="pm-radio"></div>
+      </button>
+      <button class="pay-opt" data-co-pm="boleto" type="button">
+        <div class="pm-icon"><i class="ph ph-barcode" style="font-size:22px"></i></div>
+        <div class="pm-body">
+          <div class="pm-name">Boleto bancário</div>
+          <div class="pm-desc">Compensação em até 3 dias úteis</div>
+        </div>
+        <div class="pm-radio"></div>
+      </button>
+    </div>
+
+    <!-- Card fields (credito only) -->
+    <div class="card-form" id="co-card-form">
+      <div class="section-title" style="margin-top:0">Dados do cartão</div>
+      <div class="card-box">
+        <div class="card-row">
+          <div class="card-cell">
+            <label>Número do cartão</label>
+            <input type="text" placeholder="0000 0000 0000 0000" maxlength="19" data-card-input>
+          </div>
+          <div class="brand-icons">
+            <img src="assets/MasterCard.svg" class="brand-icon" data-brand="master" alt="Mastercard">
+            <img src="assets/Visa.svg"       class="brand-icon" data-brand="visa"   alt="Visa">
+            <img src="assets/Elo.svg"        class="brand-icon" data-brand="elo"    alt="Elo">
+            <img src="assets/Amex.svg"       class="brand-icon" data-brand="amex"   alt="Amex">
+          </div>
+        </div>
+        <div class="card-row">
+          <div class="card-cell">
+            <label>Nome igual ao cartão</label>
+            <input type="text" placeholder="Como está no cartão">
+          </div>
+        </div>
+        <div class="card-row">
+          <div class="card-cell">
+            <label>Validade</label>
+            <input type="text" placeholder="MM/AA" maxlength="5">
+          </div>
+          <div class="card-cell">
+            <label>CVV</label>
+            <input type="text" placeholder="000" maxlength="4">
+          </div>
+        </div>
+        <div class="card-row">
+          <div class="card-cell">
+            <label>CPF do titular</label>
+            <input type="text" placeholder="000.000.000-00">
+          </div>
+        </div>
+        <div class="pay-with-row">
+          <span class="lbl">Pagar com:</span>
+          <div class="pay-with-seg" role="tablist">
+            <button type="button" class="on" data-pay-with="credito">Crédito</button>
+            <button type="button" data-pay-with="debito">Débito</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="autopay" style="margin-top:16px">
+        <div class="lbl">
+          <div>
+            <div class="t">Ativar pagamento automático</div>
+            <div class="d">Débito automático no dia do vencimento.</div>
+          </div>
+        </div>
+        <button class="toggle on" id="co-save-card" aria-label="Pagamento automático" aria-pressed="true"></button>
+      </div>
+
+      <!-- Installments -->
+      <div class="section-title">Parcelamento</div>
+      <div class="installment-wrap">
+        <div class="installments" id="co-installments">
+          <button class="ins-opt selected" data-ins="1" type="button">
+            <div class="ins-radio"></div>
+            <div class="ins-info">
+              <div class="top">1x R$ 220,00</div>
+              <div class="bot">à vista · sem juros</div>
+            </div>
+          </button>
+          <button class="ins-opt" data-ins="2" type="button">
+            <div class="ins-radio"></div>
+            <div class="ins-info">
+              <div class="top">2x R$ 110,00</div>
+              <div class="bot">sem juros</div>
+            </div>
+          </button>
+          <button class="ins-opt" data-ins="3" type="button">
+            <div class="ins-radio"></div>
+            <div class="ins-info">
+              <div class="top">3x R$ 73,33</div>
+              <div class="bot">sem juros</div>
+            </div>
+          </button>
+          <button class="ins-opt" data-ins="6" type="button">
+            <div class="ins-radio"></div>
+            <div class="ins-info">
+              <div class="top">6x R$ 37,68</div>
+              <div class="bot">total R$ 226,08</div>
+            </div>
+          </button>
+        </div>
+        <button class="ins-more" id="co-ins-more" type="button">
+          <span>Ver mais opções de parcelamento</span>
+          <i class="ph ph-caret-down" style="font-size:14px"></i>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="drawer-foot" style="display:flex">
+    <button class="btn btn-md btn-primary" id="co-pay" style="width:100%"><i class="ph ph-lock-key" style="font-size:16px"></i> Pagar R$ 220,00</button>
+  </footer>
+</aside>
+
+<script>
+  // ─── DATA ───
+  const PLANS = {
+    saude: {
+      icon: 'ph-heartbeat',
+      iconBg: 'var(--color-negative-surface)',
+      iconColor: 'var(--color-negative-dark)',
+      title: 'Unimed Saúde',
+      sub: 'Apólice 0021 8334 002 · 6 faturas no ciclo 2026',
+      insight: {
+        tone: 'negative',
+        icon: 'ph-fill ph-warning-circle',
+        html: 'Você tem <strong>3 faturas vencidas</strong> que somam <strong>R$ 660,00</strong>. Pague as 3 juntas e ganhe <strong>10% de desconto</strong>.',
+        cta: 'Pagar 3 juntas',
+        tag: '−10%'
+      },
+      invoices: [
+        {ref:'Mensalidade · Janeiro', m:'Jan', y:'2026', due:'25/01/2026', dueNote:'Vencida há 82 dias', dueCls:'late', amount:'220,00', status:'overdue', pm:'pix', pmLabel:'Pix', paidOn:null},
+        {ref:'Mensalidade · Fevereiro', m:'Fev', y:'2026', due:'25/02/2026', dueNote:'Vencida há 51 dias', dueCls:'late', amount:'220,00', status:'overdue', pm:'pix', pmLabel:'Pix', paidOn:null},
+        {ref:'Mensalidade · Março', m:'Mar', y:'2026', due:'25/03/2026', dueNote:'Vencida há 23 dias', dueCls:'late', amount:'220,00', status:'overdue', pm:'pix', pmLabel:'Pix', paidOn:null},
+        {ref:'Mensalidade · Abril', m:'Abr', y:'2026', due:'25/04/2026', dueNote:'Vence em 8 dias', dueCls:'upcoming', amount:'220,00', status:'open', pm:'credito', pmLabel:'Crédito •••• 1234', paidOn:null, scheduled:true},
+        {ref:'Mensalidade · Dezembro', m:'Dez', y:'2025', due:'25/12/2025', dueNote:'Quitada', dueCls:'muted', amount:'220,00', status:'paid', pm:'credito', pmLabel:'Crédito •••• 1234', paidOn:'23/12/2025'},
+        {ref:'Mensalidade · Novembro', m:'Nov', y:'2025', due:'25/11/2025', dueNote:'Quitada', dueCls:'muted', amount:'220,00', status:'paid', pm:'debito', pmLabel:'Débito automático', paidOn:'25/11/2025'}
+      ]
+    },
+    odonto: {
+      icon: 'ph-tooth',
+      iconBg: 'var(--color-positive-surface)',
+      iconColor: 'var(--color-positive-dark)',
+      title: 'Unimed Odonto · Plano Sorriso Família',
+      sub: 'Apólice 0832 4422 016 · Débito automático',
+      insight: {
+        tone: 'positive',
+        icon: 'ph-fill ph-check-circle',
+        html: 'Todas as faturas em dia. A próxima <strong>R$ 89,90</strong> será debitada em <strong>15/05/2026</strong> no cartão •••• 5581.',
+        cta: null, tag: null
+      },
+      invoices: [
+        {ref:'Mensalidade · Maio', m:'Mai', y:'2026', due:'15/05/2026', dueNote:'Vence em 28 dias', dueCls:'upcoming', amount:'89,90', status:'open', pm:'debito', pmLabel:'Débito automático', paidOn:null, scheduled:true},
+        {ref:'Mensalidade · Abril', m:'Abr', y:'2026', due:'15/04/2026', dueNote:'Quitada', dueCls:'muted', amount:'89,90', status:'paid', pm:'debito', pmLabel:'Débito automático', paidOn:'15/04/2026'},
+        {ref:'Mensalidade · Março', m:'Mar', y:'2026', due:'15/03/2026', dueNote:'Quitada', dueCls:'muted', amount:'89,90', status:'paid', pm:'debito', pmLabel:'Débito automático', paidOn:'15/03/2026'},
+        {ref:'Mensalidade · Fevereiro', m:'Fev', y:'2026', due:'15/02/2026', dueNote:'Quitada', dueCls:'muted', amount:'89,90', status:'paid', pm:'debito', pmLabel:'Débito automático', paidOn:'15/02/2026'},
+        {ref:'Mensalidade · Janeiro', m:'Jan', y:'2026', due:'15/01/2026', dueNote:'Quitada', dueCls:'muted', amount:'89,90', status:'paid', pm:'debito', pmLabel:'Débito automático', paidOn:'15/01/2026'}
+      ]
+    },
+    residencial: {
+      icon: 'ph-house-line',
+      iconBg: 'var(--color-info-surface)',
+      iconColor: 'var(--color-info-dark)',
+      title: 'Seguros Unimed · Residencial Premiável',
+      sub: 'Apólice 5512 9981 200 · 12 parcelas anuais',
+      insight: {
+        tone: 'info',
+        icon: 'ph ph-credit-card',
+        html: 'Cadastre seu cartão na recorrência e esqueça dos boletos. Débito automático todo mês, sem se preocupar com vencimento.',
+        cta: 'Cadastrar cartão',
+        ctaAction: 'openPayment',
+        tag: null
+      },
+      invoices: [
+        {ref:'Parcela 05/12', m:'Mai', y:'2026', due:'10/05/2026', dueNote:'Vence em 23 dias', dueCls:'upcoming', amount:'135,00', status:'open', pm:'boleto', pmLabel:'Boleto', paidOn:null, address:'Rua das Palmeiras, 1280, apto 72 · Pinheiros · São Paulo/SP · 05422-020'},
+        {ref:'Parcela 04/12', m:'Abr', y:'2026', due:'10/04/2026', dueNote:'Quitada', dueCls:'muted', amount:'135,00', status:'paid', pm:'boleto', pmLabel:'Boleto', paidOn:'08/04/2026', address:'Rua das Palmeiras, 1280, apto 72 · Pinheiros · São Paulo/SP · 05422-020'},
+        {ref:'Parcela 03/12', m:'Mar', y:'2026', due:'10/03/2026', dueNote:'Quitada', dueCls:'muted', amount:'135,00', status:'paid', pm:'boleto', pmLabel:'Boleto', paidOn:'09/03/2026', address:'Av. Paulista, 900, conj. 51 · Bela Vista · São Paulo/SP · 01310-100'},
+        {ref:'Parcela 02/12', m:'Fev', y:'2026', due:'10/02/2026', dueNote:'Quitada', dueCls:'muted', amount:'135,00', status:'paid', pm:'boleto', pmLabel:'Boleto', paidOn:'10/02/2026', address:'Av. Paulista, 900, conj. 51 · Bela Vista · São Paulo/SP · 01310-100'},
+        {ref:'Parcela 01/12', m:'Jan', y:'2026', due:'10/01/2026', dueNote:'Quitada', dueCls:'muted', amount:'135,00', status:'paid', pm:'boleto', pmLabel:'Boleto', paidOn:'09/01/2026', address:'Av. Paulista, 900, conj. 51 · Bela Vista · São Paulo/SP · 01310-100'}
+      ]
+    }
+  };
+
+  const STATUS_PILL = {
+    overdue: '<span class="pill pill-negative"><i class="ph-fill ph-warning-circle" style="font-size:12px"></i> Vencida</span>',
+    open:    '<span class="pill pill-info"><i class="ph ph-clock" style="font-size:12px"></i> Em aberto</span>',
+    paid:    '<span class="pill pill-positive"><i class="ph-fill ph-check-circle" style="font-size:12px"></i> Paga</span>'
+  };
+  const PM_ICON = { pix:'ph-qr-code', credito:'ph-credit-card', debito:'ph-bank', boleto:'ph-barcode' };
+
+  const plans = document.querySelectorAll('.plan');
+  const panelIcon = document.getElementById('panel-icon');
+  const panelTitle = document.getElementById('panel-title');
+  const panelSub = document.getElementById('panel-sub');
+  const invoicesBody = document.getElementById('invoices-body');
+  const insightBar = document.getElementById('insight-bar');
+  let currentPlanTitle = 'Unimed Saúde';
+  let currentFilter = 'all';
+  let currentPlanKey = 'saude';
+
+  // Insight CTA delegation — some CTAs open the drawer
+  insightBar.addEventListener('click', e => {
+    const btn = e.target.closest('[data-cta-action]');
+    if (!btn) return;
+    if (btn.dataset.ctaAction === 'openPayment') {
+      openDrawer('payment');
+    }
+  });
+
+  function renderInsight(ins) {
+    if (!ins) { insightBar.style.display = 'none'; return; }
+    insightBar.style.display = 'flex';
+    const toneColors = {
+      negative: { bg:'var(--color-negative-surface)', fg:'var(--color-negative-dark)' },
+      positive: { bg:'var(--color-positive-surface)', fg:'var(--color-positive-dark)' },
+      info:     { bg:'var(--color-info-surface)',     fg:'var(--color-info-dark)' }
+    }[ins.tone];
+    insightBar.style.background = toneColors.bg;
+    let actionsHTML = '';
+    if (ins.cta) {
+      actionsHTML = `<div class="actions">
+        <button class="promo-btn" ${ins.ctaAction ? `data-cta-action="${ins.ctaAction}"` : ''}>${ins.cta}${ins.tag ? ` <span class="off-tag">${ins.tag}</span>` : ''}</button>
+      </div>`;
+    }
+    insightBar.innerHTML = `
+      <div class="left" style="color:${toneColors.fg}">
+        <i class="${ins.icon}" style="font-size:20px"></i>
+        <div class="text">${ins.html}</div>
+      </div>
+      ${actionsHTML}`;
+  }
+
+  function fmtDate(d) { return d ? d.slice(0, 6) + d.slice(8) : '—'; }
+
+  function renderInvoices(list, showAddress) {
+    const filtered = currentFilter === 'all' ? list : list.filter(inv => inv.status === currentFilter);
+    document.getElementById('th-address').style.display = showAddress ? '' : 'none';
+    if (filtered.length === 0) {
+      invoicesBody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:40px 0;color:var(--color-neutral-600);font-size:14px">Nenhuma fatura encontrada para este filtro.</td></tr>`;
+      return;
+    }
+    invoicesBody.innerHTML = filtered.map(inv => {
+      const dueNoteCls = inv.dueCls === 'late' ? 'late'
+                        : inv.dueCls === 'upcoming' ? 'upcoming'
+                        : '';
+      const dueNoteStyle = inv.dueCls === 'muted' ? 'font-size:12px;color:var(--color-neutral-600)' : '';
+      const pmIcon = PM_ICON[inv.pm] || 'ph-credit-card';
+      let action;
+      if (inv.status === 'overdue') {
+        action = `<button class="btn btn-sm btn-primary" data-pay-invoice data-amount="${inv.amount}" data-due="${inv.due}" data-ref="${inv.m} ${inv.y}" data-reffull="${inv.ref}" data-status="overdue" data-duenote="${inv.dueNote}">Pagar</button>
+                  <button class="btn-icon-md" style="width:36px;height:36px;border-radius:8px" aria-label="Baixar boleto"><i class="ph ph-download-simple" style="font-size:16px"></i></button>`;
+      } else if (inv.status === 'open') {
+        action = inv.scheduled
+          ? `<span class="scheduled"><i class="ph ph-calendar-check" style="font-size:16px"></i> Agendado</span>
+             <button class="btn-icon-md" style="width:36px;height:36px;border-radius:8px" aria-label="Baixar boleto"><i class="ph ph-download-simple" style="font-size:16px"></i></button>`
+          : `<button class="btn btn-sm btn-primary" data-pay-invoice data-amount="${inv.amount}" data-due="${inv.due}" data-ref="${inv.m} ${inv.y}" data-reffull="${inv.ref}" data-status="open" data-duenote="${inv.dueNote}">Pagar</button>
+             <button class="btn-icon-md" style="width:36px;height:36px;border-radius:8px" aria-label="Baixar boleto"><i class="ph ph-download-simple" style="font-size:16px"></i></button>`;
+      } else {
+        action = `<button class="btn btn-sm btn-ghost"><i class="ph ph-receipt" style="font-size:14px"></i> Comp.</button>
+                  <button class="btn-icon-md" style="width:36px;height:36px;border-radius:8px" aria-label="Baixar boleto"><i class="ph ph-download-simple" style="font-size:16px"></i></button>`;
+      }
+      return `
+        <tr class="${inv.status==='overdue' ? 'overdue' : ''}">
+          <td><span class="check${inv.status==='overdue' ? ' checked':''}"></span></td>
+          <td>
+            <div class="ref-cell">
+              <div class="ref-month"><span class="m">${inv.m}</span><span class="y">${inv.y}</span></div>
+            </div>
+          </td>
+          ${showAddress ? `<td><span class="addr-wrap" data-tooltip="${inv.address || ''}"><span class="addr-text">${inv.address || '—'}</span></span></td>` : ''}
+          <td>
+            <div class="due-cell">
+              <span class="date">${fmtDate(inv.due)}</span>
+              <span class="${dueNoteCls}" style="${dueNoteStyle}">${inv.dueNote}</span>
+            </div>
+          </td>
+          <td><span class="amount"><span class="cur">R$</span>${inv.amount}</span></td>
+          <td>${STATUS_PILL[inv.status]}</td>
+          <td><span class="pay-method clickable" data-open-drawer="payment"><i class="ph ${pmIcon}"></i> ${inv.pmLabel}</span></td>
+          <td>${inv.paidOn ? fmtDate(inv.paidOn) : '<span style="color:var(--color-neutral-500)">—</span>'}</td>
+          <td><div class="row-actions">${action}</div></td>
+        </tr>`;
+    }).join('');
+    // Re-bind dynamic listeners
+    invoicesBody.querySelectorAll('.check').forEach(c => {
+      c.addEventListener('click', e => { e.stopPropagation(); c.classList.toggle('checked'); });
+    });
+    invoicesBody.querySelectorAll('[data-open-drawer="payment"]').forEach(el => {
+      el.addEventListener('click', e => { e.stopPropagation(); openDrawer('payment'); });
+    });
+    invoicesBody.querySelectorAll('[data-pay-invoice]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        openCheckout({
+          amount: btn.dataset.amount,
+          due: btn.dataset.due,
+          ref: btn.dataset.ref,
+          refFull: btn.dataset.reffull,
+          status: btn.dataset.status,
+          dueNote: btn.dataset.duenote
+        });
+      });
+    });
+  }
+
+  function selectPlan(key) {
+    const data = PLANS[key];
+    if (!data) return;
+    plans.forEach(x => {
+      const on = x.dataset.plan === key;
+      x.classList.toggle('active', on);
+      x.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    panelIcon.style.background = data.iconBg;
+    panelIcon.style.color = data.iconColor;
+    panelIcon.innerHTML = `<i class="ph ${data.icon}" style="font-size:22px"></i>`;
+    panelTitle.textContent = data.title;
+    panelSub.textContent = data.sub;
+    currentPlanTitle = data.title;
+    currentPlanKey = key;
+    currentFilter = 'all';
+    // Recalculate counts from data and update dropdown labels
+    const invoices = data.invoices;
+    const counts = {
+      all:     invoices.length,
+      overdue: invoices.filter(i => i.status === 'overdue').length,
+      open:    invoices.filter(i => i.status === 'open').length,
+      paid:    invoices.filter(i => i.status === 'paid').length
+    };
+    const labels = {
+      all:     `Todas as faturas (${counts.all})`,
+      overdue: `Vencidas (${counts.overdue})`,
+      open:    `Em aberto (${counts.open})`,
+      paid:    `Pagas (${counts.paid})`
+    };
+    const situacaoSelect = document.querySelector('[data-cselect="situacao"]');
+    if (situacaoSelect) {
+      situacaoSelect.querySelector('.cst-label').textContent = labels.all;
+      situacaoSelect.querySelectorAll('.custom-select-list li').forEach(li => {
+        li.textContent = labels[li.dataset.value];
+        li.classList.toggle('selected', li.dataset.value === 'all');
+      });
+    }
+    document.getElementById('panel-foot').style.display = key === 'saude' ? '' : 'none';
+    renderInsight(data.insight);
+    renderInvoices(data.invoices, key === 'residencial');
+  }
+
+  plans.forEach(p => p.addEventListener('click', () => {
+    selectPlan(p.dataset.plan);
+    // On narrow viewports where cards stack, scroll the invoice panel into view
+    const panel = document.getElementById('invoice-panel');
+    if (panel && window.matchMedia('(max-width: 960px)').matches) {
+      const y = panel.getBoundingClientRect().top + window.scrollY - 16;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  }));
+  selectPlan('saude');
+
+  // Custom select dropdowns
+  document.querySelectorAll('.custom-select').forEach(cs => {
+    const trigger = cs.querySelector('.custom-select-trigger');
+    const list    = cs.querySelector('.custom-select-list');
+    const label   = cs.querySelector('.cst-label');
+
+    trigger.addEventListener('click', e => {
+      e.stopPropagation();
+      const isOpen = list.classList.contains('open');
+      // Close all others
+      document.querySelectorAll('.custom-select-list.open').forEach(l => {
+        l.classList.remove('open');
+        l.previousElementSibling.classList.remove('open');
+        l.previousElementSibling.setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) {
+        list.classList.add('open');
+        trigger.classList.add('open');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    list.querySelectorAll('li').forEach(li => {
+      li.addEventListener('click', () => {
+        list.querySelectorAll('li').forEach(x => x.classList.remove('selected'));
+        li.classList.add('selected');
+        label.textContent = li.textContent;
+        list.classList.remove('open');
+        trigger.classList.remove('open');
+        trigger.setAttribute('aria-expanded', 'false');
+
+        // Filter table if this is the situacao dropdown
+        if (cs.dataset.cselect === 'situacao') {
+          currentFilter = li.dataset.value;
+          const planData = PLANS[currentPlanKey];
+          renderInvoices(planData.invoices, currentPlanKey === 'residencial');
+        }
+      });
+    });
+  });
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.custom-select-list.open').forEach(l => {
+      l.classList.remove('open');
+      l.previousElementSibling.classList.remove('open');
+      l.previousElementSibling.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // Segmented filter toggle (visual only)
+  document.querySelectorAll('.seg button').forEach(b => {
+    b.addEventListener('click', () => {
+      b.parentElement.querySelectorAll('button').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+    });
+  });
+
+  // Card brand detection
+  function detectBrand(value) {
+    const n = value.replace(/\D/g, '');
+    if (/^4/.test(n))                          return 'visa';
+    if (/^(51|52|53|54|55|2[2-7])/.test(n))   return 'master';
+    if (/^3[47]/.test(n))                      return 'amex';
+    if (/^(4011|4312|4389|4514|4576|5041|5066|5090|6277|6362|6363|650|6516|6550)/.test(n)) return 'elo';
+    return null;
+  }
+
+  document.querySelectorAll('[data-card-input]').forEach(input => {
+    const box = input.closest('.card-box') || input.closest('.card-form');
+    const icons = box ? box.querySelectorAll('.brand-icon') : [];
+    input.addEventListener('input', () => {
+      const brand = detectBrand(input.value);
+      icons.forEach(img => {
+        if (!brand) {
+          img.classList.remove('dim');
+        } else {
+          img.classList.toggle('dim', img.dataset.brand !== brand);
+        }
+      });
+    });
+  });
+
+  // Checkbox toggle
+  document.querySelectorAll('.check').forEach(c => {
+    c.addEventListener('click', e => {
+      e.stopPropagation();
+      c.classList.toggle('checked');
+    });
+  });
+
+  // ─────────── DRAWER ───────────
+  const drawer = document.getElementById('drawer');
+  const scrim = document.getElementById('scrim');
+  const cardForm = document.getElementById('card-form');
+
+  function openDrawer(tab) {
+    drawer.classList.add('open');
+    scrim.classList.add('open');
+    drawer.setAttribute('aria-hidden', 'false');
+    if (tab) setDrawerTab(tab);
+  }
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    scrim.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+  }
+  function setDrawerTab(name) {
+    document.querySelectorAll('.drawer-tabs button').forEach(b => {
+      b.classList.toggle('on', b.dataset.tab === name);
+    });
+    document.querySelectorAll('.tab-pane').forEach(p => {
+      p.classList.toggle('on', p.dataset.pane === name);
+    });
+  }
+
+  // Info icon buttons
+  document.querySelectorAll('[data-open-drawer="info"]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      openDrawer('info');
+    });
+  });
+
+  // Pay-method cells clickable
+  document.querySelectorAll('[data-open-drawer="payment"]').forEach(el => {
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      openDrawer('payment');
+    });
+  });
+
+  // Tabs
+  document.querySelectorAll('.drawer-tabs button').forEach(b => {
+    b.addEventListener('click', () => setDrawerTab(b.dataset.tab));
+  });
+
+  // Close
+  document.getElementById('drawer-close').addEventListener('click', closeDrawer);
+  scrim.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer();
+  });
+
+  // Payment method selection
+  const drawerFoot = document.getElementById('drawer-foot');
+  const drawerSave = document.getElementById('drawer-save');
+  let initialPm = 'credito';
+  let initialAutopay = true;
+  let initialCardFields = {};
+
+  function readCardFields() {
+    const inputs = document.querySelectorAll('#card-form input');
+    const vals = {};
+    inputs.forEach((inp, i) => { vals[i] = inp.value; });
+    return vals;
+  }
+  function currentPm() {
+    const sel = document.querySelector('.pay-opt.selected');
+    return sel ? sel.dataset.pm : null;
+  }
+  function checkDirty() {
+    const pm = currentPm();
+    const autopayOn = autopay.classList.contains('on');
+    const cardVals = readCardFields();
+    let dirty = pm !== initialPm || autopayOn !== initialAutopay;
+    if (!dirty) {
+      for (const k in cardVals) {
+        if (cardVals[k] !== (initialCardFields[k] || '')) { dirty = true; break; }
+      }
+    }
+    const onPaymentTab = document.querySelector('.drawer-tabs button.on').dataset.tab === 'payment';
+    drawerFoot.style.display = (dirty && onPaymentTab) ? 'flex' : 'none';
+  }
+
+  document.querySelectorAll('.pay-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.pay-opt').forEach(x => x.classList.remove('selected'));
+      opt.classList.add('selected');
+      const pm = opt.dataset.pm;
+      const needsCard = pm === 'credito' || pm === 'debito';
+      cardForm.classList.toggle('on', needsCard);
+      checkDirty();
+    });
+  });
+
+  document.querySelectorAll('#card-form input').forEach(inp => {
+    inp.addEventListener('input', checkDirty);
+  });
+
+  // Autopay toggle
+  const autopay = document.getElementById('autopay-toggle');
+  autopay.addEventListener('click', () => {
+    autopay.classList.toggle('on');
+    autopay.setAttribute('aria-pressed', autopay.classList.contains('on'));
+    checkDirty();
+  });
+
+  // Reset baseline when tabs switch or drawer closes (on re-open we treat current state as clean)
+  const origSetDrawerTab = setDrawerTab;
+  setDrawerTab = function(name) {
+    origSetDrawerTab(name);
+    checkDirty();
+  };
+  document.querySelectorAll('.drawer-tabs button').forEach(b => {
+    b.addEventListener('click', () => setDrawerTab(b.dataset.tab));
+  });
+
+  drawerSave.addEventListener('click', () => {
+    initialPm = currentPm();
+    initialAutopay = autopay.classList.contains('on');
+    initialCardFields = readCardFields();
+    checkDirty();
+  });
+
+  // ─────────── SCROLL-TO-TABLE on plan click (small viewports) ───────────
+  const invoicePanel = document.getElementById('invoice-panel');
+  plans.forEach(p => {
+    p.addEventListener('click', () => {
+      // Only scroll when the cards are stacked (table is below the fold relative to the card)
+      requestAnimationFrame(() => {
+        const rect = invoicePanel.getBoundingClientRect();
+        if (rect.top > 80) {
+          window.scrollTo({ top: window.scrollY + rect.top - 24, behavior: 'smooth' });
+        }
+      });
+    });
+  });
+
+  // ─────────── CHECKOUT DRAWER (LEFT) ───────────
+  const checkoutDrawer = document.getElementById('checkout-drawer');
+  const coCollapse = document.getElementById('co-collapse');
+  const coCollapseToggle = document.getElementById('co-collapse-toggle');
+  const coClose = document.getElementById('checkout-close');
+  const coPayMethods = document.getElementById('co-pay-methods');
+  const coCardForm = document.getElementById('co-card-form');
+  const coPayBtn = document.getElementById('co-pay');
+  const coInstallments = document.getElementById('co-installments');
+  const coInsMore = document.getElementById('co-ins-more');
+
+  function openCheckout(data) {
+    // Fill in summary
+    const amountStr = `R$ ${data.amount}`;
+    document.getElementById('co-amount').textContent = amountStr;
+    const dueLine = data.status === 'overdue'
+      ? `Vencida em ${data.due} · ${data.dueNote}`
+      : `Vencimento ${data.due}`;
+    document.getElementById('co-due').textContent = dueLine;
+
+    document.getElementById('co-ref').textContent = `${data.ref}`;
+    document.getElementById('co-ref-full').textContent = data.refFull;
+    document.getElementById('co-due-date').textContent = data.due;
+    document.getElementById('co-total').textContent = amountStr;
+    document.getElementById('co-plan').textContent = currentPlanTitle.split(' · ')[0];
+
+    // Fees line only if overdue
+    const feesEl = document.getElementById('co-fees');
+    feesEl.textContent = data.status === 'overdue' ? 'Incluído no valor' : '—';
+
+    // Dot color by status
+    coCollapseToggle.classList.toggle('overdue', data.status === 'overdue');
+    coCollapseToggle.classList.toggle('open', data.status !== 'overdue');
+    coCollapseToggle.querySelector('.dot i').className = data.status === 'overdue'
+      ? 'ph-fill ph-warning-circle'
+      : 'ph ph-clock';
+    coCollapseToggle.querySelector('.dot i').style.fontSize = '16px';
+
+    // CTA amount
+    coPayBtn.innerHTML = `<i class="ph ph-lock-key" style="font-size:16px"></i> Pagar ${amountStr}`;
+
+    // Reset payment method to Crédito + show card form (initial state)
+    coPayMethods.querySelectorAll('[data-co-pm]').forEach(x => x.classList.remove('selected'));
+    const creditoOpt = coPayMethods.querySelector('[data-co-pm="credito"]');
+    if (creditoOpt) creditoOpt.classList.add('selected');
+    coCardForm.classList.add('on');
+
+    // Open drawer
+    checkoutDrawer.classList.add('open');
+    scrim.classList.add('open');
+    checkoutDrawer.setAttribute('aria-hidden', 'false');
+  }
+  function closeCheckout() {
+    checkoutDrawer.classList.remove('open');
+    scrim.classList.remove('open');
+    checkoutDrawer.setAttribute('aria-hidden', 'true');
+  }
+
+  if (coClose) coClose.addEventListener('click', closeCheckout);
+  coCollapseToggle.addEventListener('click', () => coCollapse.classList.toggle('on'));
+
+  // Payment methods in checkout
+  coPayMethods.querySelectorAll('[data-co-pm]').forEach(opt => {
+    opt.addEventListener('click', () => {
+      coPayMethods.querySelectorAll('[data-co-pm]').forEach(x => x.classList.remove('selected'));
+      opt.classList.add('selected');
+      const pm = opt.dataset.coPm;
+      coCardForm.classList.toggle('on', pm === 'credito');
+    });
+  });
+
+  // Installments
+  coInstallments.querySelectorAll('.ins-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      coInstallments.querySelectorAll('.ins-opt').forEach(x => x.classList.remove('selected'));
+      opt.classList.add('selected');
+    });
+  });
+
+  coInsMore.addEventListener('click', () => coInsMore.classList.toggle('on'));
+
+  // Pay-with segmented (inside card-form, both drawers)
+  document.querySelectorAll('.pay-with-seg').forEach(seg => {
+    seg.querySelectorAll('button').forEach(b => {
+      b.addEventListener('click', () => {
+        seg.querySelectorAll('button').forEach(x => x.classList.remove('on'));
+        b.classList.add('on');
+      });
+    });
+  });
+
+  // Modern scrollbar auto-hide
+  const _scrollTimers = new Map();
+  function _handleScroll(el) {
+    el.classList.add('is-scrolling');
+    clearTimeout(_scrollTimers.get(el));
+    _scrollTimers.set(el, setTimeout(() => el.classList.remove('is-scrolling'), 1000));
+  }
+  window.addEventListener('scroll', () => _handleScroll(document.documentElement), { passive: true });
+  document.querySelectorAll('.drawer-body').forEach(el => {
+    el.addEventListener('scroll', () => _handleScroll(el), { passive: true });
+  });
+
+  // Save-card toggle
+  const coSaveCard = document.getElementById('co-save-card');
+  coSaveCard.addEventListener('click', () => {
+    coSaveCard.classList.toggle('on');
+    coSaveCard.setAttribute('aria-pressed', coSaveCard.classList.contains('on'));
+  });
+
+  // Close checkout with scrim or Esc
+  scrim.addEventListener('click', closeCheckout);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && checkoutDrawer.classList.contains('open')) closeCheckout();
+  });
+</script>
+
+</body>
+</html>

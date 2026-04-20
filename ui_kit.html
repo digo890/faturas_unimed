@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>DSU — UI Kit</title>
+<link rel="stylesheet" href="colors_and_type.css">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.2"></script>
+<style>
+  body { background: var(--bg-subtle); padding: 48px 64px; color: var(--fg-1); }
+  .wrap { max-width: 1280px; margin: 0 auto; }
+  .page-title { margin-bottom: 8px; }
+  .subtitle { color: var(--fg-3); margin-bottom: 48px; max-width: 680px; }
+  section { background: #fff; border-radius: 16px; padding: 32px; margin-bottom: 24px; border: 1px solid var(--border-default); }
+  section > h2 { font-size: 14px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-primary); margin-bottom: 8px; }
+  section > .desc { color: var(--fg-3); font-size: 14px; margin-bottom: 24px; max-width: 560px; }
+  .row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin-bottom: 16px; }
+  .row:last-child { margin-bottom: 0; }
+  .label { font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: var(--color-neutral-500); width: 100%; }
+
+  /* ─── BUTTON ─── */
+  .btn { font-family: var(--font-family-system); font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: none; cursor: pointer; transition: background 150ms ease, color 150ms ease, border-color 150ms ease; }
+  .btn-lg { height: 64px; padding: 0 40px; border-radius: 16px; font-size: 16px; }
+  .btn-sm { height: 48px; padding: 0 32px; border-radius: 16px; font-size: 14px; }
+  .btn-primary { background: var(--color-primary); color: #fff; }
+  .btn-primary:hover { background: var(--color-primary-900); }
+  .btn-secondary { background: transparent; color: var(--color-primary); border: 1.5px solid var(--color-primary); }
+  .btn-secondary:hover { background: var(--color-primary-surface); }
+  .btn-ghost { background: transparent; color: var(--color-primary); }
+  .btn-ghost:hover { background: var(--color-primary-surface); }
+  .btn:disabled { opacity: 0.32; cursor: not-allowed; }
+  .btn-icon { width: 48px; height: 48px; padding: 0; border-radius: 16px; background: var(--color-primary-surface); color: var(--color-primary); }
+  .btn-icon:hover { background: var(--color-primary-hover); }
+
+  /* ─── INPUT ─── */
+  .field { display: flex; flex-direction: column; gap: 8px; width: 280px; }
+  .field label { font-family: var(--font-family-system); font-size: 14px; font-weight: 500; color: var(--color-neutral-900); }
+  .input { height: 64px; padding: 0 16px; border: 1px solid var(--color-neutral-200); border-radius: 16px; background: #fff; font-family: var(--font-family-system); font-size: 16px; color: var(--color-neutral-900); transition: border-color 150ms ease; }
+  .input::placeholder { color: var(--color-neutral-500); }
+  .input:hover { border-color: var(--color-neutral-500); }
+  .input:focus { outline: none; border-color: var(--color-primary); border-width: 1.5px; padding: 0 15.5px; }
+  .input.error { border-color: var(--color-negative); }
+  .input.disabled { background: var(--color-neutral-100); color: var(--color-neutral-500); border-color: var(--color-neutral-300); cursor: not-allowed; }
+  .support { font-size: 14px; color: var(--color-neutral-600); line-height: 1.32; }
+  .support.error { color: var(--color-negative); }
+
+  /* ─── TAG ─── */
+  .tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 4px; font-family: var(--font-family-system); font-size: 12px; font-weight: 500; line-height: 1; height: 22px; }
+  .tag-info { background: var(--color-info-surface); color: var(--color-info-dark); }
+  .tag-positive { background: var(--color-positive-surface); color: var(--color-positive-dark); }
+  .tag-warning { background: var(--color-warning-surface); color: var(--color-warning-dark); }
+  .tag-negative { background: var(--color-negative-surface); color: var(--color-negative-dark); }
+  .tag-promote { background: var(--color-promote-surface); color: var(--color-promote-dark); }
+  .tag-neutral { background: var(--color-primary-surface); color: var(--color-primary); }
+
+  /* ─── BADGE ─── */
+  .badge-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .badge-value { min-width: 20px; height: 20px; border-radius: 9999px; background: var(--color-badge-orange); color: #fff; font-family: var(--font-family-system); font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; padding: 0 6px; line-height: 1; }
+
+  /* ─── CHECKBOX / RADIO / TOGGLE ─── */
+  .check, .radio { width: 24px; height: 24px; border: 1.5px solid var(--color-neutral-500); background: #fff; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+  .check { border-radius: 4px; }
+  .radio { border-radius: 50%; }
+  .check.checked, .radio.checked { border-color: var(--color-green); background: var(--color-green); }
+  .check.checked::after { content: ''; width: 12px; height: 6px; border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg) translate(2px, -2px); }
+  .radio.checked::after { content: ''; width: 10px; height: 10px; border-radius: 50%; background: #fff; }
+  .toggle { width: 40px; height: 24px; border-radius: 9999px; background: var(--color-neutral-300); position: relative; cursor: pointer; transition: background 150ms ease; }
+  .toggle::after { content: ''; position: absolute; left: 4px; top: 4px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform 150ms ease; }
+  .toggle.on { background: var(--color-green); }
+  .toggle.on::after { transform: translateX(16px); }
+
+  /* ─── SHORTCUT CARD (from Home) ─── */
+  .shortcut-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .shortcut { aspect-ratio: 1; padding: 20px; border-radius: 16px; background: var(--color-primary-surface); display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: background 150ms ease; }
+  .shortcut:hover { background: var(--color-primary-hover); }
+  .shortcut.selected { background: var(--color-green-surface); border: 1.5px solid var(--color-green); }
+  .shortcut .icon { width: 32px; height: 32px; color: var(--color-primary); }
+  .shortcut.selected .icon { color: var(--color-green-900); }
+  .shortcut .title { font-family: var(--font-family-brand); font-size: 16px; font-weight: 600; color: var(--color-neutral-900); line-height: 1.24; }
+  .shortcut-head { display: flex; justify-content: space-between; align-items: flex-start; }
+
+  /* ─── PRODUCT CARD ─── */
+  .product-card { border: 1px solid var(--border-default); border-radius: 16px; padding: 24px; background: #fff; display: flex; flex-direction: column; gap: 16px; max-width: 360px; }
+  .product-card .head { display: flex; justify-content: space-between; align-items: center; }
+  .product-card .name { font-family: var(--font-family-brand); font-size: 20px; font-weight: 600; color: var(--color-primary); }
+  .product-card .row2 { display: flex; justify-content: space-between; font-size: 14px; color: var(--color-neutral-600); }
+  .product-card .row2 strong { color: var(--color-neutral-900); font-weight: 600; }
+
+  /* ─── ALERT / BANNER ─── */
+  .alert { display: flex; gap: 12px; padding: 16px 20px; border-radius: 16px; border-left: 4px solid; }
+  .alert-info { background: var(--color-info-surface); border-color: var(--color-info); color: var(--color-info-dark); }
+  .alert-positive { background: var(--color-positive-surface); border-color: var(--color-positive); color: var(--color-positive-dark); }
+  .alert-warning { background: var(--color-warning-surface); border-color: var(--color-warning); color: var(--color-warning-dark); }
+  .alert-negative { background: var(--color-negative-surface); border-color: var(--color-negative); color: var(--color-negative-dark); }
+  .alert .body { font-family: var(--font-family-brand); font-size: 14px; line-height: 1.32; }
+  .alert .body strong { font-weight: 600; display: block; margin-bottom: 4px; }
+
+  /* ─── DIVIDER ─── */
+  .divider { height: 1px; background: var(--color-neutral-200); width: 100%; }
+
+  /* ─── AVATAR ─── */
+  .avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--color-neutral-100); border: 1px solid var(--color-neutral-200); display: inline-flex; align-items: center; justify-content: center; color: var(--color-neutral-600); font-family: var(--font-family-system); font-weight: 600; font-size: 16px; }
+
+  /* ─── SIDE MENU (mini) ─── */
+  .sidemenu { width: 120px; background: var(--color-primary-surface); border-radius: 16px; padding: 20px 0; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .sidemenu .logo { width: 56px; height: 56px; background: var(--color-primary); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+  .sidemenu .logo svg { width: 32px; color: #fff; }
+  .sidemenu .nav-item { width: 64px; height: 64px; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: var(--color-primary); cursor: pointer; }
+  .sidemenu .nav-item.active { background: var(--color-primary); color: #fff; }
+  .sidemenu .nav-item:hover:not(.active) { background: var(--color-primary-hover); }
+
+  /* Shared icon */
+  .ico { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="page-title">UI Kit</h1>
+  <p class="subtitle">Core components of the Unimed DSU. Copy any of these into product screens — they already use the right tokens.</p>
+
+  <!-- BUTTONS -->
+  <section>
+    <h2>Buttons</h2>
+    <p class="desc">Primary is the only filled blue action per screen. Secondary (outlined) and Ghost (text-only) are for alternative paths. 64 px on desktop, 48 px on mobile and for compact UI.</p>
+    <div class="row"><span class="label">Primary</span></div>
+    <div class="row">
+      <button class="btn btn-lg btn-primary">Marcar consulta</button>
+      <button class="btn btn-sm btn-primary">Salvar</button>
+      <button class="btn btn-lg btn-primary" disabled>Marcar consulta</button>
+    </div>
+    <div class="row"><span class="label">Secondary · Ghost</span></div>
+    <div class="row">
+      <button class="btn btn-lg btn-secondary">Cancelar</button>
+      <button class="btn btn-sm btn-secondary">Cancelar</button>
+      <button class="btn btn-lg btn-ghost">Ver detalhes</button>
+    </div>
+    <div class="row"><span class="label">Icon Button</span></div>
+    <div class="row">
+      <button class="btn btn-icon" aria-label="Anterior"><i class="ph ph-caret-left" style="font-size:24px"></i></button>
+      <button class="btn btn-icon" aria-label="Próximo"><i class="ph ph-caret-right" style="font-size:24px"></i></button>
+      <button class="btn btn-icon" aria-label="Buscar"><i class="ph ph-magnifying-glass" style="font-size:24px"></i></button>
+    </div>
+  </section>
+
+  <!-- INPUTS -->
+  <section>
+    <h2>Inputs</h2>
+    <p class="desc">Default height 64 px, radius 16 px. Always pair with a visible label above. Support text explains format; error text replaces it.</p>
+    <div class="row" style="align-items: flex-start">
+      <div class="field"><label>CPF</label><input class="input" placeholder="000.000.000-00"><span class="support">Use apenas números.</span></div>
+      <div class="field"><label>E-mail</label><input class="input" value="juditte@unimed.com.br"><span class="support">Manteremos você informado por aqui.</span></div>
+      <div class="field"><label>Telefone</label><input class="input error" value="(11) 9"><span class="support error">Informe um número com 11 dígitos.</span></div>
+      <div class="field"><label>CNPJ</label><input class="input disabled" value="92.863.505/0001-06" disabled><span class="support">Dado bloqueado para edição.</span></div>
+    </div>
+  </section>
+
+  <!-- TAGS + BADGES -->
+  <section>
+    <h2>Tags & Badges</h2>
+    <p class="desc">Tags label a status or category. Badges are counters on icons — never use badges for primary labels.</p>
+    <div class="row">
+      <span class="tag tag-neutral">Neutro</span>
+      <span class="tag tag-info">Informativo</span>
+      <span class="tag tag-positive">Ativo</span>
+      <span class="tag tag-warning">Atenção</span>
+      <span class="tag tag-negative">Bloqueado</span>
+      <span class="tag tag-promote">Novo</span>
+    </div>
+    <div class="row" style="margin-top: 24px">
+      <span style="position:relative;display:inline-block;color:var(--color-primary)"><i class="ph ph-bell" style="font-size:28px"></i><span class="badge-value" style="position:absolute;top:-4px;right:-8px">1</span></span>
+      <span style="position:relative;display:inline-block;color:var(--color-primary)"><i class="ph ph-envelope" style="font-size:28px"></i><span class="badge-value" style="position:absolute;top:-4px;right:-8px">12</span></span>
+      <span style="display:inline-flex;align-items:center;gap:8px"><span class="badge-dot" style="background:var(--color-positive)"></span><span class="label-sm-2">Online</span></span>
+      <span style="display:inline-flex;align-items:center;gap:8px"><span class="badge-dot" style="background:var(--color-warning)"></span><span class="label-sm-2">Aguardando</span></span>
+    </div>
+  </section>
+
+  <!-- CONTROLS -->
+  <section>
+    <h2>Selection Controls</h2>
+    <p class="desc">Checkboxes, radios and toggles all switch to Unimed Green in the selected state — these are the only "positive affirmation" surfaces where green takes precedence over blue.</p>
+    <div class="row">
+      <span class="check"></span><span class="label-md-1">Aceito os termos</span>
+      <span class="check checked"></span><span class="label-md-1">Aceito os termos</span>
+      <span style="width:16px"></span>
+      <span class="radio"></span><span class="label-md-1">Individual</span>
+      <span class="radio checked"></span><span class="label-md-1">Familiar</span>
+      <span style="width:16px"></span>
+      <span class="toggle"></span><span class="label-md-1">Notificações</span>
+      <span class="toggle on"></span><span class="label-md-1">Notificações</span>
+    </div>
+  </section>
+
+  <!-- SHORTCUTS -->
+  <section>
+    <h2>Shortcut Cards</h2>
+    <p class="desc">Quick-access tiles from the portal home. 200 × 200 grid cell, icon top-left, title bottom-left. Selected state uses green accent.</p>
+    <div class="shortcut-group">
+      <div class="shortcut selected">
+        <div class="shortcut-head"><i class="ph ph-graduation-cap icon" style="font-size:32px"></i><span class="tag tag-promote">Novo</span></div>
+        <div class="title">Academia de vendas</div>
+      </div>
+      <div class="shortcut">
+        <div class="shortcut-head"><i class="ph ph-file-text icon" style="font-size:32px"></i></div>
+        <div class="title">Visão global</div>
+      </div>
+      <div class="shortcut">
+        <div class="shortcut-head"><i class="ph ph-whatsapp-logo icon" style="font-size:32px"></i></div>
+        <div class="title">WhatsApp</div>
+      </div>
+      <div class="shortcut">
+        <div class="shortcut-head"><i class="ph ph-question icon" style="font-size:32px"></i></div>
+        <div class="title">Ajuda</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT CARD + ALERTS -->
+  <section>
+    <h2>Cards & Alerts</h2>
+    <p class="desc">Cards always use 16 px radius and 24 px padding. Alerts are compact — they don't need an icon if the color already communicates.</p>
+    <div class="row" style="align-items: flex-start; gap: 24px">
+      <div class="product-card">
+        <div class="head"><span class="name">Saúde</span><span class="tag tag-positive">Ativo</span></div>
+        <div>
+          <small>Produto</small>
+          <div class="heading-2xs" style="margin-top:2px">Empresarial Dinâmico</div>
+        </div>
+        <div class="divider"></div>
+        <div class="row2"><span>Titular</span><strong>Anna Santana</strong></div>
+        <div class="row2"><span>Carteirinha</span><strong>0 000 0000 000000-0</strong></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;flex:1;max-width:520px">
+        <div class="alert alert-info"><div class="body"><strong>Nova funcionalidade</strong>Agora você pode emitir a 2ª via do boleto diretamente pelo app.</div></div>
+        <div class="alert alert-positive"><div class="body"><strong>Consulta confirmada</strong>Dr. Henrique Lopes — 21 de abril, 14:30, Unimed Paulista.</div></div>
+        <div class="alert alert-warning"><div class="body"><strong>Documento pendente</strong>Envie o comprovante de residência até 30/04 para manter o benefício ativo.</div></div>
+        <div class="alert alert-negative"><div class="body"><strong>Não conseguimos processar o pagamento</strong>Verifique os dados do cartão e tente novamente.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIDE MENU + AVATARS -->
+  <section>
+    <h2>Navigation</h2>
+    <p class="desc">The portal side menu is a 120 px fixed rail. Active item uses filled blue; hover gets a soft blue surface. Avatars are 48 px.</p>
+    <div class="row" style="align-items: flex-start; gap: 32px">
+      <div class="sidemenu">
+        <div class="logo"><img src="assets/unimed-symbol.svg" alt="Unimed" width="36" height="36" style="filter:brightness(0) invert(1)"></div>
+        <div class="nav-item active" aria-label="Início"><i class="ph-fill ph-house" style="font-size:24px"></i></div>
+        <div class="nav-item" aria-label="Saúde"><i class="ph ph-heartbeat" style="font-size:24px"></i></div>
+        <div class="nav-item" aria-label="Odonto"><i class="ph ph-tooth" style="font-size:24px"></i></div>
+        <div class="nav-item" aria-label="Financeiro"><i class="ph ph-piggy-bank" style="font-size:24px"></i></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <span class="label">Avatar states</span>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="avatar"><i class="ph ph-user" style="font-size:24px"></i></div>
+          <div class="avatar" style="background:var(--color-primary);color:#fff">JS</div>
+          <div class="avatar" style="background:var(--color-green-surface);color:var(--color-green-900)">AN</div>
+          <div style="display:flex;flex-direction:column">
+            <span class="label-md-3">Juditte Silveira</span>
+            <span class="label-sm-1" style="color:var(--color-neutral-600);margin-top:4px">Corretora</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

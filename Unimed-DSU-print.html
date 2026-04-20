@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Unimed DSU — Design System (Print)</title>
+<link rel="stylesheet" href="colors_and_type.css">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.2"></script>
+<style>
+  /* ─────── PRINT PAGE SETUP ─────── */
+  @page { size: A4 portrait; margin: 14mm 14mm 16mm 14mm; }
+  @page :first { margin: 0; }
+
+  html, body { background: #fff; color: var(--fg-1); }
+  body { padding: 0; margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  /* Each top-level .page starts on a new physical page */
+  .page { padding: 8mm 4mm; break-after: page; }
+  .page:last-child { break-after: auto; }
+  .page-inner { max-width: 180mm; margin: 0 auto; }
+
+  /* Running header on every page except cover */
+  .running { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-family-system); font-size: 10px; color: var(--color-neutral-600); border-bottom: 1px solid var(--border-default); padding-bottom: 8px; margin-bottom: 20px; }
+  .running .brand { display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--color-primary); letter-spacing: 0.04em; text-transform: uppercase; }
+  .running .brand img { width: 14px; height: 14px; }
+
+  /* Section lead block */
+  .lead { margin-bottom: 18px; }
+  .lead .kicker { font-family: var(--font-family-system); font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-primary); margin-bottom: 4px; }
+  .lead h1 { font-size: 28px; color: var(--color-primary); margin-bottom: 6px; line-height: 1.2; }
+  .lead p { color: var(--fg-3); font-size: 12px; line-height: 1.5; max-width: 640px; }
+
+  h2.section-heading { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-primary); margin: 18px 0 10px; }
+  .desc-sm { color: var(--fg-3); font-size: 11px; line-height: 1.5; margin-bottom: 12px; max-width: 640px; }
+
+  /* Utility — prevent splits */
+  section, .card, .mark, .swatch, .shadow-card, .product-card, .alert, .shortcut, .rule, .weight, .icon-cell { break-inside: avoid; }
+
+  /* ─────── COVER ─────── */
+  .cover { padding: 0; break-after: page; height: 277mm; display: flex; flex-direction: column; }
+  .cover-hero { background: var(--color-primary); color: #fff; padding: 32mm 20mm 20mm; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+  .cover-hero .top { display: flex; align-items: center; gap: 16px; }
+  .cover-hero .logo-box { width: 56px; height: 56px; background: rgba(255,255,255,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+  .cover-hero .logo-box svg { width: 36px; height: 36px; fill: #fff; }
+  .cover-hero .label-top { font-family: var(--font-family-system); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-green-light); }
+  .cover-hero h1.cover-title { color: #fff; font-size: 52px; font-weight: 400; line-height: 1.05; letter-spacing: -0.01em; max-width: 160mm; }
+  .cover-hero .cover-sub { color: rgba(255,255,255,0.82); font-size: 15px; line-height: 1.55; max-width: 140mm; margin-top: 12px; }
+  .cover-meta { background: #fff; color: var(--color-neutral-800); padding: 14mm 20mm; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; border-top: 4px solid var(--color-green); }
+  .cover-meta .m-v { font-family: var(--font-family-brand); font-size: 28px; color: var(--color-primary); line-height: 1; }
+  .cover-meta .m-k { font-family: var(--font-family-system); font-size: 11px; color: var(--color-neutral-600); margin-top: 6px; line-height: 1.35; }
+  .cover-toc { padding: 10mm 20mm 12mm; background: var(--color-neutral-100); }
+  .cover-toc h3 { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-primary); margin-bottom: 10px; }
+  .cover-toc ol { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, 1fr); column-gap: 32px; row-gap: 6px; counter-reset: toc; }
+  .cover-toc li { font-family: var(--font-family-system); font-size: 12px; color: var(--color-neutral-800); counter-increment: toc; display: flex; align-items: baseline; gap: 10px; }
+  .cover-toc li::before { content: "0" counter(toc); font-family: 'SF Mono', Menlo, monospace; color: var(--color-primary); font-weight: 600; font-size: 11px; width: 22px; flex-shrink: 0; }
+
+  /* ─────── COLOR ─────── */
+  .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .color-grid.wide { grid-template-columns: repeat(4, 1fr); }
+  .swatch { border: 1px solid var(--border-default); border-radius: 8px; overflow: hidden; background: #fff; }
+  .swatch .chip { height: 56px; }
+  .swatch .meta { padding: 8px 10px; }
+  .swatch .name { font-family: var(--font-family-system); font-size: 11px; font-weight: 600; color: var(--color-neutral-900); }
+  .swatch .hex { font-family: 'SF Mono', Menlo, monospace; font-size: 9px; color: var(--color-neutral-600); margin-top: 2px; }
+  .swatch .token { font-family: 'SF Mono', Menlo, monospace; font-size: 8.5px; color: var(--color-neutral-500); margin-top: 1px; }
+
+  /* ─────── TYPE ─────── */
+  .type-row { display: grid; grid-template-columns: 120px 1fr; gap: 20px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--border-default); }
+  .type-row:last-child { border-bottom: none; }
+  .type-row .meta-col { font-family: 'SF Mono', Menlo, monospace; font-size: 10px; color: var(--color-neutral-600); }
+  .type-row .meta-col .tok { display: block; color: var(--color-neutral-900); font-weight: 600; font-family: var(--font-family-system); }
+  .type-row .meta-col .spec { display: block; margin-top: 2px; }
+  .sample-prose { color: var(--color-neutral-900); }
+  .sample-compact { line-height: 1; color: var(--color-neutral-900); }
+  /* Scale-down the largest heading samples to fit print */
+  .sample-prose.heading-2xl { font-size: 42px; }
+  .sample-prose.heading-xl  { font-size: 34px; }
+  .sample-prose.heading-lg  { font-size: 28px; }
+
+  /* ─────── SPACING ─────── */
+  .sp-row { display: flex; align-items: center; gap: 16px; padding: 6px 0; border-bottom: 1px solid var(--border-default); }
+  .sp-row .tok { font-family: 'SF Mono', Menlo, monospace; font-size: 10px; color: var(--color-neutral-900); font-weight: 600; width: 90px; }
+  .sp-row .val { font-family: 'SF Mono', Menlo, monospace; font-size: 10px; color: var(--color-neutral-500); width: 42px; }
+  .sp-row .bar { height: 12px; background: var(--color-primary); border-radius: 2px; }
+  .radii { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .radii .cell { border: 1px solid var(--border-default); padding: 12px; }
+  .radii .sq { height: 52px; background: var(--color-primary-surface); border: 1px solid var(--color-primary); }
+  .radii .tok { font-family: 'SF Mono', Menlo, monospace; font-size: 10px; color: var(--color-neutral-900); margin-top: 8px; font-weight: 600; }
+  .radii .val { font-family: 'SF Mono', Menlo, monospace; font-size: 9.5px; color: var(--color-neutral-500); margin-top: 2px; }
+  .shadows { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .shadow-card { background: #fff; border-radius: 12px; padding: 18px; text-align: center; }
+  .shadow-card.c1 { box-shadow: var(--shadow-card); }
+  .shadow-card.c2 { box-shadow: var(--shadow-floating); }
+  .shadow-card.c3 { box-shadow: var(--shadow-dialog); }
+  .shadow-card .t { font-family: var(--font-family-system); font-size: 12px; font-weight: 600; color: var(--color-neutral-900); }
+  .shadow-card .s { font-family: 'SF Mono', Menlo, monospace; font-size: 9.5px; color: var(--color-neutral-500); margin-top: 3px; }
+
+  /* ─────── ICONS ─────── */
+  .icon-sizes { display: flex; gap: 32px; align-items: baseline; margin-bottom: 16px; }
+  .icon-sizes .cell { display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--color-primary); }
+  .icon-sizes .cell .val { font-family: var(--font-family-system); font-size: 10px; color: var(--color-neutral-500); }
+  .weights { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; }
+  .weight { border: 1px solid var(--border-default); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .weight i { font-size: 28px; color: var(--color-primary); }
+  .weight .wname { font-family: var(--font-family-system); font-size: 11px; font-weight: 600; }
+  .weight .wuse { font-family: var(--font-family-system); font-size: 9.5px; color: var(--color-neutral-500); text-align: center; }
+  .library { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; }
+  .icon-cell { border: 1px solid var(--border-default); border-radius: 10px; padding: 10px 6px; display: flex; flex-direction: column; align-items: center; gap: 6px; background: #fff; }
+  .icon-cell i { font-size: 22px; color: var(--color-primary); }
+  .icon-cell .n { font-family: 'SF Mono', Menlo, monospace; font-size: 8.5px; color: var(--color-neutral-600); text-align: center; line-height: 1.25; }
+
+  /* ─────── COMPONENTS (condensed) ─────── */
+  .cmp-section { background: var(--color-neutral-100); border-radius: 12px; padding: 16px 18px; margin-bottom: 14px; break-inside: avoid; }
+  .cmp-section > h2 { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-primary); margin-bottom: 6px; }
+  .cmp-section > .desc-sm { margin-bottom: 10px; }
+  .cmp-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 8px; }
+  .cmp-row:last-child { margin-bottom: 0; }
+  .row-label { font-family: 'SF Mono', Menlo, monospace; font-size: 9.5px; color: var(--color-neutral-500); width: 100%; margin-top: 4px; }
+
+  .btn { font-family: var(--font-family-system); font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: none; }
+  .btn-lg { height: 48px; padding: 0 28px; border-radius: 12px; font-size: 14px; }
+  .btn-sm { height: 36px; padding: 0 20px; border-radius: 10px; font-size: 12px; }
+  .btn-primary { background: var(--color-primary); color: #fff; }
+  .btn-secondary { background: transparent; color: var(--color-primary); border: 1.5px solid var(--color-primary); }
+  .btn-ghost { background: transparent; color: var(--color-primary); }
+  .btn:disabled { opacity: 0.32; }
+  .btn-icon { width: 40px; height: 40px; padding: 0; border-radius: 12px; background: var(--color-primary-surface); color: var(--color-primary); }
+
+  .field { display: flex; flex-direction: column; gap: 4px; width: 180px; }
+  .field label { font-family: var(--font-family-system); font-size: 11px; font-weight: 500; color: var(--color-neutral-900); }
+  .input { height: 40px; padding: 0 12px; border: 1px solid var(--color-neutral-200); border-radius: 10px; background: #fff; font-family: var(--font-family-system); font-size: 12px; color: var(--color-neutral-900); }
+  .input.error { border-color: var(--color-negative); }
+  .input.disabled { background: var(--color-neutral-100); color: var(--color-neutral-500); border-color: var(--color-neutral-300); }
+  .support { font-size: 10px; color: var(--color-neutral-600); line-height: 1.32; }
+  .support.error { color: var(--color-negative); }
+
+  .tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 4px; font-family: var(--font-family-system); font-size: 10px; font-weight: 500; line-height: 1; }
+  .tag-info { background: var(--color-info-surface); color: var(--color-info-dark); }
+  .tag-positive { background: var(--color-positive-surface); color: var(--color-positive-dark); }
+  .tag-warning { background: var(--color-warning-surface); color: var(--color-warning-dark); }
+  .tag-negative { background: var(--color-negative-surface); color: var(--color-negative-dark); }
+  .tag-promote { background: var(--color-promote-surface); color: var(--color-promote-dark); }
+  .tag-neutral { background: var(--color-primary-surface); color: var(--color-primary); }
+
+  .check, .radio { width: 18px; height: 18px; border: 1.5px solid var(--color-neutral-500); background: #fff; display: inline-flex; align-items: center; justify-content: center; }
+  .check { border-radius: 3px; }
+  .radio { border-radius: 50%; }
+  .check.checked, .radio.checked { border-color: var(--color-green); background: var(--color-green); }
+  .check.checked::after { content: ''; width: 9px; height: 4px; border-left: 1.5px solid #fff; border-bottom: 1.5px solid #fff; transform: rotate(-45deg) translate(1px, -1px); }
+  .radio.checked::after { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #fff; }
+  .toggle { width: 32px; height: 18px; border-radius: 9999px; background: var(--color-neutral-300); position: relative; display: inline-block; }
+  .toggle::after { content: ''; position: absolute; left: 3px; top: 3px; width: 12px; height: 12px; border-radius: 50%; background: #fff; }
+  .toggle.on { background: var(--color-green); }
+  .toggle.on::after { left: auto; right: 3px; }
+
+  .shortcut-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .shortcut { aspect-ratio: 1; padding: 14px; border-radius: 12px; background: var(--color-primary-surface); display: flex; flex-direction: column; justify-content: space-between; }
+  .shortcut.selected { background: var(--color-green-surface); border: 1.5px solid var(--color-green); }
+  .shortcut i { color: var(--color-primary); font-size: 22px; }
+  .shortcut.selected i { color: var(--color-green-900); }
+  .shortcut .title { font-family: var(--font-family-brand); font-size: 12px; font-weight: 600; color: var(--color-neutral-900); line-height: 1.24; }
+  .shortcut-head { display: flex; justify-content: space-between; align-items: flex-start; }
+
+  .product-card { border: 1px solid var(--border-default); border-radius: 12px; padding: 16px; background: #fff; display: flex; flex-direction: column; gap: 10px; width: 240px; }
+  .product-card .head { display: flex; justify-content: space-between; align-items: center; }
+  .product-card .pname { font-family: var(--font-family-brand); font-size: 16px; font-weight: 600; color: var(--color-primary); }
+  .product-card .row2 { display: flex; justify-content: space-between; font-size: 11px; color: var(--color-neutral-600); }
+  .product-card .row2 strong { color: var(--color-neutral-900); font-weight: 600; }
+  .product-card small { font-size: 10px; color: var(--color-neutral-600); }
+
+  .alert { display: flex; gap: 10px; padding: 10px 14px; border-radius: 10px; border-left: 3px solid; }
+  .alert-info { background: var(--color-info-surface); border-color: var(--color-info); color: var(--color-info-dark); }
+  .alert-positive { background: var(--color-positive-surface); border-color: var(--color-positive); color: var(--color-positive-dark); }
+  .alert-warning { background: var(--color-warning-surface); border-color: var(--color-warning); color: var(--color-warning-dark); }
+  .alert-negative { background: var(--color-negative-surface); border-color: var(--color-negative); color: var(--color-negative-dark); }
+  .alert .abody { font-family: var(--font-family-brand); font-size: 11px; line-height: 1.32; }
+  .alert .abody strong { font-weight: 600; display: block; margin-bottom: 2px; font-size: 12px; }
+
+  .divider { height: 1px; background: var(--color-neutral-200); width: 100%; }
+
+  .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--color-neutral-100); border: 1px solid var(--color-neutral-200); display: inline-flex; align-items: center; justify-content: center; color: var(--color-neutral-600); font-family: var(--font-family-system); font-weight: 600; font-size: 13px; }
+  .sidemenu { width: 80px; background: var(--color-primary-surface); border-radius: 12px; padding: 12px 0; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .sidemenu .logo-rail { width: 40px; height: 40px; background: var(--color-primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+  .sidemenu .nav-item { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--color-primary); }
+  .sidemenu .nav-item.active { background: var(--color-primary); color: #fff; }
+  .sidemenu .nav-item i { font-size: 18px; }
+
+  /* ─────── BRAND ─────── */
+  .brand-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .mark { border: 1px solid var(--border-default); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; background: #fff; min-height: 130px; justify-content: center; }
+  .mark.dark { background: var(--color-primary); color: #fff; }
+  .mark .mname { font-family: var(--font-family-system); font-size: 11px; font-weight: 600; color: var(--color-neutral-900); margin-top: auto; }
+  .mark.dark .mname { color: #fff; }
+  .rules { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .rule { display: flex; gap: 10px; padding: 12px; border-radius: 10px; border: 1px solid var(--border-default); background: #fff; }
+  .rule .icon-r { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600; font-family: var(--font-family-system); font-size: 12px; }
+  .rule.do .icon-r { background: var(--color-positive-surface); color: var(--color-positive-dark); }
+  .rule.dont .icon-r { background: var(--color-negative-surface); color: var(--color-negative-dark); }
+  .rule p { font-size: 11px; line-height: 1.5; }
+
+  /* ─────── CONTENT / VOICE ─────── */
+  .voice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .voice-card { background: #fff; border: 1px solid var(--border-default); border-radius: 12px; padding: 16px; }
+  .voice-card h3 { font-size: 13px; color: var(--color-primary); font-weight: 600; margin-bottom: 6px; }
+  .voice-card p { font-size: 11px; line-height: 1.5; color: var(--color-neutral-800); }
+  .voice-card .quote { font-family: var(--font-family-brand); font-size: 14px; color: var(--color-neutral-900); font-style: italic; margin: 10px 0 4px; line-height: 1.4; }
+  .voice-card .byline { font-family: 'SF Mono', Menlo, monospace; font-size: 9.5px; color: var(--color-neutral-500); }
+  .do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+  .do-dont .item { padding: 10px 12px; border-radius: 8px; font-size: 11px; line-height: 1.4; }
+  .do-dont .item.ok { background: var(--color-positive-surface); color: var(--color-positive-dark); border-left: 3px solid var(--color-positive); }
+  .do-dont .item.no { background: var(--color-negative-surface); color: var(--color-negative-dark); border-left: 3px solid var(--color-negative); }
+  .do-dont .item .lbl { display: block; font-family: var(--font-family-system); font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+
+  /* ─────── CLOSING / COLOPHON ─────── */
+  .colophon { text-align: center; padding: 50mm 0; }
+  .colophon .sigil { width: 72px; height: 72px; margin: 0 auto 20px; background: var(--color-primary); border-radius: 18px; display: flex; align-items: center; justify-content: center; }
+  .colophon .sigil svg { width: 44px; fill: #fff; }
+  .colophon h2 { font-size: 26px; color: var(--color-primary); font-weight: 400; margin-bottom: 10px; }
+  .colophon p { font-size: 12px; color: var(--color-neutral-600); line-height: 1.6; max-width: 130mm; margin: 0 auto; }
+  .colophon .version { font-family: 'SF Mono', Menlo, monospace; font-size: 10px; color: var(--color-neutral-500); margin-top: 30px; letter-spacing: 0.1em; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ COVER ═══════════════ -->
+<div class="cover">
+  <div class="cover-hero">
+    <div>
+      <div class="top">
+        <div class="logo-box">
+          <svg viewBox="0 0 48 48"><path d="M47.7324 27.8346L33.244 8.68871C33.0987 8.50826 32.899 8.39999 32.663 8.39999H15.197C14.9791 8.39999 14.7613 8.50826 14.616 8.68871L0.145772 27.8346C-0.217346 28.3038 0.145781 28.9714 0.708614 28.9714H8.20699C8.80614 28.9714 9.13294 29.6391 8.78798 30.1083L2.76022 38.1203C2.41526 38.5895 2.76022 39.2571 3.34121 39.2571H14.5071C14.725 39.2571 14.9428 39.1489 15.0881 38.9684L21.7694 30.0902C22.1144 29.6211 21.7694 28.9534 21.1885 28.9534H18.8463H17.7207C17.0852 28.9534 16.7221 28.2316 17.1034 27.7083L23.0404 19.9128C23.4216 19.4075 23.0585 18.6677 22.4231 18.6677H17.7388C17.1034 18.6677 16.7403 17.9459 17.1215 17.4226L23.3672 9.21202C23.6758 8.79698 24.2931 8.79698 24.6199 9.21202L30.8111 17.4226C31.1924 17.9278 30.8111 18.6677 30.1938 18.6677H25.564C24.9286 18.6677 24.5473 19.3895 24.9467 19.9128L30.8292 27.7083C31.2105 28.2135 30.8292 28.9534 30.2119 28.9534H29.0863H26.7986C26.2176 28.9534 25.8727 29.6211 26.2358 30.0902L32.9172 38.9684C33.0624 39.1489 33.2621 39.2571 33.4981 39.2571H44.664C45.245 39.2571 45.59 38.5895 45.2268 38.1203L39.1991 30.1083C38.8541 29.6391 39.1991 28.9714 39.7801 28.9714H47.2785C47.8776 28.9714 48.2044 28.3038 47.8595 27.8346Z"/></svg>
+        </div>
+        <span class="label-top">Design System Unimed · v1.0</span>
+      </div>
+    </div>
+    <div>
+      <h1 class="cover-title">Um jeito Unimed de construir produtos digitais.</h1>
+      <p class="cover-sub">Tokens, componentes e diretrizes de conteúdo para Unimed Saúde, Unimed Odonto, Seguros Unimed e portais corporativos — com foco em cuidado, clareza e confiança.</p>
+    </div>
+  </div>
+  <div class="cover-meta">
+    <div><div class="m-v">4</div><div class="m-k">Produtos cobertos<br>Saúde · Odonto · Seguros · Corporativo</div></div>
+    <div><div class="m-v">11</div><div class="m-k">Tokens de espaço<br>4 px → 80 px</div></div>
+    <div><div class="m-v">9</div><div class="m-k">Níveis tipográficos<br>12 → 64 px</div></div>
+    <div><div class="m-v">AA</div><div class="m-k">WCAG contrast<br>para todos os pares</div></div>
+  </div>
+  <div class="cover-toc">
+    <h3>Sumário</h3>
+    <ol>
+      <li>Cores</li>
+      <li>Tipografia</li>
+      <li>Espaçamento, raios e sombras</li>
+      <li>Iconografia</li>
+      <li>Componentes — Ações e inputs</li>
+      <li>Componentes — Navegação e cards</li>
+      <li>Marca e logotipos</li>
+      <li>Voz, tom e conteúdo</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ═══════════════ 01 — COLORS ═══════════════ -->
+<div class="page">
+  <div class="page-inner">
+    <header class="running"><span class="brand"><img src="assets/unimed-symbol.svg" alt="">Unimed DSU</span><span>01 · Cores</span></header>
+    <div class="lead">
+      <div class="kicker">Foundations · 01</div>
+      <h1>Cores</h1>
+      <p>Paleta semântica exportada como CSS custom properties em <code>colors_and_type.css</code>. Use sempre o nome do token — nunca o hex direto.</p>
+    </div>
+
+    <h2 class="section-heading">Brand · Azul corporativo</h2>
+    <div class="color-grid">
+      <div class="swatch"><div class="chip" style="background:#001e4c"></div><div class="meta"><div class="name">Primary 900</div><div class="hex">#001E4C</div><div class="token">--color-primary-900</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#002c74"></div><div class="meta"><div class="name">Primary 800</div><div class="hex">#002C74</div><div class="token">--color-primary-800</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#002d74"></div><div class="meta"><div class="name">Primary</div><div class="hex">#002D74</div><div class="token">--color-primary</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#f2f7ff"></div><div class="meta"><div class="name">Primary Surface</div><div class="hex">#F2F7FF</div><div class="token">--color-primary-surface</div></div></div>
+    </div>
+
+    <h2 class="section-heading">Brand · Unimed Green</h2>
+    <div class="color-grid">
+      <div class="swatch"><div class="chip" style="background:#005231"></div><div class="meta"><div class="name">Green 900</div><div class="hex">#005231</div><div class="token">--color-green-900</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#00804c"></div><div class="meta"><div class="name">Green 700</div><div class="hex">#00804C</div><div class="token">--color-green-700</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#00995d"></div><div class="meta"><div class="name">Green</div><div class="hex">#00995D</div><div class="token">--color-green</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#effbf3"></div><div class="meta"><div class="name">Green Surface</div><div class="hex">#EFFBF3</div><div class="token">--color-green-surface</div></div></div>
+    </div>
+
+    <h2 class="section-heading">Feedback semântico</h2>
+    <div class="color-grid">
+      <div class="swatch"><div class="chip" style="background:#0084b8"></div><div class="meta"><div class="name">Info</div><div class="hex">#0084B8</div><div class="token">--color-info</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#00995d"></div><div class="meta"><div class="name">Positive</div><div class="hex">#00995D</div><div class="token">--color-positive</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#db610c"></div><div class="meta"><div class="name">Warning</div><div class="hex">#DB610C</div><div class="token">--color-warning</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#dd4040"></div><div class="meta"><div class="name">Negative</div><div class="hex">#DD4040</div><div class="token">--color-negative</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#7d4bd2"></div><div class="meta"><div class="name">Promote</div><div class="hex">#7D4BD2</div><div class="token">--color-promote</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#ebf9ff"></div><div class="meta"><div class="name">Info Surface</div><div class="hex">#EBF9FF</div><div class="token">--color-info-surface</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#fff3eb"></div><div class="meta"><div class="name">Warning Surface</div><div class="hex">#FFF3EB</div><div class="token">--color-warning-surface</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#fcf3f3"></div><div class="meta"><div class="name">Negative Surface</div><div class="hex">#FCF3F3</div><div class="token">--color-negative-surface</div></div></div>
+    </div>
+
+    <h2 class="section-heading">Neutros</h2>
+    <div class="color-grid">
+      <div class="swatch"><div class="chip" style="background:#18191a"></div><div class="meta"><div class="name">Neutral 900</div><div class="hex">#18191A</div><div class="token">--color-neutral-900</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#2e3138"></div><div class="meta"><div class="name">Neutral 800</div><div class="hex">#2E3138</div><div class="token">--color-neutral-800</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#494f59"></div><div class="meta"><div class="name">Neutral 600</div><div class="hex">#494F59</div><div class="token">--color-neutral-600</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#8993a3"></div><div class="meta"><div class="name">Neutral 500</div><div class="hex">#8993A3</div><div class="token">--color-neutral-500</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#d3d7df"></div><div class="meta"><div class="name">Neutral 300</div><div class="hex">#D3D7DF</div><div class="token">--color-neutral-300</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#e6eaf2"></div><div class="meta"><div class="name">Neutral 200</div><div class="hex">#E6EAF2</div><div class="token">--color-neutral-200</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#f8f9fc"></div><div class="meta"><div class="name">Neutral 100</div><div class="hex">#F8F9FC</div><div class="token">--color-neutral-100</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#ffffff;border:1px dashed #d3d7df"></div><div class="meta"><div class="name">White</div><div class="hex">#FFFFFF</div><div class="token">--color-neutral-white</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ 02 — TYPOGRAPHY ═══════════════ -->
+<div class="page">
+  <div class="page-inner">
+    <header class="running"><span class="brand"><img src="assets/unimed-symbol.svg" alt="">Unimed DSU</span><span>02 · Tipografia</span></header>
+    <div class="lead">
+      <div class="kicker">Foundations · 02</div>
+      <h1>Tipografia</h1>
+      <p>O DSU usa <strong>Inter</strong> como família única. <code>--font-family-brand</code> é aplicado em títulos e texto corrido; <code>--font-family-system</code> em rótulos de UI. Ambos resolvem para Inter via Google Fonts.</p>
+    </div>
+
+    <h2 class="section-heading">Títulos e prosa — Display role</h2>
+    <div class="type-row"><div class="meta-col"><span class="tok">.heading-2xl</span><span class="spec">64 / 1.24 / 400</span></div><div class="sample-prose heading-2xl">Cuidar de você</div></div>
+    <div class="type-row"><div class="meta-col"><span class="tok">.heading-xl</span><span class="spec">48 / 1.24 / 400</span></div><div class="sample-prose heading-xl">Novo App Seguro Unimed</div></div>
+    <div class="type-row"><div class="meta-col"><span class="tok">.heading-lg</span><span class="spec">40 / 1.24 / 400</span></div><div class="sample-prose heading-lg">Seus benefícios em um só lugar</div></div>
+    <div class="type-row"><div class="meta-col"><span class="tok">.heading-sm</span><span class="spec">24 / 1.24 / 400</span></div><div class="sample-prose heading-sm">Acessos rápidos</div></div>
+    <div class="type-row"><div class="meta-col"><span class="tok">.heading-xs</span><span class="spec">20 / 1.24 / 600</span></div><div class="sample-prose heading-xs">Cartão virtual</div></div>
+    <div class="type-row"><div class="meta-col"><span class="tok">.heading-2xs</span><span class="spec">16 / 1.24 / 600</span></div><div class="sample-prose heading-2xs">Atendimento</div></div>
+    <div class="type-row"><div class="meta-col"><span class="tok">.paragraph-lg</span><span class="spec">20 / 1.6 / 400</span></div><div class="sample-prose paragraph-lg">Tenha acesso a todos os seus produtos e principais serviços no Super App.</div></div>
+    <div class="type-row"><div class="meta-col"><span class="tok">.paragraph-sm</span><span class="spec">16 / 1.6 / 400</span></div><div class="sample-prose paragraph-sm">Marque consultas, consulte guias e acompanhe pedidos direto pelo app.</div></div>
+    <div class="type-row"><div class="meta-col"><span class="tok">.description</span><span class="spec">14 / 1.32 / 400</span></div><div class="sample-prose description">Disponível 24 horas para clientes Unimed Saúde e Unimed Odonto.</div></div>
+
+    <h2 class="section-heading">Rótulos de UI — Interface role</h2>
+    <div class="type-row"><div class="meta-col"><span class="tok">.label-lg-3</span><span class="spec">20 / 1 / 600</span></div><div class="sample-compact label-lg-3">Marcar consulta</div></div>
+    <div class="type-row"><div class="meta-col"><span class="tok">.label-md-3</span><span class="spec">16 / 1 / 600</span></div><div class="sample-compact label-md-3">Salvar alterações</div></div>
+    <div class="type-row"><div class="meta-col"><span class="tok">.label-md-2</span><span class="spec">16 / 1 / 500</span></div><div class="sample-compact label-md-2">Dependentes</div></div>
+    <div class="type-row"><div class="meta-col"><span class="tok">.label-md-1</span><span class="spec">16 / 1 / 400</span></div><div class="sample-compact label-md-1">Ver todos os pedidos</div></div>
+    <div class="type-row"><div class="meta-col"><span class="tok">.label-sm-3</span><span class="spec">14 / 1 / 600</span></div><div class="sample-compact label-sm-3">Novo</div></div>
+    <div class="type-row"><div class="meta-col"><span class="tok">.label-sm-2</span><span class="spec">14 / 1 / 500</span></div><div class="sample-compact label-sm-2">Em andamento</div></div>
+    <div class="type-row"><div class="meta-col"><span class="tok">.label-sm-1</span><span class="spec">14 / 1 / 400</span></div><div class="sample-compact label-sm-1">Atualizado há 2 min</div></div>
+    <div class="type-row"><div class="meta-col"><span class="tok">.placeholder-text</span><span class="spec">16 / 1 / 400</span></div><div class="sample-compact placeholder-text">Digite seu CPF</div></div>
+    <div class="type-row"><div class="meta-col"><span class="tok">.support-text</span><span class="spec">14 / 1.32 / 400</span></div><div class="sample-prose support-text">Use apenas números. Máximo 11 dígitos.</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════ 03 — SPACING / RADII / SHADOWS ═══════════════ -->
+<div class="page">
+  <div class="page-inner">
+    <header class="running"><span class="brand"><img src="assets/unimed-symbol.svg" alt="">Unimed DSU</span><span>03 · Espaçamento</span></header>
+    <div class="lead">
+      <div class="kicker">Foundations · 03</div>
+      <h1>Espaçamento, raios e sombras</h1>
+      <p>Todos os valores obedecem ao baseline de 4 px. Raios são restritos — quatro passos, sem valores customizados.</p>
+    </div>
+
+    <h2 class="section-heading">Escala de espaçamento</h2>
+    <div class="sp-row"><div class="tok">--space-1</div><div class="val">4 px</div><div class="bar" style="width:4px"></div></div>
+    <div class="sp-row"><div class="tok">--space-2</div><div class="val">8 px</div><div class="bar" style="width:8px"></div></div>
+    <div class="sp-row"><div class="tok">--space-3</div><div class="val">12 px</div><div class="bar" style="width:12px"></div></div>
+    <div class="sp-row"><div class="tok">--space-4</div><div class="val">16 px</div><div class="bar" style="width:16px"></div></div>
+    <div class="sp-row"><div class="tok">--space-5</div><div class="val">20 px</div><div class="bar" style="width:20px"></div></div>
+    <div class="sp-row"><div class="tok">--space-6</div><div class="val">24 px</div><div class="bar" style="width:24px"></div></div>
+    <div class="sp-row"><div class="tok">--space-7</div><div class="val">32 px</div><div class="bar" style="width:32px"></div></div>
+    <div class="sp-row"><div class="tok">--space-8</div><div class="val">40 px</div><div class="bar" style="width:40px"></div></div>
+    <div class="sp-row"><div class="tok">--space-9</div><div class="val">48 px</div><div class="bar" style="width:48px"></div></div>
+    <div class="sp-row"><div class="tok">--space-10</div><div class="val">64 px</div><div class="bar" style="width:64px"></div></div>
+    <div class="sp-row"><div class="tok">--space-11</div><div class="val">80 px</div><div class="bar" style="width:80px"></div></div>
+
+    <h2 class="section-heading">Raios</h2>
+    <div class="radii">
+      <div class="cell"><div class="sq" style="border-radius:0"></div><div class="tok">--radius-none</div><div class="val">0 px</div></div>
+      <div class="cell"><div class="sq" style="border-radius:4px"></div><div class="tok">--radius-sm</div><div class="val">4 px · tags</div></div>
+      <div class="cell"><div class="sq" style="border-radius:8px"></div><div class="tok">--radius-md</div><div class="val">8 px · chips</div></div>
+      <div class="cell"><div class="sq" style="border-radius:16px"></div><div class="tok">--radius-lg</div><div class="val">16 px · cards</div></div>
+      <div class="cell"><div class="sq" style="border-radius:9999px"></div><div class="tok">--radius-full</div><div class="val">pill · avatars</div></div>
+    </div>
+
+    <h2 class="section-heading">Sombras</h2>
+    <div class="shadows">
+      <div class="shadow-card c1"><div class="t">Card</div><div class="s">--shadow-card</div></div>
+      <div class="shadow-card c2"><div class="t">Floating</div><div class="s">--shadow-floating</div></div>
+      <div class="shadow-card c3"><div class="t">Dialog</div><div class="s">--shadow-dialog</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ 04 — ICONS ═══════════════ -->
+<div class="page">
+  <div class="page-inner">
+    <header class="running"><span class="brand"><img src="assets/unimed-symbol.svg" alt="">Unimed DSU</span><span>04 · Iconografia</span></header>
+    <div class="lead">
+      <div class="kicker">Foundations · 04</div>
+      <h1>Iconografia</h1>
+      <p>O DSU usa <strong>Phosphor Icons</strong>. Dois pesos: <strong>Regular</strong> para todo o UI padrão, <strong>Fill</strong> para estados ativos de navegação e acentos. Tamanho via <code>font-size</code>; a cor herda <code>currentColor</code>.</p>
+    </div>
+
+    <h2 class="section-heading">Tamanhos</h2>
+    <div class="icon-sizes">
+      <div class="cell"><i class="ph ph-heartbeat" style="font-size:16px"></i><span class="val">16 · inline</span></div>
+      <div class="cell"><i class="ph ph-heartbeat" style="font-size:24px"></i><span class="val">24 · default</span></div>
+      <div class="cell"><i class="ph ph-heartbeat" style="font-size:32px"></i><span class="val">32 · shortcuts</span></div>
+    </div>
+
+    <h2 class="section-heading">Pesos em uso</h2>
+    <div class="weights">
+      <div class="weight"><i class="ph ph-house"></i><span class="wname">ph · Regular</span><span class="wuse">Default — todo UI</span></div>
+      <div class="weight"><i class="ph-fill ph-house"></i><span class="wname">ph-fill · Fill</span><span class="wuse">Nav ativo / acentos</span></div>
+      <div class="weight" style="opacity:0.4"><i class="ph-bold ph-house"></i><span class="wname">ph-bold</span><span class="wuse">Só com aprovação</span></div>
+      <div class="weight" style="opacity:0.4"><i class="ph-duotone ph-house"></i><span class="wname">ph-duotone</span><span class="wuse">Evite — quebra ritmo</span></div>
+    </div>
+
+    <h2 class="section-heading">Mapeamento canônico</h2>
+    <p class="desc-sm">Use estes nomes para conceitos recorrentes — mantenha o mapeamento consistente em todos os produtos Unimed.</p>
+    <div class="library">
+      <div class="icon-cell"><i class="ph-fill ph-house"></i><span class="n">ph-house<br>Início</span></div>
+      <div class="icon-cell"><i class="ph ph-heartbeat"></i><span class="n">ph-heartbeat<br>Saúde</span></div>
+      <div class="icon-cell"><i class="ph ph-tooth"></i><span class="n">ph-tooth<br>Odonto</span></div>
+      <div class="icon-cell"><i class="ph ph-piggy-bank"></i><span class="n">ph-piggy-bank<br>Financeiro</span></div>
+      <div class="icon-cell"><i class="ph ph-headset"></i><span class="n">ph-headset<br>Atend.</span></div>
+      <div class="icon-cell"><i class="ph ph-question"></i><span class="n">ph-question<br>Ajuda</span></div>
+      <div class="icon-cell"><i class="ph ph-whatsapp-logo"></i><span class="n">whatsapp-logo<br>WhatsApp</span></div>
+      <div class="icon-cell"><i class="ph ph-bell"></i><span class="n">ph-bell<br>Notif.</span></div>
+      <div class="icon-cell"><i class="ph ph-magnifying-glass"></i><span class="n">magnif.-glass<br>Buscar</span></div>
+      <div class="icon-cell"><i class="ph ph-caret-left"></i><span class="n">caret-left<br>Voltar</span></div>
+      <div class="icon-cell"><i class="ph ph-caret-right"></i><span class="n">caret-right<br>Avançar</span></div>
+      <div class="icon-cell"><i class="ph ph-download-simple"></i><span class="n">download-simple<br>Baixar</span></div>
+      <div class="icon-cell"><i class="ph ph-x"></i><span class="n">ph-x<br>Fechar</span></div>
+      <div class="icon-cell"><i class="ph ph-user"></i><span class="n">ph-user<br>Perfil</span></div>
+      <div class="icon-cell"><i class="ph ph-graduation-cap"></i><span class="n">grad.-cap<br>Academia</span></div>
+      <div class="icon-cell"><i class="ph ph-file-text"></i><span class="n">file-text<br>Documentos</span></div>
+      <div class="icon-cell"><i class="ph ph-calendar-blank"></i><span class="n">calendar<br>Agenda</span></div>
+      <div class="icon-cell"><i class="ph ph-credit-card"></i><span class="n">credit-card<br>Cartão</span></div>
+      <div class="icon-cell"><i class="ph ph-shield-check"></i><span class="n">shield-check<br>Seguros</span></div>
+      <div class="icon-cell"><i class="ph ph-chat-circle-text"></i><span class="n">chat-circle<br>Mensagens</span></div>
+      <div class="icon-cell"><i class="ph ph-info"></i><span class="n">ph-info<br>Informação</span></div>
+      <div class="icon-cell"><i class="ph ph-warning-circle"></i><span class="n">warning-circle<br>Atenção</span></div>
+      <div class="icon-cell"><i class="ph ph-check-circle"></i><span class="n">check-circle<br>Sucesso</span></div>
+      <div class="icon-cell"><i class="ph ph-gear"></i><span class="n">ph-gear<br>Configur.</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ 05 — COMPONENTS 1 ═══════════════ -->
+<div class="page">
+  <div class="page-inner">
+    <header class="running"><span class="brand"><img src="assets/unimed-symbol.svg" alt="">Unimed DSU</span><span>05 · Componentes — Ações & inputs</span></header>
+    <div class="lead">
+      <div class="kicker">Components · 05</div>
+      <h1>Ações & inputs</h1>
+      <p>Botões, campos, marcadores e controles. Todos os componentes já usam os tokens corretos — copie direto para as telas.</p>
+    </div>
+
+    <div class="cmp-section">
+      <h2>Botões</h2>
+      <p class="desc-sm">Primary é o único preenchido azul por tela. Secondary (outlined) e Ghost (somente texto) para caminhos alternativos. 64 px em desktop, 48 px em mobile e UI compacta.</p>
+      <div class="cmp-row"><span class="row-label">Primary</span></div>
+      <div class="cmp-row">
+        <button class="btn btn-lg btn-primary">Marcar consulta</button>
+        <button class="btn btn-sm btn-primary">Salvar</button>
+        <button class="btn btn-lg btn-primary" disabled>Marcar consulta</button>
+      </div>
+      <div class="cmp-row"><span class="row-label">Secondary · Ghost</span></div>
+      <div class="cmp-row">
+        <button class="btn btn-lg btn-secondary">Cancelar</button>
+        <button class="btn btn-sm btn-secondary">Cancelar</button>
+        <button class="btn btn-lg btn-ghost">Ver detalhes</button>
+      </div>
+      <div class="cmp-row"><span class="row-label">Icon buttons</span></div>
+      <div class="cmp-row">
+        <button class="btn btn-icon"><i class="ph ph-caret-left" style="font-size:20px"></i></button>
+        <button class="btn btn-icon"><i class="ph ph-caret-right" style="font-size:20px"></i></button>
+        <button class="btn btn-icon"><i class="ph ph-magnifying-glass" style="font-size:20px"></i></button>
+      </div>
+    </div>
+
+    <div class="cmp-section">
+      <h2>Inputs</h2>
+      <p class="desc-sm">Altura padrão 64 px, raio 16 px (versão compacta para print). Sempre combine com um rótulo visível acima. Texto de apoio explica o formato; texto de erro substitui o apoio.</p>
+      <div class="cmp-row" style="align-items: flex-start">
+        <div class="field"><label>CPF</label><input class="input" placeholder="000.000.000-00"><span class="support">Use apenas números.</span></div>
+        <div class="field"><label>E-mail</label><input class="input" value="juditte@unimed.com.br"><span class="support">Manteremos você informado aqui.</span></div>
+        <div class="field"><label>Telefone</label><input class="input error" value="(11) 9"><span class="support error">Informe um número com 11 dígitos.</span></div>
+        <div class="field"><label>CNPJ</label><input class="input disabled" value="92.863.505/0001-06" disabled><span class="support">Dado bloqueado.</span></div>
+      </div>
+    </div>
+
+    <div class="cmp-section">
+      <h2>Tags & badges</h2>
+      <p class="desc-sm">Tags rotulam status ou categoria. Badges são contadores em ícones — nunca use badges como rótulo principal.</p>
+      <div class="cmp-row">
+        <span class="tag tag-neutral">Neutro</span>
+        <span class="tag tag-info">Informativo</span>
+        <span class="tag tag-positive">Ativo</span>
+        <span class="tag tag-warning">Atenção</span>
+        <span class="tag tag-negative">Bloqueado</span>
+        <span class="tag tag-promote">Novo</span>
+      </div>
+    </div>
+
+    <div class="cmp-section">
+      <h2>Controles de seleção</h2>
+      <p class="desc-sm">Checkboxes, radios e toggles mudam para Unimed Green no estado selecionado — as únicas superfícies de "afirmação positiva" onde o verde sobrepõe o azul.</p>
+      <div class="cmp-row">
+        <span class="check"></span><span class="label-md-1">Aceito os termos</span>
+        <span class="check checked"></span><span class="label-md-1">Aceito os termos</span>
+        <span style="width:12px"></span>
+        <span class="radio"></span><span class="label-md-1">Individual</span>
+        <span class="radio checked"></span><span class="label-md-1">Familiar</span>
+        <span style="width:12px"></span>
+        <span class="toggle"></span><span class="label-md-1">Off</span>
+        <span class="toggle on"></span><span class="label-md-1">On</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ 06 — COMPONENTS 2 ═══════════════ -->
+<div class="page">
+  <div class="page-inner">
+    <header class="running"><span class="brand"><img src="assets/unimed-symbol.svg" alt="">Unimed DSU</span><span>06 · Componentes — Navegação & cards</span></header>
+    <div class="lead">
+      <div class="kicker">Components · 06</div>
+      <h1>Navegação & cards</h1>
+      <p>Blocos de conteúdo do portal e do Super App: atalhos, cards de produto, alertas e a navegação lateral institucional.</p>
+    </div>
+
+    <div class="cmp-section">
+      <h2>Cards de atalho</h2>
+      <p class="desc-sm">Tiles de acesso rápido da home. Grid 200 × 200, ícone no canto superior esquerdo, título no canto inferior esquerdo. Estado selecionado usa acento verde.</p>
+      <div class="shortcut-group">
+        <div class="shortcut selected">
+          <div class="shortcut-head"><i class="ph ph-graduation-cap"></i><span class="tag tag-promote">Novo</span></div>
+          <div class="title">Academia de vendas</div>
+        </div>
+        <div class="shortcut"><div class="shortcut-head"><i class="ph ph-file-text"></i></div><div class="title">Visão global</div></div>
+        <div class="shortcut"><div class="shortcut-head"><i class="ph ph-whatsapp-logo"></i></div><div class="title">WhatsApp</div></div>
+        <div class="shortcut"><div class="shortcut-head"><i class="ph ph-question"></i></div><div class="title">Ajuda</div></div>
+      </div>
+    </div>
+
+    <div class="cmp-section">
+      <h2>Cards & alertas</h2>
+      <p class="desc-sm">Cards sempre com raio 16 px e padding 24 px. Alertas são compactos — dispensam ícone quando a cor já comunica.</p>
+      <div class="cmp-row" style="align-items: flex-start; gap: 16px">
+        <div class="product-card">
+          <div class="head"><span class="pname">Saúde</span><span class="tag tag-positive">Ativo</span></div>
+          <div>
+            <small>Produto</small>
+            <div class="heading-2xs" style="margin-top:2px;font-size:14px">Empresarial Dinâmico</div>
+          </div>
+          <div class="divider"></div>
+          <div class="row2"><span>Titular</span><strong>Anna Santana</strong></div>
+          <div class="row2"><span>Carteirinha</span><strong>0 000 0000 000000-0</strong></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;flex:1">
+          <div class="alert alert-info"><div class="abody"><strong>Nova funcionalidade</strong>Emita a 2ª via do boleto direto pelo app.</div></div>
+          <div class="alert alert-positive"><div class="abody"><strong>Consulta confirmada</strong>Dr. Henrique Lopes — 21 de abril, 14:30, Unimed Paulista.</div></div>
+          <div class="alert alert-warning"><div class="abody"><strong>Documento pendente</strong>Envie o comprovante de residência até 30/04.</div></div>
+          <div class="alert alert-negative"><div class="abody"><strong>Não conseguimos processar o pagamento</strong>Verifique os dados do cartão e tente novamente.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cmp-section">
+      <h2>Navegação</h2>
+      <p class="desc-sm">O menu lateral do portal é um rail fixo de 120 px. O item ativo usa azul preenchido; o hover recebe uma superfície azul suave. Avatares medem 48 px.</p>
+      <div class="cmp-row" style="align-items: flex-start; gap: 24px">
+        <div class="sidemenu">
+          <div class="logo-rail"><img src="assets/unimed-symbol.svg" alt="" width="24" height="24" style="filter:brightness(0) invert(1)"></div>
+          <div class="nav-item active"><i class="ph-fill ph-house"></i></div>
+          <div class="nav-item"><i class="ph ph-heartbeat"></i></div>
+          <div class="nav-item"><i class="ph ph-tooth"></i></div>
+          <div class="nav-item"><i class="ph ph-piggy-bank"></i></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span class="row-label" style="margin-top:0">Avatares</span>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="avatar"><i class="ph ph-user" style="font-size:18px"></i></div>
+            <div class="avatar" style="background:var(--color-primary);color:#fff">JS</div>
+            <div class="avatar" style="background:var(--color-green-surface);color:var(--color-green-900)">AN</div>
+            <div style="display:flex;flex-direction:column">
+              <span class="label-md-3">Juditte Silveira</span>
+              <span class="label-sm-1" style="color:var(--color-neutral-600);margin-top:3px">Corretora</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ 07 — BRAND ═══════════════ -->
+<div class="page">
+  <div class="page-inner">
+    <header class="running"><span class="brand"><img src="assets/unimed-symbol.svg" alt="">Unimed DSU</span><span>07 · Marca</span></header>
+    <div class="lead">
+      <div class="kicker">Brand · 07</div>
+      <h1>Marca</h1>
+      <p>A identidade Unimed é ancorada pelo símbolo oficial e pelo azul institucional. Sub-marcas (Saúde, Odonto, Seguros) reutilizam a mesma marca com wordmarks distintos; o selo ANS é atribuição regulatória, nunca decoração.</p>
+    </div>
+
+    <h2 class="section-heading">Marca principal</h2>
+    <p class="desc-sm">Usado em ícones de app, avatares e header de navegação. Tamanho mínimo 24 × 24 px. Sempre use o SVG oficial de <code>assets/unimed-symbol.svg</code>.</p>
+    <div class="brand-grid">
+      <div class="mark"><img src="assets/unimed-symbol.svg" alt="Unimed" width="52" height="52"><div class="mname">Unimed · primary</div></div>
+      <div class="mark dark"><img src="assets/unimed-symbol.svg" alt="Unimed" width="52" height="52" style="filter:brightness(0) invert(1)"><div class="mname">Unimed · inverse</div></div>
+      <div class="mark" style="background:var(--color-green)"><img src="assets/unimed-symbol.svg" alt="Unimed" width="52" height="52" style="filter:brightness(0) invert(1)"><div class="mname" style="color:#fff">Unimed · on green</div></div>
+    </div>
+
+    <h2 class="section-heading">Marcas regulatórias & parceiras</h2>
+    <p class="desc-sm">A atribuição ANS (Agência Nacional de Saúde Suplementar) é obrigatória no rodapé de qualquer superfície Unimed Saúde ou Odonto. O selo e o número de registro são obrigação legal — nunca remova, recolora ou reduza abaixo de 24 px de altura.</p>
+    <div class="brand-grid">
+      <div class="mark">
+        <div style="display:flex;align-items:center;gap:8px">
+          <svg viewBox="0 0 48 48" width="32" height="32" fill="none" stroke="var(--color-green)" stroke-width="3"><circle cx="24" cy="24" r="18"/><path d="M14 22c0-6 4-10 10-10s10 4 10 10"/><path d="M14 22l-4 2" stroke-linecap="round"/><path d="M34 22l4 2" stroke-linecap="round"/></svg>
+          <div style="display:flex;flex-direction:column"><span style="font-family:var(--font-family-brand);font-size:16px;font-weight:700;color:var(--color-primary)">ANS</span><span style="font-size:9px;color:var(--color-neutral-600);line-height:1.2">Agência Nacional de<br>Saúde Suplementar</span></div>
+        </div>
+        <div class="mname">ANS logotype</div>
+      </div>
+      <div class="mark">
+        <div style="padding:6px 12px;border:2px solid var(--color-primary);border-radius:4px"><span style="font-family:var(--font-family-brand);font-size:10px;font-weight:700;color:var(--color-primary);letter-spacing:0.1em">ANS nº 00.070-1</span></div>
+        <div class="mname">Registration tag</div>
+      </div>
+      <div class="mark"><div style="width:48px;height:48px;border-radius:50%;background:var(--color-neutral-100);border:1px dashed var(--color-neutral-300);display:flex;align-items:center;justify-content:center;color:var(--color-neutral-500);font-size:9px;font-family:var(--font-family-system)">Selo ANS<br>Saúde</div><div class="mname">Selo ANS (placeholder)</div></div>
+    </div>
+
+    <h2 class="section-heading">Regras de uso</h2>
+    <div class="rules">
+      <div class="rule do"><div class="icon-r">✓</div><p><strong>Do</strong> — coloque a marca em branco, Primary Blue ou Unimed Green. Sempre use um SVG aprovado.</p></div>
+      <div class="rule do"><div class="icon-r">✓</div><p><strong>Do</strong> — mantenha o clear space mínimo ao redor da marca em todos os lados.</p></div>
+      <div class="rule dont"><div class="icon-r">✗</div><p><strong>Don't</strong> — recolorir a marca fora da paleta, aplicar sombras ou gradientes.</p></div>
+      <div class="rule dont"><div class="icon-r">✗</div><p><strong>Don't</strong> — girar, esticar ou contornar o wordmark. Evite fotografias de baixo contraste sem placa de suporte.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ 08 — VOICE / CONTENT ═══════════════ -->
+<div class="page">
+  <div class="page-inner">
+    <header class="running"><span class="brand"><img src="assets/unimed-symbol.svg" alt="">Unimed DSU</span><span>08 · Voz & conteúdo</span></header>
+    <div class="lead">
+      <div class="kicker">Content · 08</div>
+      <h1>Voz, tom & conteúdo</h1>
+      <p>Como a Unimed escreve. Português brasileiro, linguagem informal e humana — sem perder precisão clínica e legal. Ações em verbos no infinitivo; mensagens de erro sem alarmismo.</p>
+    </div>
+
+    <h2 class="section-heading">Pilares de voz</h2>
+    <div class="voice-grid">
+      <div class="voice-card">
+        <h3>Cuidado</h3>
+        <p>Nossa voz é de alguém que está do lado do cliente. Falamos como um profissional de saúde experiente: com atenção, sem pressa e sem jargão desnecessário.</p>
+      </div>
+      <div class="voice-card">
+        <h3>Clareza</h3>
+        <p>Uma ideia por frase. Prefira verbos concretos a substantivos abstratos. Evite "realizar", "efetuar", "proceder" — prefira "fazer", "marcar", "enviar".</p>
+      </div>
+      <div class="voice-card">
+        <h3>Confiança</h3>
+        <p>Dados médicos e financeiros exigem precisão. Use valores completos, CPF/CNPJ formatado e datas por extenso quando o contexto for sensível.</p>
+      </div>
+      <div class="voice-card">
+        <h3>Proximidade</h3>
+        <p>Tratamento "você" em todas as superfícies. Nunca "o(a) cliente", "o(a) usuário(a)". Para mensagens de equipe interna, use "time", não "colaborador".</p>
+      </div>
+    </div>
+
+    <h2 class="section-heading">Ações — verbos no infinitivo</h2>
+    <p class="desc-sm">Botões começam com o verbo que descreve a ação. Evite rótulos genéricos como "OK" ou "Confirmar" sem contexto.</p>
+    <div class="do-dont">
+      <div class="item ok"><span class="lbl">Do</span>Marcar consulta · Baixar carteirinha · Ver detalhes do plano · Enviar documento</div>
+      <div class="item no"><span class="lbl">Don't</span>OK · Continuar · Enviar · Confirmar (sem contexto)</div>
+    </div>
+
+    <h2 class="section-heading">Mensagens de erro</h2>
+    <p class="desc-sm">Nunca culpe o cliente. Nunca use "inválido", "incorreto" ou "erro" isoladamente. Diga <em>o que aconteceu</em> e <em>o que fazer</em>.</p>
+    <div class="do-dont">
+      <div class="item ok"><span class="lbl">Do</span>"Não conseguimos processar o pagamento. Verifique os dados do cartão e tente novamente."</div>
+      <div class="item no"><span class="lbl">Don't</span>"Erro: transação inválida." · "Falha ao processar. Tente mais tarde."</div>
+    </div>
+
+    <h2 class="section-heading">Convenções pt-BR</h2>
+    <div class="voice-grid">
+      <div class="voice-card">
+        <h3>Datas & horários</h3>
+        <p>Datas por extenso em contexto clínico: "21 de abril, 14:30". Em tabelas e grids: "21/04/2026 · 14:30". Sempre 24 horas, nunca AM/PM.</p>
+      </div>
+      <div class="voice-card">
+        <h3>Valores monetários</h3>
+        <p>"R$ 1.234,56" com espaço após R$. Parcelas: "12× de R$ 102,88 sem juros". Nunca "R$1.234" ou "1234 reais".</p>
+      </div>
+      <div class="voice-card">
+        <h3>Documentos</h3>
+        <p>CPF sempre formatado: "000.000.000-00". CNPJ: "00.000.000/0000-00". Números de carteirinha em grupos de 4.</p>
+      </div>
+      <div class="voice-card">
+        <h3>Produtos</h3>
+        <p>Sempre "Unimed Saúde", "Unimed Odonto", "Seguros Unimed" — não abrevie. "Super App" com duas palavras iniciais maiúsculas.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ COLOPHON ═══════════════ -->
+<div class="page">
+  <div class="colophon">
+    <div class="sigil">
+      <svg viewBox="0 0 48 48"><path d="M47.7324 27.8346L33.244 8.68871C33.0987 8.50826 32.899 8.39999 32.663 8.39999H15.197C14.9791 8.39999 14.7613 8.50826 14.616 8.68871L0.145772 27.8346C-0.217346 28.3038 0.145781 28.9714 0.708614 28.9714H8.20699C8.80614 28.9714 9.13294 29.6391 8.78798 30.1083L2.76022 38.1203C2.41526 38.5895 2.76022 39.2571 3.34121 39.2571H14.5071C14.725 39.2571 14.9428 39.1489 15.0881 38.9684L21.7694 30.0902C22.1144 29.6211 21.7694 28.9534 21.1885 28.9534H18.8463H17.7207C17.0852 28.9534 16.7221 28.2316 17.1034 27.7083L23.0404 19.9128C23.4216 19.4075 23.0585 18.6677 22.4231 18.6677H17.7388C17.1034 18.6677 16.7403 17.9459 17.1215 17.4226L23.3672 9.21202C23.6758 8.79698 24.2931 8.79698 24.6199 9.21202L30.8111 17.4226C31.1924 17.9278 30.8111 18.6677 30.1938 18.6677H25.564C24.9286 18.6677 24.5473 19.3895 24.9467 19.9128L30.8292 27.7083C31.2105 28.2135 30.8292 28.9534 30.2119 28.9534H29.0863H26.7986C26.2176 28.9534 25.8727 29.6211 26.2358 30.0902L32.9172 38.9684C33.0624 39.1489 33.2621 39.2571 33.4981 39.2571H44.664C45.245 39.2571 45.59 38.5895 45.2268 38.1203L39.1991 30.1083C38.8541 29.6391 39.1991 28.9714 39.7801 28.9714H47.2785C47.8776 28.9714 48.2044 28.3038 47.8595 27.8346Z"/></svg>
+    </div>
+    <h2>Cuidar de você, todos os dias.</h2>
+    <p>Este é um documento vivo. Tokens, componentes e diretrizes evoluem com os produtos Unimed — sempre priorizando acessibilidade, clareza e o jeito humano de falar sobre saúde.</p>
+    <div class="version">Design System Unimed · v1.0 · 2026</div>
+  </div>
+</div>
+
+</body>
+<script>
+  // Wait for fonts + Phosphor icons to render, then print.
+  window.addEventListener('load', async () => {
+    try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (e) {}
+    setTimeout(() => window.print(), 700);
+  });
+</script>
+</html>

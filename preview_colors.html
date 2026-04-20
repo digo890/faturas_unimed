@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>DSU — Colors</title>
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  body { background: var(--bg-base); color: var(--fg-1); padding: 48px 64px; }
+  .page-title { margin-bottom: 8px; }
+  .subtitle { color: var(--fg-3); margin-bottom: 48px; max-width: 640px; }
+  .group { margin-bottom: 48px; }
+  .group h2 { margin-bottom: 20px; font-size: 20px; color: var(--color-primary); font-weight: 600; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .swatch { border: 1px solid var(--border-default); border-radius: 12px; overflow: hidden; background: #fff; }
+  .chip { height: 96px; display: flex; align-items: flex-end; padding: 12px; color: #fff; font-family: var(--font-family-system); font-size: 12px; font-weight: 500; }
+  .chip.on-dark { color: #fff; }
+  .chip.on-light { color: var(--color-neutral-900); }
+  .meta { padding: 12px 14px; }
+  .meta .name { font-family: var(--font-family-system); font-size: 13px; font-weight: 600; color: var(--color-neutral-900); }
+  .meta .hex { font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: var(--color-neutral-600); margin-top: 4px; letter-spacing: 0.02em; }
+  .meta .token { font-family: 'SF Mono', Menlo, monospace; font-size: 10px; color: var(--color-neutral-500); margin-top: 2px; }
+</style>
+</head>
+<body>
+  <h1 class="page-title">Colors</h1>
+  <p class="subtitle">Semantic tokens from <code>colors_and_type.css</code>. Use the token name in code — never the hex directly.</p>
+
+  <section class="group">
+    <h2>Brand · Corporate Blue</h2>
+    <div class="grid">
+      <div class="swatch"><div class="chip" style="background:#001e4c"></div><div class="meta"><div class="name">Primary 900</div><div class="hex">#001E4C</div><div class="token">--color-primary-900</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#002c74"></div><div class="meta"><div class="name">Primary 800</div><div class="hex">#002C74</div><div class="token">--color-primary-800</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#002d74"></div><div class="meta"><div class="name">Primary</div><div class="hex">#002D74</div><div class="token">--color-primary</div></div></div>
+      <div class="swatch"><div class="chip on-light" style="background:#f2f7ff"></div><div class="meta"><div class="name">Primary Surface</div><div class="hex">#F2F7FF</div><div class="token">--color-primary-surface</div></div></div>
+    </div>
+  </section>
+
+  <section class="group">
+    <h2>Brand · Unimed Green</h2>
+    <div class="grid">
+      <div class="swatch"><div class="chip" style="background:#005231"></div><div class="meta"><div class="name">Green 900</div><div class="hex">#005231</div><div class="token">--color-green-900</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#00804c"></div><div class="meta"><div class="name">Green 700</div><div class="hex">#00804C</div><div class="token">--color-green-700</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#00995d"></div><div class="meta"><div class="name">Green</div><div class="hex">#00995D</div><div class="token">--color-green</div></div></div>
+      <div class="swatch"><div class="chip on-light" style="background:#effbf3"></div><div class="meta"><div class="name">Green Surface</div><div class="hex">#EFFBF3</div><div class="token">--color-green-surface</div></div></div>
+    </div>
+  </section>
+
+  <section class="group">
+    <h2>Feedback</h2>
+    <div class="grid">
+      <div class="swatch"><div class="chip" style="background:#0084b8"></div><div class="meta"><div class="name">Info</div><div class="hex">#0084B8</div><div class="token">--color-info</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#00995d"></div><div class="meta"><div class="name">Positive</div><div class="hex">#00995D</div><div class="token">--color-positive</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#db610c"></div><div class="meta"><div class="name">Warning</div><div class="hex">#DB610C</div><div class="token">--color-warning</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#dd4040"></div><div class="meta"><div class="name">Negative</div><div class="hex">#DD4040</div><div class="token">--color-negative</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#7d4bd2"></div><div class="meta"><div class="name">Promote</div><div class="hex">#7D4BD2</div><div class="token">--color-promote</div></div></div>
+      <div class="swatch"><div class="chip on-light" style="background:#ebf9ff"></div><div class="meta"><div class="name">Info Surface</div><div class="hex">#EBF9FF</div><div class="token">--color-info-surface</div></div></div>
+      <div class="swatch"><div class="chip on-light" style="background:#fff3eb"></div><div class="meta"><div class="name">Warning Surface</div><div class="hex">#FFF3EB</div><div class="token">--color-warning-surface</div></div></div>
+      <div class="swatch"><div class="chip on-light" style="background:#fcf3f3"></div><div class="meta"><div class="name">Negative Surface</div><div class="hex">#FCF3F3</div><div class="token">--color-negative-surface</div></div></div>
+    </div>
+  </section>
+
+  <section class="group">
+    <h2>Neutrals</h2>
+    <div class="grid">
+      <div class="swatch"><div class="chip" style="background:#18191a"></div><div class="meta"><div class="name">Neutral 900</div><div class="hex">#18191A</div><div class="token">--color-neutral-900</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#2e3138"></div><div class="meta"><div class="name">Neutral 800</div><div class="hex">#2E3138</div><div class="token">--color-neutral-800</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#494f59"></div><div class="meta"><div class="name">Neutral 600</div><div class="hex">#494F59</div><div class="token">--color-neutral-600</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#8993a3"></div><div class="meta"><div class="name">Neutral 500</div><div class="hex">#8993A3</div><div class="token">--color-neutral-500</div></div></div>
+      <div class="swatch"><div class="chip on-light" style="background:#d3d7df"></div><div class="meta"><div class="name">Neutral 300</div><div class="hex">#D3D7DF</div><div class="token">--color-neutral-300</div></div></div>
+      <div class="swatch"><div class="chip on-light" style="background:#e6eaf2"></div><div class="meta"><div class="name">Neutral 200</div><div class="hex">#E6EAF2</div><div class="token">--color-neutral-200</div></div></div>
+      <div class="swatch"><div class="chip on-light" style="background:#f8f9fc"></div><div class="meta"><div class="name">Neutral 100</div><div class="hex">#F8F9FC</div><div class="token">--color-neutral-100</div></div></div>
+      <div class="swatch"><div class="chip on-light" style="background:#ffffff;border:1px dashed #d3d7df"></div><div class="meta"><div class="name">White</div><div class="hex">#FFFFFF</div><div class="token">--color-neutral-white</div></div></div>
+    </div>
+  </section>
+</body>
+</html>

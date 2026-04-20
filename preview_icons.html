@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>DSU — Iconography</title>
+<link rel="stylesheet" href="colors_and_type.css">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.2"></script>
+<style>
+  body { background: var(--bg-subtle); padding: 48px 64px; color: var(--fg-1); }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+  .page-title { margin-bottom: 8px; }
+  .subtitle { color: var(--fg-3); margin-bottom: 48px; max-width: 680px; }
+  section { background: #fff; border-radius: 16px; padding: 32px; margin-bottom: 24px; border: 1px solid var(--border-default); }
+  section > h2 { font-size: 14px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-primary); margin-bottom: 8px; }
+  section > .desc { color: var(--fg-3); font-size: 14px; margin-bottom: 24px; max-width: 640px; }
+  .sizes { display: flex; gap: 40px; align-items: baseline; }
+  .sizes .cell { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--color-primary); }
+  .sizes .cell .val { font-family: var(--font-family-system); font-size: 11px; color: var(--color-neutral-500); }
+  .weights { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .weight { border: 1px solid var(--border-default); border-radius: 12px; padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .weight i { font-size: 40px; color: var(--color-primary); }
+  .weight .name { font-family: var(--font-family-system); font-size: 13px; font-weight: 600; }
+  .weight .use { font-family: var(--font-family-system); font-size: 11px; color: var(--color-neutral-500); text-align: center; }
+  .library { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  .icon-cell { border: 1px solid var(--border-default); border-radius: 12px; padding: 16px 12px; display: flex; flex-direction: column; align-items: center; gap: 8px; background: #fff; }
+  .icon-cell i { font-size: 28px; color: var(--color-primary); }
+  .icon-cell .n { font-family: 'SF Mono', Menlo, monospace; font-size: 10px; color: var(--color-neutral-600); text-align: center; line-height: 1.3; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="page-title">Iconography</h1>
+  <p class="subtitle">DSU uses <a href="https://phosphoricons.com/" style="color:var(--color-primary)">Phosphor Icons</a>. Two weights only: <strong>Regular</strong> for all default UI, <strong>Fill</strong> for active nav states and filled accents. Size via <code>font-size</code>; colors inherit <code>currentColor</code>.</p>
+
+  <section>
+    <h2>Sizes</h2>
+    <p class="desc">Three canonical sizes. Anything else breaks the grid.</p>
+    <div class="sizes">
+      <div class="cell"><i class="ph ph-heartbeat" style="font-size:16px"></i><span class="val">16 · inline text</span></div>
+      <div class="cell"><i class="ph ph-heartbeat" style="font-size:24px"></i><span class="val">24 · default</span></div>
+      <div class="cell"><i class="ph ph-heartbeat" style="font-size:32px"></i><span class="val">32 · shortcuts</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Weights in use</h2>
+    <p class="desc">Only Regular and Fill are sanctioned. Bold / Duotone / Thin / Light require explicit design approval.</p>
+    <div class="weights">
+      <div class="weight"><i class="ph ph-house"></i><span class="name">ph · Regular</span><span class="use">Default — all UI</span></div>
+      <div class="weight"><i class="ph-fill ph-house"></i><span class="name">ph-fill · Fill</span><span class="use">Active nav / accents</span></div>
+      <div class="weight" style="opacity:0.4"><i class="ph-bold ph-house"></i><span class="name">ph-bold</span><span class="use">Use only with approval</span></div>
+      <div class="weight" style="opacity:0.4"><i class="ph-duotone ph-house"></i><span class="name">ph-duotone</span><span class="use">Avoid — breaks rhythm</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Canonical mapping</h2>
+    <p class="desc">Use these names for recurring product concepts — keep the mapping consistent across all Unimed products.</p>
+    <div class="library">
+      <div class="icon-cell"><i class="ph-fill ph-house"></i><span class="n">ph-house<br>Início</span></div>
+      <div class="icon-cell"><i class="ph ph-heartbeat"></i><span class="n">ph-heartbeat<br>Saúde</span></div>
+      <div class="icon-cell"><i class="ph ph-tooth"></i><span class="n">ph-tooth<br>Odonto</span></div>
+      <div class="icon-cell"><i class="ph ph-piggy-bank"></i><span class="n">ph-piggy-bank<br>Financeiro</span></div>
+      <div class="icon-cell"><i class="ph ph-headset"></i><span class="n">ph-headset<br>Atendimento</span></div>
+      <div class="icon-cell"><i class="ph ph-question"></i><span class="n">ph-question<br>Ajuda</span></div>
+      <div class="icon-cell"><i class="ph ph-whatsapp-logo"></i><span class="n">ph-whatsapp-logo<br>WhatsApp</span></div>
+      <div class="icon-cell"><i class="ph ph-bell"></i><span class="n">ph-bell<br>Notificações</span></div>
+      <div class="icon-cell"><i class="ph ph-magnifying-glass"></i><span class="n">ph-magnifying-glass<br>Buscar</span></div>
+      <div class="icon-cell"><i class="ph ph-caret-left"></i><span class="n">ph-caret-left<br>Voltar</span></div>
+      <div class="icon-cell"><i class="ph ph-caret-right"></i><span class="n">ph-caret-right<br>Avançar</span></div>
+      <div class="icon-cell"><i class="ph ph-download-simple"></i><span class="n">ph-download-simple<br>Baixar</span></div>
+      <div class="icon-cell"><i class="ph ph-x"></i><span class="n">ph-x<br>Fechar</span></div>
+      <div class="icon-cell"><i class="ph ph-user"></i><span class="n">ph-user<br>Perfil</span></div>
+      <div class="icon-cell"><i class="ph ph-graduation-cap"></i><span class="n">ph-graduation-cap<br>Academia</span></div>
+      <div class="icon-cell"><i class="ph ph-file-text"></i><span class="n">ph-file-text<br>Documentos</span></div>
+      <div class="icon-cell"><i class="ph ph-calendar-blank"></i><span class="n">ph-calendar-blank<br>Agenda</span></div>
+      <div class="icon-cell"><i class="ph ph-credit-card"></i><span class="n">ph-credit-card<br>Cartão</span></div>
+      <div class="icon-cell"><i class="ph ph-shield-check"></i><span class="n">ph-shield-check<br>Seguros</span></div>
+      <div class="icon-cell"><i class="ph ph-chat-circle-text"></i><span class="n">ph-chat-circle-text<br>Mensagens</span></div>
+      <div class="icon-cell"><i class="ph ph-info"></i><span class="n">ph-info<br>Informação</span></div>
+      <div class="icon-cell"><i class="ph ph-warning-circle"></i><span class="n">ph-warning-circle<br>Atenção</span></div>
+      <div class="icon-cell"><i class="ph ph-check-circle"></i><span class="n">ph-check-circle<br>Sucesso</span></div>
+      <div class="icon-cell"><i class="ph ph-gear"></i><span class="n">ph-gear<br>Configurações</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Uso em código</h2>
+    <p class="desc">Phosphor entrega uma tag <code>&lt;i&gt;</code> transformada em SVG pelo script. Sempre defina <code>font-size</code> explícito; não altere a cor por <code>fill</code> — use <code>color</code>.</p>
+    <div style="background:var(--color-neutral-100);padding:20px 24px;border-radius:12px;font-family:'SF Mono',Menlo,monospace;font-size:13px;line-height:1.6;color:var(--color-neutral-800)">
+&lt;script src="https://unpkg.com/@phosphor-icons/web@2.1.2"&gt;&lt;/script&gt;<br>
+&lt;i class="ph ph-heartbeat" style="font-size:24px"&gt;&lt;/i&gt;<br>
+&lt;i class="ph-fill ph-house" style="font-size:24px;color:var(--color-primary)"&gt;&lt;/i&gt;
+    </div>
+  </section>
+</div>
+</body>
+</html>

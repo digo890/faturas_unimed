@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>DSU — Spacing, Radii & Shadows</title>
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  body { background: var(--bg-base); padding: 48px 64px; }
+  .wrap { max-width: 1040px; }
+  .page-title { margin-bottom: 8px; }
+  .subtitle { color: var(--fg-3); margin-bottom: 48px; max-width: 640px; }
+  section { margin-bottom: 56px; }
+  section > h2 { font-size: 14px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-primary); margin-bottom: 24px; }
+  .spacing-row { display: flex; align-items: center; gap: 24px; padding: 10px 0; border-bottom: 1px solid var(--border-default); }
+  .spacing-row .token { font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: var(--color-neutral-900); font-weight: 600; width: 120px; }
+  .spacing-row .val { font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: var(--color-neutral-500); width: 60px; }
+  .spacing-row .bar { height: 16px; background: var(--color-primary); border-radius: 2px; }
+  .radii { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .radii .cell { border: 1px solid var(--border-default); padding: 20px; background: #fff; }
+  .radii .sq { height: 72px; background: var(--color-primary-surface); border: 1px solid var(--color-primary); }
+  .radii .token { font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: var(--color-neutral-900); margin-top: 12px; font-weight: 600; }
+  .radii .val { font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: var(--color-neutral-500); margin-top: 2px; }
+  .shadows { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .shadow-card { background: #fff; border-radius: 16px; padding: 32px; text-align: center; }
+  .shadow-card.c1 { box-shadow: var(--shadow-card); }
+  .shadow-card.c2 { box-shadow: var(--shadow-floating); }
+  .shadow-card.c3 { box-shadow: var(--shadow-dialog); }
+  .shadow-card .t { font-family: var(--font-family-system); font-size: 14px; font-weight: 600; color: var(--color-neutral-900); }
+  .shadow-card .s { font-family: 'SF Mono', Menlo, monospace; font-size: 11px; color: var(--color-neutral-500); margin-top: 4px; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 class="page-title">Spacing, Radii & Shadows</h1>
+    <p class="subtitle">Every layout value snaps to the 4 px baseline. Radii are restrained — four steps, no custom values.</p>
+
+    <section>
+      <h2>Spacing scale</h2>
+      <div class="spacing-row"><div class="token">--space-1</div><div class="val">4 px</div><div class="bar" style="width:4px"></div></div>
+      <div class="spacing-row"><div class="token">--space-2</div><div class="val">8 px</div><div class="bar" style="width:8px"></div></div>
+      <div class="spacing-row"><div class="token">--space-3</div><div class="val">12 px</div><div class="bar" style="width:12px"></div></div>
+      <div class="spacing-row"><div class="token">--space-4</div><div class="val">16 px</div><div class="bar" style="width:16px"></div></div>
+      <div class="spacing-row"><div class="token">--space-5</div><div class="val">20 px</div><div class="bar" style="width:20px"></div></div>
+      <div class="spacing-row"><div class="token">--space-6</div><div class="val">24 px</div><div class="bar" style="width:24px"></div></div>
+      <div class="spacing-row"><div class="token">--space-7</div><div class="val">32 px</div><div class="bar" style="width:32px"></div></div>
+      <div class="spacing-row"><div class="token">--space-8</div><div class="val">40 px</div><div class="bar" style="width:40px"></div></div>
+      <div class="spacing-row"><div class="token">--space-9</div><div class="val">48 px</div><div class="bar" style="width:48px"></div></div>
+      <div class="spacing-row"><div class="token">--space-10</div><div class="val">64 px</div><div class="bar" style="width:64px"></div></div>
+      <div class="spacing-row"><div class="token">--space-11</div><div class="val">80 px</div><div class="bar" style="width:80px"></div></div>
+    </section>
+
+    <section>
+      <h2>Radii</h2>
+      <div class="radii">
+        <div class="cell"><div class="sq" style="border-radius:0"></div><div class="token">--radius-none</div><div class="val">0 px</div></div>
+        <div class="cell"><div class="sq" style="border-radius:4px"></div><div class="token">--radius-sm</div><div class="val">4 px · tags</div></div>
+        <div class="cell"><div class="sq" style="border-radius:8px"></div><div class="token">--radius-md</div><div class="val">8 px · chips</div></div>
+        <div class="cell"><div class="sq" style="border-radius:16px"></div><div class="token">--radius-lg</div><div class="val">16 px · cards</div></div>
+        <div class="cell"><div class="sq" style="border-radius:9999px"></div><div class="token">--radius-full</div><div class="val">pill · avatars</div></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Shadows</h2>
+      <div class="shadows">
+        <div class="shadow-card c1"><div class="t">Card</div><div class="s">--shadow-card</div></div>
+        <div class="shadow-card c2"><div class="t">Floating</div><div class="s">--shadow-floating</div></div>
+        <div class="shadow-card c3"><div class="t">Dialog</div><div class="s">--shadow-dialog</div></div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

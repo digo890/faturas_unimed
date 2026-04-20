@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>DSU — Brand</title>
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  body { background: var(--bg-subtle); padding: 48px 64px; color: var(--fg-1); }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+  .page-title { margin-bottom: 8px; }
+  .subtitle { color: var(--fg-3); margin-bottom: 48px; max-width: 680px; }
+  section { background: #fff; border-radius: 16px; padding: 32px; margin-bottom: 24px; border: 1px solid var(--border-default); }
+  section > h2 { font-size: 14px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-primary); margin-bottom: 8px; }
+  section > .desc { color: var(--fg-3); font-size: 14px; margin-bottom: 24px; max-width: 680px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .mark { border: 1px solid var(--border-default); border-radius: 16px; padding: 32px; display: flex; flex-direction: column; align-items: center; gap: 16px; background: #fff; min-height: 180px; justify-content: center; }
+  .mark.dark { background: var(--color-primary); color: #fff; }
+  .mark .name { font-family: var(--font-family-system); font-size: 13px; font-weight: 600; color: var(--color-neutral-900); margin-top: auto; }
+  .mark.dark .name { color: #fff; }
+  .clear-space { position: relative; padding: 48px; background: var(--color-neutral-100); border-radius: 16px; display: inline-block; }
+  .clear-space .bracket { position: absolute; color: var(--color-neutral-500); font-family: 'SF Mono', Menlo, monospace; font-size: 11px; }
+  .rules { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .rule { display: flex; gap: 16px; padding: 16px; border-radius: 12px; border: 1px solid var(--border-default); }
+  .rule .icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 600; font-family: var(--font-family-system); }
+  .rule.do .icon { background: var(--color-positive-surface); color: var(--color-positive-dark); }
+  .rule.dont .icon { background: var(--color-negative-surface); color: var(--color-negative-dark); }
+  .rule p { font-size: 14px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="page-title">Brand</h1>
+  <p class="subtitle">Unimed's visual identity is anchored by the official brand symbol and the institutional navy. Sub-brands (Saúde, Odonto, Seguros) reuse the mark with distinct wordmarks; the ANS seal is a regulatory attribution, never decorative.</p>
+
+  <section>
+    <h2>Primary Mark</h2>
+    <p class="desc">The symbol alone is used in app icons, avatars, and the nav header. Minimum size is 24 × 24 px. Always use the official SVG from <code>assets/unimed-symbol.svg</code>.</p>
+    <div class="grid">
+      <div class="mark"><img src="assets/unimed-symbol.svg" alt="Unimed" width="72" height="72"><div class="name">Unimed · primary</div></div>
+      <div class="mark dark"><img src="assets/unimed-symbol.svg" alt="Unimed" width="72" height="72" style="filter:brightness(0) invert(1)"><div class="name">Unimed · inverse</div></div>
+      <div class="mark" style="background:var(--color-green)"><img src="assets/unimed-symbol.svg" alt="Unimed" width="72" height="72" style="filter:brightness(0) invert(1)"><div class="name" style="color:#fff">Unimed · on green</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sub-brand Lockups</h2>
+    <p class="desc">Each Unimed product has a locked wordmark treatment. Never recreate these by hand — always use the approved SVG from <code>assets/</code>.</p>
+    <div class="grid">
+      <div class="mark">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="display:flex;flex-direction:column;align-items:flex-end;line-height:1"><span style="font-family:var(--font-family-brand);font-size:22px;font-weight:600;color:var(--color-primary)">Unimed</span><span style="font-family:var(--font-family-brand);font-size:11px;letter-spacing:0.2em;color:var(--color-primary)">SAÚDE</span></div>
+          <img src="assets/unimed-symbol.svg" alt="Unimed" width="32" height="32">
+        </div>
+        <div class="name" style="color:#fff">Seguros Unimed</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Regulatory & Partner Marks</h2>
+    <p class="desc">ANS (Agência Nacional de Saúde Suplementar) attribution is required in the footer of any Unimed Saúde or Odonto surface. The ANS seal and registration number are a legal obligation — never remove, recolor, or resize below 24 px high.</p>
+    <div class="grid">
+      <div class="mark">
+        <div style="display:flex;align-items:center;gap:12px">
+          <svg viewBox="0 0 48 48" width="40" height="40" fill="none" stroke="var(--color-green)" stroke-width="3"><circle cx="24" cy="24" r="18"/><path d="M14 22c0-6 4-10 10-10s10 4 10 10"/><path d="M14 22l-4 2" stroke-linecap="round"/><path d="M34 22l4 2" stroke-linecap="round"/></svg>
+          <div style="display:flex;flex-direction:column"><span style="font-family:var(--font-family-brand);font-size:20px;font-weight:700;color:var(--color-primary)">ANS</span><span style="font-size:11px;color:var(--color-neutral-600);line-height:1.2">Agência Nacional de<br>Saúde Suplementar</span></div>
+        </div>
+        <div class="name">ANS logotype</div>
+      </div>
+      <div class="mark">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 16px;border:2px solid var(--color-primary);border-radius:6px"><span style="font-family:var(--font-family-brand);font-size:11px;font-weight:700;color:var(--color-primary);letter-spacing:0.1em">ANS nº 00.070-1</span></div>
+        <div class="name">ANS registration tag</div>
+      </div>
+      <div class="mark"><div style="width:64px;height:64px;border-radius:50%;background:var(--color-neutral-100);border:1px dashed var(--color-neutral-300);display:flex;align-items:center;justify-content:center;color:var(--color-neutral-500);font-size:11px;font-family:var(--font-family-system)">Selo ANS<br>Saúde</div><div class="name">Selo ANS Saúde (placeholder)</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Clear space & sizing</h2>
+    <p class="desc">Reserve a margin equal to the height of the symbol's base flame around every lockup. Never crowd the mark against text, edges, or imagery.</p>
+    <div class="clear-space">
+      <svg viewBox="0 0 64 64" width="64" height="64" fill="var(--color-primary)"><path d="M10 54 L24 14 L32 32 L40 14 L54 54 L42 54 L32 36 L22 54 Z"/></svg>
+      <span class="bracket" style="top:8px;left:48%">x</span>
+      <span class="bracket" style="left:8px;top:48%">x</span>
+      <span class="bracket" style="right:8px;top:48%">x</span>
+      <span class="bracket" style="bottom:8px;left:48%">x</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Usage rules</h2>
+    <div class="rules">
+      <div class="rule do"><div class="icon">✓</div><p><strong>Do</strong> place the mark on white, Primary Blue, or Unimed Green. Always use an approved SVG from <code>assets/</code>.</p></div>
+      <div class="rule do"><div class="icon">✓</div><p><strong>Do</strong> keep the minimum clear space equal to the symbol's base flame on all sides.</p></div>
+      <div class="rule dont"><div class="icon">✗</div><p><strong>Don't</strong> recolor the mark outside the palette, add drop shadows, or apply gradients.</p></div>
+      <div class="rule dont"><div class="icon">✗</div><p><strong>Don't</strong> rotate, stretch, or outline the wordmark. Place marks on low-contrast photography without a backing plate.</p></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

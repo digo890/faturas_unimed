@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Unimed DSU — Design System</title>
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  body { background: var(--bg-subtle); color: var(--fg-1); }
+  .hero { background: var(--color-primary); color: #fff; padding: 80px 64px; display: flex; gap: 48px; align-items: center; }
+  .hero .mark { width: 96px; height: 96px; background: rgba(255,255,255,0.08); border-radius: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .hero h1 { color: #fff; font-size: 48px; font-weight: 400; line-height: 1.1; margin-bottom: 16px; letter-spacing: -0.01em; }
+  .hero p { color: rgba(255,255,255,0.85); max-width: 620px; font-size: 18px; line-height: 1.55; }
+  .hero .kicker { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-family-system); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-green-light); margin-bottom: 12px; }
+  .hero .kicker::before { content: ''; width: 24px; height: 1.5px; background: var(--color-green-light); }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 80px 64px; }
+  .section-label { font-family: var(--font-family-system); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-primary); margin-bottom: 12px; }
+  .section-title { font-size: 32px; font-weight: 400; margin-bottom: 8px; color: var(--color-primary); }
+  .section-lede { color: var(--fg-3); font-size: 16px; line-height: 1.6; max-width: 640px; margin-bottom: 32px; }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 64px; }
+  .card { background: #fff; border: 1px solid var(--border-default); border-radius: 16px; padding: 28px; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 16px; min-height: 220px; transition: border-color 150ms ease, transform 150ms ease; }
+  .card:hover { border-color: var(--color-primary); transform: translateY(-2px); }
+  .card .tag { align-self: flex-start; display: inline-flex; padding: 4px 10px; border-radius: 4px; font-family: var(--font-family-system); font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; background: var(--color-primary-surface); color: var(--color-primary); }
+  .card h3 { font-size: 20px; font-weight: 600; color: var(--color-neutral-900); }
+  .card p { font-size: 14px; color: var(--color-neutral-600); line-height: 1.5; }
+  .card .arrow { margin-top: auto; color: var(--color-primary); font-family: var(--font-family-system); font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 48px; padding: 32px; background: #fff; border: 1px solid var(--border-default); border-radius: 16px; }
+  .stat .v { font-family: var(--font-family-brand); font-size: 40px; font-weight: 400; color: var(--color-primary); line-height: 1; }
+  .stat .k { font-family: var(--font-family-system); font-size: 13px; color: var(--color-neutral-600); margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="mark">
+    <svg viewBox="0 0 48 48" width="72" height="72" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M47.7324 27.8346L33.244 8.68871C33.0987 8.50826 32.899 8.39999 32.663 8.39999H15.197C14.9791 8.39999 14.7613 8.50826 14.616 8.68871L0.145772 27.8346C-0.217346 28.3038 0.145781 28.9714 0.708614 28.9714H8.20699C8.80614 28.9714 9.13294 29.6391 8.78798 30.1083L2.76022 38.1203C2.41526 38.5895 2.76022 39.2571 3.34121 39.2571H14.5071C14.725 39.2571 14.9428 39.1489 15.0881 38.9684L21.7694 30.0902C22.1144 29.6211 21.7694 28.9534 21.1885 28.9534H18.8463H17.7207C17.0852 28.9534 16.7221 28.2316 17.1034 27.7083L23.0404 19.9128C23.4216 19.4075 23.0585 18.6677 22.4231 18.6677H17.7388C17.1034 18.6677 16.7403 17.9459 17.1215 17.4226L23.3672 9.21202C23.6758 8.79698 24.2931 8.79698 24.6199 9.21202L30.8111 17.4226C31.1924 17.9278 30.8111 18.6677 30.1938 18.6677H25.564C24.9286 18.6677 24.5473 19.3895 24.9467 19.9128L30.8292 27.7083C31.2105 28.2135 30.8292 28.9534 30.2119 28.9534H29.0863H26.7986C26.2176 28.9534 25.8727 29.6211 26.2358 30.0902L32.9172 38.9684C33.0624 39.1489 33.2621 39.2571 33.4981 39.2571H44.664C45.245 39.2571 45.59 38.5895 45.2268 38.1203L39.1991 30.1083C38.8541 29.6391 39.1991 28.9714 39.7801 28.9714H47.2785C47.8776 28.9714 48.2044 28.3038 47.8595 27.8346Z"/></svg>
+  </div>
+  <div>
+    <div class="kicker">Design System Unimed · v1.0</div>
+    <h1>Um jeito Unimed de<br>construir produtos digitais.</h1>
+    <p>Tokens, componentes e diretrizes de conteúdo para Unimed Saúde, Unimed Odonto, Seguros Unimed e portais corporativos — com foco em cuidado, clareza e confiança.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="section-label">Foundations</div>
+  <h2 class="section-title">Fundamentos</h2>
+  <p class="section-lede">A base do sistema: paleta, tipografia e ritmo espacial. Todos os valores estão exportados como CSS custom properties em <code>colors_and_type.css</code>.</p>
+
+  <div class="grid">
+    <a class="card" href="preview_colors.html"><span class="tag">Cores</span><h3>Paleta completa</h3><p>Azul corporativo, Unimed Green, feedback e neutros — com nomes semânticos para cada contexto de uso.</p><span class="arrow">Ver paleta →</span></a>
+    <a class="card" href="preview_type.html"><span class="tag">Tipografia</span><h3>Escala tipográfica</h3><p>Inter (Google Fonts) como família única, usada em títulos, corpo e rótulos. 9 níveis de tamanho na razão 1.25×.</p><span class="arrow">Ver escala →</span></a>
+    <a class="card" href="preview_spacing.html"><span class="tag">Espaço</span><h3>Espaçamento & raios</h3><p>Grid baseada em 4 px, raios restritos a 4 níveis, três camadas de sombra. Nada além disso.</p><span class="arrow">Ver tokens →</span></a>
+    <a class="card" href="preview_icons.html"><span class="tag">Ícones</span><h3>Phosphor Icons</h3><p>Biblioteca unificada carregada via CDN. Somente pesos Regular e Fill; mapeamento canônico para conceitos recorrentes.</p><span class="arrow">Ver ícones →</span></a>
+  </div>
+
+  <div class="section-label">Building Blocks</div>
+  <h2 class="section-title">Componentes e marca</h2>
+  <p class="section-lede">Componentes prontos para uso em portal e Super App, e o guia completo da identidade visual Unimed.</p>
+
+  <div class="grid">
+    <a class="card" href="ui_kit.html"><span class="tag">UI Kit</span><h3>Biblioteca de componentes</h3><p>Botões, inputs, tags, cards de atalho, menus laterais, toggles e alertas. Copie e cole direto nas telas.</p><span class="arrow">Abrir kit →</span></a>
+    <a class="card" href="brand.html"><span class="tag">Brand</span><h3>Identidade e logos</h3><p>Símbolo Unimed, lockups Saúde / Odonto / Seguros, selo ANS, regras de espaço livre e o que evitar.</p><span class="arrow">Ver marca →</span></a>
+    <a class="card" href="README.md"><span class="tag">Conteúdo</span><h3>Voz, tom e redação</h3><p>Como a Unimed escreve — pt-BR informal, ações em verbos no infinitivo, mensagens de erro sem alarmismo.</p><span class="arrow">Ler guia →</span></a>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="v">4</div><div class="k">Produtos cobertos<br>Saúde · Odonto · Seguros · Corporativo</div></div>
+    <div class="stat"><div class="v">11</div><div class="k">Tokens de espaço<br>4 px a 80 px</div></div>
+    <div class="stat"><div class="v">9</div><div class="k">Níveis tipográficos<br>12 → 64 px</div></div>
+    <div class="stat"><div class="v">AA</div><div class="k">WCAG contrast<br>para todos os pares</div></div>
+  </div>
+
+</div>
+</body>
+</html>

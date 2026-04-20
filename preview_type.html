@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>DSU — Typography</title>
+<link rel="stylesheet" href="colors_and_type.css">
+<style>
+  body { background: var(--bg-base); padding: 48px 64px; color: var(--fg-1); }
+  .wrap { max-width: 1040px; }
+  .page-title { margin-bottom: 8px; }
+  .subtitle { color: var(--fg-3); margin-bottom: 48px; max-width: 640px; }
+  .family { margin-bottom: 56px; }
+  .family h2 { font-size: 14px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-primary); margin-bottom: 24px; border-top: 1px solid var(--border-default); padding-top: 24px; }
+  .row { display: grid; grid-template-columns: 200px 1fr; gap: 32px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--border-default); }
+  .row:last-child { border-bottom: none; }
+  .row .meta { font-family: 'SF Mono', Menlo, monospace; font-size: 12px; color: var(--color-neutral-600); }
+  .row .meta .token { display: block; color: var(--color-neutral-900); font-weight: 600; font-family: var(--font-family-system); letter-spacing: 0; text-transform: none; }
+  .row .meta .spec { display: block; margin-top: 4px; }
+  .sample { color: var(--color-neutral-900); }
+  .label-sample { line-height: 1; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 class="page-title">Typography</h1>
+    <p class="subtitle">The DSU uses one family — <strong>Inter</strong> — for everything. The token <code>--font-family-brand</code> is used for headings and prose classes; <code>--font-family-system</code> is used for UI labels. Both resolve to Inter via Google Fonts.</p>
+
+    <section class="family">
+      <h2>Headings & Prose — display role</h2>
+      <div class="row"><div class="meta"><span class="token">.heading-2xl</span><span class="spec">64 / 1.24 / 400</span></div><div class="sample heading-2xl">Cuidar de você</div></div>
+      <div class="row"><div class="meta"><span class="token">.heading-xl</span><span class="spec">48 / 1.24 / 400</span></div><div class="sample heading-xl">Novo App Seguro Unimed</div></div>
+      <div class="row"><div class="meta"><span class="token">.heading-lg</span><span class="spec">40 / 1.24 / 400</span></div><div class="sample heading-lg">Seus benefícios em um só lugar</div></div>
+      <div class="row"><div class="meta"><span class="token">.heading-sm</span><span class="spec">24 / 1.24 / 400</span></div><div class="sample heading-sm">Acessos rápidos</div></div>
+      <div class="row"><div class="meta"><span class="token">.heading-xs</span><span class="spec">20 / 1.24 / 600</span></div><div class="sample heading-xs">Cartão virtual</div></div>
+      <div class="row"><div class="meta"><span class="token">.heading-2xs</span><span class="spec">16 / 1.24 / 600</span></div><div class="sample heading-2xs">Atendimento</div></div>
+      <div class="row"><div class="meta"><span class="token">.paragraph-lg</span><span class="spec">20 / 1.6 / 400</span></div><div class="sample paragraph-lg">Tenha acesso a todos os seus produtos e seus principais serviços no nosso Super App.</div></div>
+      <div class="row"><div class="meta"><span class="token">.paragraph-sm</span><span class="spec">16 / 1.6 / 400</span></div><div class="sample paragraph-sm">Marque consultas, consulte guias e acompanhe seus pedidos direto pelo app.</div></div>
+      <div class="row"><div class="meta"><span class="token">.description</span><span class="spec">14 / 1.32 / 400</span></div><div class="sample description">Disponível 24 horas para clientes Unimed Saúde e Unimed Odonto.</div></div>
+    </section>
+
+    <section class="family">
+      <h2>UI Labels — interface role</h2>
+      <div class="row"><div class="meta"><span class="token">.label-lg-3</span><span class="spec">20 / 1 / 600</span></div><div class="sample label-sample label-lg-3">Marcar consulta</div></div>
+      <div class="row"><div class="meta"><span class="token">.label-md-3</span><span class="spec">16 / 1 / 600</span></div><div class="sample label-sample label-md-3">Salvar alterações</div></div>
+      <div class="row"><div class="meta"><span class="token">.label-md-2</span><span class="spec">16 / 1 / 500</span></div><div class="sample label-sample label-md-2">Dependentes</div></div>
+      <div class="row"><div class="meta"><span class="token">.label-md-1</span><span class="spec">16 / 1 / 400</span></div><div class="sample label-sample label-md-1">Ver todos os pedidos</div></div>
+      <div class="row"><div class="meta"><span class="token">.label-sm-3</span><span class="spec">14 / 1 / 600</span></div><div class="sample label-sample label-sm-3">Novo</div></div>
+      <div class="row"><div class="meta"><span class="token">.label-sm-2</span><span class="spec">14 / 1 / 500</span></div><div class="sample label-sample label-sm-2">Em andamento</div></div>
+      <div class="row"><div class="meta"><span class="token">.label-sm-1</span><span class="spec">14 / 1 / 400</span></div><div class="sample label-sample label-sm-1">Atualizado há 2 min</div></div>
+      <div class="row"><div class="meta"><span class="token">.placeholder-text</span><span class="spec">16 / 1 / 400</span></div><div class="sample label-sample placeholder-text">Digite seu CPF</div></div>
+      <div class="row"><div class="meta"><span class="token">.support-text</span><span class="spec">14 / 1.32 / 400</span></div><div class="sample support-text">Use apenas números. Máximo 11 dígitos.</div></div>
+    </section>
+  </div>
+</body>
+</html>
