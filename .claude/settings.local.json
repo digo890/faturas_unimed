@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init *)",
+      "Bash(git remote *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(mkdir -p design_system_claude)",
+      "Bash(mv index.html brand.html preview_colors.html preview_icons.html preview_spacing.html preview_type.html ui_kit.html Unimed-DSU-print.html skill.md README.md uploads design_system_claude/)"
+    ]
+  }
+}

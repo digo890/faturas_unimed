@@ -1,79 +1,348 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<title>Unimed DSU — Design System</title>
-<link rel="stylesheet" href="colors_and_type.css">
-<style>
-  body { background: var(--bg-subtle); color: var(--fg-1); }
-  .hero { background: var(--color-primary); color: #fff; padding: 80px 64px; display: flex; gap: 48px; align-items: center; }
-  .hero .mark { width: 96px; height: 96px; background: rgba(255,255,255,0.08); border-radius: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .hero h1 { color: #fff; font-size: 48px; font-weight: 400; line-height: 1.1; margin-bottom: 16px; letter-spacing: -0.01em; }
-  .hero p { color: rgba(255,255,255,0.85); max-width: 620px; font-size: 18px; line-height: 1.55; }
-  .hero .kicker { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-family-system); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-green-light); margin-bottom: 12px; }
-  .hero .kicker::before { content: ''; width: 24px; height: 1.5px; background: var(--color-green-light); }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seguros Unimed · Portal do Cliente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.2/src/regular/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.2/src/fill/style.css">
+  <link rel="stylesheet" href="colors_and_type.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
 
-  .wrap { max-width: 1200px; margin: 0 auto; padding: 80px 64px; }
-  .section-label { font-family: var(--font-family-system); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-primary); margin-bottom: 12px; }
-  .section-title { font-size: 32px; font-weight: 400; margin-bottom: 8px; color: var(--color-primary); }
-  .section-lede { color: var(--fg-3); font-size: 16px; line-height: 1.6; max-width: 640px; margin-bottom: 32px; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bg-subtle);
+      color: var(--fg-1);
+      font-family: var(--font-family-system);
+      min-height: 100vh;
+    }
 
-  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 64px; }
-  .card { background: #fff; border: 1px solid var(--border-default); border-radius: 16px; padding: 28px; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 16px; min-height: 220px; transition: border-color 150ms ease, transform 150ms ease; }
-  .card:hover { border-color: var(--color-primary); transform: translateY(-2px); }
-  .card .tag { align-self: flex-start; display: inline-flex; padding: 4px 10px; border-radius: 4px; font-family: var(--font-family-system); font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; background: var(--color-primary-surface); color: var(--color-primary); }
-  .card h3 { font-size: 20px; font-weight: 600; color: var(--color-neutral-900); }
-  .card p { font-size: 14px; color: var(--color-neutral-600); line-height: 1.5; }
-  .card .arrow { margin-top: auto; color: var(--color-primary); font-family: var(--font-family-system); font-size: 14px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+    /* ── TOPBAR ── */
+    .topbar {
+      background: var(--color-primary);
+      height: 60px;
+      display: flex; align-items: center;
+      padding: 0 32px;
+      gap: 24px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .topbar-logo {
+      display: flex; align-items: center;
+      flex-shrink: 0;
+    }
+    .topbar-logo img { height: 40px; width: auto; display: block; }
+    .topbar-spacer { flex: 1; }
+    .topbar-actions {
+      display: flex; align-items: center; gap: 4px;
+    }
+    .topbar-icon {
+      width: 40px; height: 40px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      border: none; background: transparent;
+      color: rgba(255,255,255,0.75);
+      cursor: pointer;
+      transition: background 150ms ease, color 150ms ease;
+      font-size: 20px;
+    }
+    .topbar-icon:hover {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+    }
+    .topbar-divider {
+      width: 1px; height: 24px;
+      background: rgba(255,255,255,0.2);
+      margin: 0 8px;
+    }
+    .topbar-user {
+      display: flex; align-items: center; gap: 10px;
+      cursor: pointer;
+      padding: 4px 8px 4px 4px;
+      border-radius: 24px;
+      border: none; background: transparent;
+      transition: background 150ms ease;
+      color: #fff;
+    }
+    .topbar-user:hover { background: rgba(255,255,255,0.12); }
+    .topbar-user .name {
+      font-size: 14px; font-weight: 500; color: #fff;
+    }
+    .topbar-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 600; color: #fff;
+      flex-shrink: 0;
+    }
 
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 48px; padding: 32px; background: #fff; border: 1px solid var(--border-default); border-radius: 16px; }
-  .stat .v { font-family: var(--font-family-brand); font-size: 40px; font-weight: 400; color: var(--color-primary); line-height: 1; }
-  .stat .k { font-family: var(--font-family-system); font-size: 13px; color: var(--color-neutral-600); margin-top: 6px; }
-</style>
+    /* ── CONTENT ── */
+    .content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 32px 64px;
+    }
+
+    /* ── BANNER ── */
+    .banner {
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 40px;
+      line-height: 0;
+    }
+    .banner img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ── ACESSO RÁPIDO ── */
+    .section-heading {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--color-neutral-900);
+      margin: 0 0 20px;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+    }
+
+    .quick-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px 16px 20px;
+      display: flex; flex-direction: column;
+      justify-content: space-between;
+      min-height: 140px;
+      cursor: default;
+      border: 2px solid transparent;
+      transition: background 150ms ease, border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+      text-decoration: none;
+    }
+    .quick-card:hover {
+      background: var(--color-primary-surface);
+      border-color: var(--color-primary);
+      box-shadow: 0 4px 12px rgba(0,45,116,0.10);
+      transform: translateY(-2px);
+    }
+    .quick-card.primary {
+      background: var(--color-primary);
+      cursor: pointer;
+    }
+    .quick-card.primary:hover {
+      background: #003a96;
+      border-color: transparent;
+      box-shadow: 0 6px 20px rgba(0,45,116,0.30);
+    }
+
+    .quick-card .card-icon {
+      font-size: 22px;
+      color: var(--color-primary);
+      line-height: 1;
+    }
+    .quick-card.primary .card-icon { color: rgba(255,255,255,0.85); }
+
+    .quick-card .card-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-neutral-900);
+      line-height: 1.3;
+      margin-top: 24px;
+    }
+    .quick-card.primary .card-label { color: #fff; }
+
+    /* ── LOADING STATE ── */
+    .quick-card.primary.loading {
+      cursor: wait;
+      pointer-events: none;
+      justify-content: center;
+      gap: 12px;
+    }
+    .quick-card.primary.loading:hover {
+      background: var(--color-primary);
+      box-shadow: none;
+      transform: none;
+    }
+
+    .loading-spinner {
+      display: none;
+      width: 20px; height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 700ms linear infinite;
+      flex-shrink: 0;
+    }
+    .quick-card.loading .loading-spinner { display: block; }
+    .quick-card.loading .card-icon { display: none; }
+    .quick-card.loading .card-label { display: none; }
+
+    .loading-body {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+    }
+    .quick-card.loading .loading-body { display: flex; }
+
+    .loading-msg {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.4;
+      min-height: 34px;
+      display: flex; align-items: center; justify-content: center;
+      animation: fadein 300ms ease;
+    }
+
+    .loading-dots {
+      display: flex; gap: 5px;
+    }
+    .loading-dots span {
+      width: 5px; height: 5px;
+      background: rgba(255,255,255,0.6);
+      border-radius: 50%;
+      animation: bounce 1.2s ease-in-out infinite;
+    }
+    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes fadein {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+      40%            { transform: translateY(-5px); opacity: 1; }
+    }
+
+    @media (max-width: 960px) {
+      .quick-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .quick-grid { grid-template-columns: repeat(2, 1fr); }
+      .content { padding: 20px 16px 48px; }
+    }
+  </style>
 </head>
 <body>
 
-<header class="hero">
-  <div class="mark">
-    <svg viewBox="0 0 48 48" width="72" height="72" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M47.7324 27.8346L33.244 8.68871C33.0987 8.50826 32.899 8.39999 32.663 8.39999H15.197C14.9791 8.39999 14.7613 8.50826 14.616 8.68871L0.145772 27.8346C-0.217346 28.3038 0.145781 28.9714 0.708614 28.9714H8.20699C8.80614 28.9714 9.13294 29.6391 8.78798 30.1083L2.76022 38.1203C2.41526 38.5895 2.76022 39.2571 3.34121 39.2571H14.5071C14.725 39.2571 14.9428 39.1489 15.0881 38.9684L21.7694 30.0902C22.1144 29.6211 21.7694 28.9534 21.1885 28.9534H18.8463H17.7207C17.0852 28.9534 16.7221 28.2316 17.1034 27.7083L23.0404 19.9128C23.4216 19.4075 23.0585 18.6677 22.4231 18.6677H17.7388C17.1034 18.6677 16.7403 17.9459 17.1215 17.4226L23.3672 9.21202C23.6758 8.79698 24.2931 8.79698 24.6199 9.21202L30.8111 17.4226C31.1924 17.9278 30.8111 18.6677 30.1938 18.6677H25.564C24.9286 18.6677 24.5473 19.3895 24.9467 19.9128L30.8292 27.7083C31.2105 28.2135 30.8292 28.9534 30.2119 28.9534H29.0863H26.7986C26.2176 28.9534 25.8727 29.6211 26.2358 30.0902L32.9172 38.9684C33.0624 39.1489 33.2621 39.2571 33.4981 39.2571H44.664C45.245 39.2571 45.59 38.5895 45.2268 38.1203L39.1991 30.1083C38.8541 29.6391 39.1991 28.9714 39.7801 28.9714H47.2785C47.8776 28.9714 48.2044 28.3038 47.8595 27.8346Z"/></svg>
-  </div>
-  <div>
-    <div class="kicker">Design System Unimed · v1.0</div>
-    <h1>Um jeito Unimed de<br>construir produtos digitais.</h1>
-    <p>Tokens, componentes e diretrizes de conteúdo para Unimed Saúde, Unimed Odonto, Seguros Unimed e portais corporativos — com foco em cuidado, clareza e confiança.</p>
-  </div>
-</header>
+  <!-- TOPBAR -->
+  <header class="topbar" role="banner">
+    <div class="topbar-logo">
+      <img src="assets/acesso_rapido/logo-seg-unimed.png" alt="Seguros Unimed">
+    </div>
+    <div class="topbar-spacer"></div>
+    <nav class="topbar-actions" aria-label="Ações do cabeçalho">
+      <button class="topbar-icon" aria-label="Idioma"><i class="ph ph-globe"></i></button>
+      <button class="topbar-icon" aria-label="Telefone"><i class="ph ph-phone"></i></button>
+      <button class="topbar-icon" aria-label="Documentos"><i class="ph ph-newspaper"></i></button>
+      <button class="topbar-icon" aria-label="Notificações"><i class="ph ph-bell"></i></button>
+      <div class="topbar-divider" role="separator"></div>
+      <button class="topbar-user" aria-label="Menu do usuário">
+        <div class="topbar-avatar">LS</div>
+        <span class="name">Lucas</span>
+      </button>
+    </nav>
+  </header>
 
-<div class="wrap">
+  <!-- MAIN CONTENT -->
+  <main class="content">
 
-  <div class="section-label">Foundations</div>
-  <h2 class="section-title">Fundamentos</h2>
-  <p class="section-lede">A base do sistema: paleta, tipografia e ritmo espacial. Todos os valores estão exportados como CSS custom properties em <code>colors_and_type.css</code>.</p>
+    <!-- BANNER -->
+    <div class="banner">
+      <img src="assets/acesso_rapido/banner.jpg" alt="Quem tem Seguros Unimed, tá seguro. 35 anos cuidando de tudo o que importa para você.">
+    </div>
 
-  <div class="grid">
-    <a class="card" href="preview_colors.html"><span class="tag">Cores</span><h3>Paleta completa</h3><p>Azul corporativo, Unimed Green, feedback e neutros — com nomes semânticos para cada contexto de uso.</p><span class="arrow">Ver paleta →</span></a>
-    <a class="card" href="preview_type.html"><span class="tag">Tipografia</span><h3>Escala tipográfica</h3><p>Inter (Google Fonts) como família única, usada em títulos, corpo e rótulos. 9 níveis de tamanho na razão 1.25×.</p><span class="arrow">Ver escala →</span></a>
-    <a class="card" href="preview_spacing.html"><span class="tag">Espaço</span><h3>Espaçamento & raios</h3><p>Grid baseada em 4 px, raios restritos a 4 níveis, três camadas de sombra. Nada além disso.</p><span class="arrow">Ver tokens →</span></a>
-    <a class="card" href="preview_icons.html"><span class="tag">Ícones</span><h3>Phosphor Icons</h3><p>Biblioteca unificada carregada via CDN. Somente pesos Regular e Fill; mapeamento canônico para conceitos recorrentes.</p><span class="arrow">Ver ícones →</span></a>
-  </div>
+    <!-- ACESSO RÁPIDO -->
+    <section aria-label="Acesso rápido">
+      <h2 class="section-heading">Acesso rápido</h2>
+      <div class="quick-grid">
 
-  <div class="section-label">Building Blocks</div>
-  <h2 class="section-title">Componentes e marca</h2>
-  <p class="section-lede">Componentes prontos para uso em portal e Super App, e o guia completo da identidade visual Unimed.</p>
+        <a id="card-financeiro" href="Faturas.html" class="quick-card primary" aria-label="Financeiro">
+          <i class="ph ph-currency-circle-dollar card-icon"></i>
+          <span class="card-label">Financeiro</span>
+          <div class="loading-body">
+            <div class="loading-spinner"></div>
+            <span class="loading-msg"></span>
+            <div class="loading-dots"><span></span><span></span><span></span></div>
+          </div>
+        </a>
 
-  <div class="grid">
-    <a class="card" href="ui_kit.html"><span class="tag">UI Kit</span><h3>Biblioteca de componentes</h3><p>Botões, inputs, tags, cards de atalho, menus laterais, toggles e alertas. Copie e cole direto nas telas.</p><span class="arrow">Abrir kit →</span></a>
-    <a class="card" href="brand.html"><span class="tag">Brand</span><h3>Identidade e logos</h3><p>Símbolo Unimed, lockups Saúde / Odonto / Seguros, selo ANS, regras de espaço livre e o que evitar.</p><span class="arrow">Ver marca →</span></a>
-    <a class="card" href="README.md"><span class="tag">Conteúdo</span><h3>Voz, tom e redação</h3><p>Como a Unimed escreve — pt-BR informal, ações em verbos no infinitivo, mensagens de erro sem alarmismo.</p><span class="arrow">Ler guia →</span></a>
-  </div>
+        <div class="quick-card" aria-label="Documentos digitais">
+          <i class="ph ph-copy card-icon"></i>
+          <span class="card-label">Documentos digitais</span>
+        </div>
 
-  <div class="stats">
-    <div class="stat"><div class="v">4</div><div class="k">Produtos cobertos<br>Saúde · Odonto · Seguros · Corporativo</div></div>
-    <div class="stat"><div class="v">11</div><div class="k">Tokens de espaço<br>4 px a 80 px</div></div>
-    <div class="stat"><div class="v">9</div><div class="k">Níveis tipográficos<br>12 → 64 px</div></div>
-    <div class="stat"><div class="v">AA</div><div class="k">WCAG contrast<br>para todos os pares</div></div>
-  </div>
+        <div class="quick-card" aria-label="Informe de quitações">
+          <i class="ph ph-file-text card-icon"></i>
+          <span class="card-label">Informe de quitações</span>
+        </div>
 
-</div>
+        <div class="quick-card" aria-label="Informe de rendimentos">
+          <i class="ph ph-file-text card-icon"></i>
+          <span class="card-label">Informe de rendimentos</span>
+        </div>
+
+        <div class="quick-card" aria-label="Perguntas frequentes">
+          <i class="ph ph-question card-icon"></i>
+          <span class="card-label">Perguntas frequentes</span>
+        </div>
+
+        <div class="quick-card" aria-label="Ouvidoria">
+          <i class="ph ph-user-circle card-icon"></i>
+          <span class="card-label">Ouvidoria</span>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+<script>
+  const card = document.getElementById('card-financeiro');
+  const msgEl = card.querySelector('.loading-msg');
+
+  const messages = [
+    'Verificando suas credenciais…',
+    'Estabelecendo conexão segura…',
+    'Quase lá, carregando suas faturas…',
+  ];
+
+  card.addEventListener('click', e => {
+    e.preventDefault();
+    card.classList.add('loading');
+
+    let i = 0;
+    msgEl.textContent = messages[i];
+
+    const interval = setInterval(() => {
+      i++;
+      if (i < messages.length) {
+        msgEl.style.animation = 'none';
+        msgEl.offsetHeight;
+        msgEl.style.animation = '';
+        msgEl.textContent = messages[i];
+      } else {
+        clearInterval(interval);
+      }
+    }, 1066);
+
+    setTimeout(() => {
+      clearInterval(interval);
+      window.location.href = 'Faturas.html';
+    }, 3200);
+  });
+</script>
 </body>
 </html>
