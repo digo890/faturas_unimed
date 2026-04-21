@@ -533,10 +533,10 @@
     color: var(--color-primary);
     flex-shrink: 0;
   }
-  .drawer-head .ttl { font-size: 20px; font-weight: 600; color: var(--color-neutral-900); line-height: 1.24; }
-  .drawer-head .sub { font-size: 13px; color: var(--color-neutral-600); margin-top: 4px; }
+  .drawer-head .ttl, .modal-head .ttl { font-size: 20px; font-weight: 600; color: var(--color-neutral-900); line-height: 1.24; }
+  .drawer-head .sub, .modal-head .sub { font-size: 13px; color: var(--color-neutral-600); margin-top: 4px; }
   .drawer-head .meta-row { display: flex; align-items: center; gap: 12px; margin-top: 16px; }
-  .drawer .close {
+  .close {
     width: 36px; height: 36px;
     border: 1px solid var(--border-default);
     background: #fff;
@@ -545,7 +545,7 @@
     display: inline-flex; align-items: center; justify-content: center;
     cursor: pointer;
   }
-  .drawer .close:hover { color: var(--color-primary); border-color: var(--color-primary); }
+  .close:hover { color: var(--color-primary); border-color: var(--color-primary); }
   .drawer-tabs {
     display: flex;
     margin-top: 20px;
@@ -567,7 +567,7 @@
     font-weight: 600;
   }
   .drawer-body {
-    flex: 1; overflow-y: scroll;
+    flex: 1; overflow-y: auto; scrollbar-gutter: stable;
     padding: 24px 28px 32px;
   }
   .drawer-body .tab-pane {
@@ -662,7 +662,7 @@
   .pay-opt:hover { background: var(--bg-subtle); }
   .pay-opt.selected { background: var(--color-primary-surface); }
   .pay-opt.selected:hover { background: var(--color-primary-surface); }
-  .pay-opt .pm-icon {
+  .pay-opt .pm-icon, .neg-method-head .pm-icon {
     width: 40px; height: 40px;
     border-radius: 10px;
     background: #fff;
@@ -674,7 +674,7 @@
   }
   .pay-opt.selected .pm-icon { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
   .pay-opt .pm-body { flex: 1; min-width: 0; }
-  .pay-opt .pm-name { font-size: 14px; font-weight: 600; color: var(--color-neutral-900); }
+  .pay-opt .pm-name, .neg-method-head .pm-name { font-size: 14px; font-weight: 600; color: var(--color-neutral-900); }
   .pay-opt .pm-desc { font-size: 12px; color: var(--color-neutral-600); margin-top: 2px; }
   .pay-opt .pm-radio { display: none; }
 
@@ -986,6 +986,10 @@
     border-radius: 12px;
     padding: 10px 12px 4px;
   }
+  #co-installments-wrap { display: none; }
+  #co-installments-wrap.on { display: block; margin-top: var(--space-6); }
+  #co-installments-wrap .custom-select { display: block; }
+  #co-installments-wrap .custom-select-trigger { width: 100%; }
   .installments {
     display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
   }
@@ -1156,6 +1160,193 @@
     transition: color 150ms ease, border-color 150ms ease, background 150ms ease;
   }
   .btn-icon-info:hover { color: var(--color-primary); border-color: var(--color-primary); background: var(--color-primary-surface); }
+
+  /* ─────────── NEGOTIATION MODAL ─────────── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: var(--color-overlay);
+    opacity: 0; pointer-events: none;
+    transition: opacity 200ms ease;
+    z-index: 450;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+  /* Flip container */
+  .modal-flip {
+    width: 100%; max-width: 520px;
+    perspective: 1200px;
+  }
+  .modal-flip-inner {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 420ms cubic-bezier(0.4, 0.2, 0.2, 1);
+  }
+  .modal-flip-inner.flipped { transform: rotateY(180deg); }
+
+  .modal {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: var(--shadow-dialog);
+    width: 100%;
+    max-height: 86vh;
+    display: flex; flex-direction: column;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  /* Front face */
+  #neg-modal-front {
+    overflow-y: auto;
+    opacity: 0;
+    transition: opacity 180ms ease;
+  }
+  .modal-overlay.open #neg-modal-front { opacity: 1; }
+
+  /* Back face — positioned on top of front, rotated */
+  #neg-modal-back {
+    position: absolute; top: 0; left: 0; right: 0;
+    min-height: 100%;
+    transform: rotateY(180deg);
+    overflow-y: auto;
+  }
+
+  .modal-head {
+    padding: 20px 20px 16px;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .modal-body {
+    padding: 0 20px 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+
+  /* Negotiation method card */
+  .neg-method {
+    border: 1.5px solid var(--border-default);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+  .neg-method.selected {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-surface);
+  }
+  .neg-method-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 12px 14px;
+    cursor: pointer;
+    border: none; background: none; width: 100%; text-align: left; font-family: inherit;
+  }
+  .neg-method-head .left { display: flex; align-items: center; gap: 10px; }
+  .neg-method.selected .neg-method-head .pm-icon { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+  .neg-method-head .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  /* Installments inside neg-method */
+  .neg-installments {
+    display: grid; grid-template-rows: 0fr;
+    transition: grid-template-rows 240ms cubic-bezier(0.2,0.8,0.2,1);
+    border-top: 0px solid var(--border-default);
+    overflow: hidden;
+  }
+  .neg-method.selected .neg-installments {
+    grid-template-rows: 1fr;
+    border-top-width: 1px;
+  }
+  .neg-installments > * { min-height: 0; overflow: hidden; }
+  .neg-installments-inner {
+    padding: 10px 12px 12px;
+    background: var(--bg-subtle);
+  }
+  .neg-ins-select { width: 100%; }
+  .neg-ins-select .custom-select-trigger { width: 100%; }
+
+  /* Summary block */
+  /* Back face — pending invoices list */
+  .neg-inv-list {
+    border: 1px solid var(--border-default);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .neg-inv-item {
+    border-bottom: 1px solid var(--border-default);
+  }
+  .neg-inv-item:last-child { border-bottom: none; }
+  .neg-inv-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    border: none; background: none; width: 100%; text-align: left; font-family: inherit;
+    transition: background 150ms ease;
+  }
+  .neg-inv-head:hover { background: var(--bg-subtle); }
+  .neg-inv-item.on .neg-inv-head { background: var(--bg-subtle); }
+  .neg-inv-left { display: flex; flex-direction: column; gap: 3px; }
+  .neg-inv-ref { font-size: 14px; font-weight: 600; color: var(--color-neutral-900); }
+  .neg-inv-due { font-size: 12px; color: var(--color-negative); font-weight: 500; }
+  .neg-inv-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .neg-inv-amount { font-size: 15px; font-weight: 600; color: var(--color-neutral-900); font-variant-numeric: tabular-nums; }
+  .neg-inv-caret { color: var(--color-neutral-500); transition: transform 200ms ease; flex-shrink: 0; }
+  .neg-inv-item.on .neg-inv-caret { transform: rotate(180deg); }
+
+  .neg-inv-body {
+    display: grid; grid-template-rows: 0fr;
+    transition: grid-template-rows 220ms cubic-bezier(0.2,0.8,0.2,1);
+    overflow: hidden;
+  }
+  .neg-inv-item.on .neg-inv-body { grid-template-rows: 1fr; }
+  .neg-inv-body > div { min-height: 0; overflow: hidden; }
+  .neg-inv-details {
+    padding: 0 16px 14px;
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .neg-inv-details .kv {
+    display: flex; justify-content: space-between;
+    padding: 6px 0; border-top: 1px dashed var(--border-default);
+    font-size: 13px;
+  }
+  .neg-inv-details .kv:first-child { border-top: none; }
+  .neg-inv-details .kv .k { color: var(--color-neutral-600); }
+  .neg-inv-details .kv .v { color: var(--color-neutral-900); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+  .neg-inv-total {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px;
+    background: var(--bg-subtle);
+    border-top: 1px solid var(--border-default);
+    font-size: 14px;
+  }
+  .neg-inv-total .k { color: var(--color-neutral-700); font-weight: 500; }
+  .neg-inv-total .v { font-size: 16px; font-weight: 700; color: var(--color-primary-900); font-variant-numeric: tabular-nums; }
+
+  .neg-summary {
+    border: 1px solid var(--border-default);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .neg-summary-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-default);
+  }
+  .neg-summary-row:last-child { border-bottom: none; }
+  .neg-summary-row .k { color: var(--color-neutral-600); }
+  .neg-summary-row .k.discount { color: var(--color-positive-dark); font-weight: 700; }
+  .neg-summary-row .v { color: var(--color-neutral-900); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .neg-summary-row .v.discount { color: var(--color-positive-dark); font-weight: 700; }
+  .neg-summary-row.total { background: var(--bg-subtle); }
+  .neg-summary-row.total .k { font-weight: 600; color: var(--color-neutral-900); font-size: 14px; }
+  .neg-summary-row.total .v { font-size: 16px; font-weight: 700; color: var(--color-primary-900); }
+
+  .modal-foot {
+    padding: 20px;
+    display: flex; align-items: center; gap: 10px;
+    flex-shrink: 0;
+  }
+  .modal-foot .btn { flex: 1; justify-content: center; }
 
   /* Modern scrollbar */
   html { scrollbar-width: thin; scrollbar-color: transparent transparent; }
@@ -1632,11 +1823,16 @@
 <!-- ─────────── CHECKOUT DRAWER (LEFT) ─────────── -->
 <aside class="drawer left" id="checkout-drawer" aria-label="Pagamento" aria-hidden="true">
 
-  <div class="drawer-body">
+  <!-- PAGE 1: main checkout -->
+  <div class="drawer-body" id="co-main">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:var(--space-6)">
+      <div class="ttl" id="co-header-title">Pagar fatura</div>
+      <button class="close" id="co-close-btn"><i class="ph ph-x"></i></button>
+    </div>
 
     <div class="invoice-summary">
       <div>
-        <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--color-neutral-600);margin-bottom:8px">Valor a pagar</div>
         <div class="amount-big" id="co-amount">R$ 220,00</div>
       </div>
       <button class="download-btn" aria-label="Baixar boleto"><i class="ph ph-download-simple" style="font-size:20px"></i></button>
@@ -1788,8 +1984,36 @@
       </div>
     </div>
 
-    <!-- Card fields (credito only) -->
-    <div class="card-form" id="co-card-form">
+
+    <!-- Installments (visible whenever credito is selected) -->
+    <div id="co-installments-wrap">
+      <div class="section-title">Parcelamento</div>
+      <div class="custom-select" id="co-installments">
+        <button class="custom-select-trigger" id="co-ins-trigger" type="button">
+          <span id="co-ins-label">1x R$ 220,00 · à vista · sem juros</span>
+          <i class="ph ph-caret-down cst-arrow" style="font-size:14px;margin-left:auto"></i>
+        </button>
+        <ul class="custom-select-list" id="co-ins-list">
+          <li class="selected" data-ins="1">1x R$ 220,00 · à vista · sem juros</li>
+          <li data-ins="2">2x R$ 110,00 · sem juros</li>
+          <li data-ins="3">3x R$ 73,33 · sem juros</li>
+          <li data-ins="6">6x R$ 37,68 · total R$ 226,08</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PAGE 2: new card -->
+  <div class="drawer-body" id="co-new-card-page" style="display:none">
+
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:var(--space-6)">
+      <button class="close" id="co-back-btn"><i class="ph ph-arrow-left"></i></button>
+      <div class="ttl" style="flex:1">Adicionar cartão</div>
+      <button class="close" id="co-close-btn-2"><i class="ph ph-x"></i></button>
+    </div>
+
+    <div class="card-form on" style="margin-top:0">
       <div class="section-title" style="margin-top:0">Dados do cartão</div>
       <div class="card-box">
         <div class="card-row">
@@ -1835,62 +2059,150 @@
         </div>
       </div>
 
-      <div class="autopay" style="margin-top:16px">
+      <div class="autopay" style="margin-top:20px">
         <div class="lbl">
           <div>
             <div class="t">Ativar pagamento automático</div>
             <div class="d">Débito automático no dia do vencimento.</div>
           </div>
         </div>
-        <button class="toggle on" id="co-save-card" aria-label="Pagamento automático" aria-pressed="true"></button>
-      </div>
-
-      <!-- Installments -->
-      <div class="section-title">Parcelamento</div>
-      <div class="installment-wrap">
-        <div class="installments" id="co-installments">
-          <button class="ins-opt selected" data-ins="1" type="button">
-            <div class="ins-radio"></div>
-            <div class="ins-info">
-              <div class="top">1x R$ 220,00</div>
-              <div class="bot">à vista · sem juros</div>
-            </div>
-          </button>
-          <button class="ins-opt" data-ins="2" type="button">
-            <div class="ins-radio"></div>
-            <div class="ins-info">
-              <div class="top">2x R$ 110,00</div>
-              <div class="bot">sem juros</div>
-            </div>
-          </button>
-          <button class="ins-opt" data-ins="3" type="button">
-            <div class="ins-radio"></div>
-            <div class="ins-info">
-              <div class="top">3x R$ 73,33</div>
-              <div class="bot">sem juros</div>
-            </div>
-          </button>
-          <button class="ins-opt" data-ins="6" type="button">
-            <div class="ins-radio"></div>
-            <div class="ins-info">
-              <div class="top">6x R$ 37,68</div>
-              <div class="bot">total R$ 226,08</div>
-            </div>
-          </button>
-        </div>
-        <button class="ins-more" id="co-ins-more" type="button">
-          <span>Ver mais opções de parcelamento</span>
-          <i class="ph ph-caret-down" style="font-size:14px"></i>
-        </button>
+        <button class="toggle on" id="co-autopay-toggle" aria-label="Pagamento automático" aria-pressed="true"></button>
       </div>
     </div>
-
   </div>
 
   <footer class="drawer-foot" style="display:flex">
     <button class="btn btn-md btn-primary" id="co-pay" style="width:100%"><i class="ph ph-lock-key" style="font-size:16px"></i> Pagar R$ 220,00</button>
+    <button class="btn btn-md btn-primary" id="co-save-new-card" style="width:100%;display:none">Salvar cartão</button>
   </footer>
 </aside>
+
+<!-- ─────────── NEGOTIATION MODAL ─────────── -->
+<div class="modal-overlay" id="neg-modal-overlay" aria-modal="true" role="dialog" aria-labelledby="neg-modal-title" aria-hidden="true">
+  <div class="modal-flip">
+  <div class="modal-flip-inner" id="neg-flip-inner">
+
+  <!-- FRENTE: negociação -->
+  <div class="modal" id="neg-modal-front">
+
+    <header class="modal-head">
+      <div>
+        <div class="ttl" id="neg-modal-title">Negociar débitos</div>
+        <div class="sub">Selecione como deseja pagar os débitos pendentes</div>
+      </div>
+      <button class="close" id="neg-modal-close" aria-label="Fechar"><i class="ph ph-x" style="font-size:18px"></i></button>
+    </header>
+
+    <div class="modal-body">
+
+      <!-- Cartão de crédito -->
+      <div class="neg-method selected" id="neg-method-credito">
+        <button class="neg-method-head" data-neg-pm="credito" type="button">
+          <div class="left">
+            <div class="pm-icon"><i class="ph ph-credit-card" style="font-size:22px"></i></div>
+            <span class="pm-name">Cartão de crédito</span>
+          </div>
+          <div class="tags">
+            <span class="pill pill-positive">Até 10% de desconto</span>
+            <span class="pill pill-neutral">Em até 12X</span>
+          </div>
+        </button>
+
+        <div class="neg-installments">
+          <div>
+            <div class="neg-installments-inner">
+              <div class="custom-select neg-ins-select" id="neg-ins-select">
+                <button class="custom-select-trigger" id="neg-ins-trigger" type="button">
+                  <span id="neg-ins-label">1x R$ 594,00 · à vista</span>
+                  <i class="ph ph-caret-down cst-arrow" style="font-size:14px;margin-left:auto"></i>
+                </button>
+                <ul class="custom-select-list" id="neg-ins-list">
+                  <li class="selected" data-neg-ins="1" data-value="594.00">1x R$ 594,00 · à vista</li>
+                  <li data-neg-ins="2" data-value="594.00">2x R$ 297,00 · total R$ 594,00</li>
+                  <li data-neg-ins="3" data-value="594.00">3x R$ 198,00 · total R$ 594,00</li>
+                  <li data-neg-ins="4" data-value="594.00">4x R$ 148,50 · total R$ 594,00</li>
+                  <li data-neg-ins="6" data-value="594.00">6x R$ 99,00 · total R$ 594,00</li>
+                  <li data-neg-ins="12" data-value="594.00">12x R$ 49,50 · total R$ 594,00</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pix -->
+      <div class="neg-method" id="neg-method-pix">
+        <button class="neg-method-head" data-neg-pm="pix" type="button">
+          <div class="left">
+            <div class="pm-icon"><i class="ph ph-qr-code" style="font-size:22px"></i></div>
+            <span class="pm-name">Pix</span>
+          </div>
+          <div class="tags">
+            <span class="pill pill-positive">Até 10% de desconto</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- Resumo -->
+      <div class="neg-summary" id="neg-summary">
+        <div class="neg-summary-row">
+          <span class="k">Valor original</span>
+          <span class="v">R$ 660,00</span>
+        </div>
+        <div class="neg-summary-row">
+          <span class="k discount" id="neg-discount-label">10% de desconto</span>
+          <span class="v discount" id="neg-discount-value">− R$ 66,00</span>
+        </div>
+        <div class="neg-summary-row total">
+          <span class="k">Valor final</span>
+          <span class="v" id="neg-total">R$ 594,00</span>
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="modal-foot">
+      <button class="btn btn-md btn-secondary" id="neg-modal-see-invoices">Ver faturas</button>
+      <button class="btn btn-md btn-primary" id="neg-modal-confirm" style="flex:2">Gerar negociação</button>
+    </footer>
+
+  </div><!-- /neg-modal-front -->
+
+  <!-- VERSO: faturas vencidas -->
+  <div class="modal" id="neg-modal-back">
+
+    <header class="modal-head">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="close" id="neg-back-btn" aria-label="Voltar" style="flex-shrink:0">
+          <i class="ph ph-arrow-left" style="font-size:18px"></i>
+        </button>
+        <div>
+          <div class="ttl">Seus débitos pendentes</div>
+          <div class="sub">Unimed Saúde · Apólice 0021 8334 002</div>
+        </div>
+      </div>
+      <button class="close" id="neg-back-close" aria-label="Fechar"><i class="ph ph-x" style="font-size:18px"></i></button>
+    </header>
+
+    <div class="modal-body">
+
+      <div class="neg-inv-list" id="neg-inv-list">
+        <!-- gerado por JS -->
+      </div>
+
+    </div>
+
+    <footer class="modal-foot">
+      <button class="btn btn-md btn-secondary" id="neg-back-download">
+        <i class="ph ph-download-simple" style="font-size:16px"></i> Baixar todas as faturas
+      </button>
+    </footer>
+
+  </div><!-- /neg-modal-back -->
+
+  </div><!-- /modal-flip-inner -->
+  </div><!-- /modal-flip -->
+</div>
 
 <script>
   // ─── DATA ───
@@ -1906,6 +2218,7 @@
         icon: 'ph-fill ph-warning-circle',
         html: 'Você tem <strong>3 faturas vencidas</strong> que somam <strong>R$ 660,00</strong>. Pague as 3 juntas e ganhe <strong>10% de desconto</strong>.',
         cta: 'Pagar 3 juntas',
+        ctaAction: 'openNegotiation',
         tag: '−10%'
       },
       invoices: [
@@ -1987,12 +2300,14 @@
     checkAllEl.classList.toggle('checked', allChecked);
   }
 
-  // Insight CTA delegation — some CTAs open the drawer
+  // Insight CTA delegation — some CTAs open the drawer or modal
   insightBar.addEventListener('click', e => {
     const btn = e.target.closest('[data-cta-action]');
     if (!btn) return;
     if (btn.dataset.ctaAction === 'openPayment') {
       openDrawer('payment');
+    } else if (btn.dataset.ctaAction === 'openNegotiation') {
+      openNegotiationModal();
     }
   });
 
@@ -2430,10 +2745,9 @@
   const coCollapse = document.getElementById('co-collapse');
   const coCollapseToggle = document.getElementById('co-collapse-toggle');
   const coPayMethods = document.getElementById('co-pay-methods');
-  const coCardForm = document.getElementById('co-card-form');
+
   const coPayBtn = document.getElementById('co-pay');
-  const coInstallments = document.getElementById('co-installments');
-  const coInsMore = document.getElementById('co-ins-more');
+
 
   function openCheckout(data) {
     // Fill in summary
@@ -2464,11 +2778,19 @@
     coPayMethods.querySelectorAll('[data-co-pm]').forEach(x => x.classList.remove('selected'));
     const creditoOpt = coPayMethods.querySelector('[data-co-pm="credito"]');
     if (creditoOpt) creditoOpt.classList.add('selected');
-    coCardForm.classList.remove('on');
     document.getElementById('co-pix-section').classList.remove('on');
     document.getElementById('co-boleto-section').classList.remove('on');
+    document.getElementById('co-installments-wrap').classList.add('on');
     const coSavedCards = document.getElementById('co-saved-cards');
     coSavedCards.querySelectorAll('.saved-card').forEach((x, i) => x.classList.toggle('selected', i === 0));
+
+    // Reset installments dropdown to 1x
+    const coInsFirstOpt = document.querySelector('#co-ins-list li');
+    if (coInsFirstOpt) {
+      document.querySelectorAll('#co-ins-list li').forEach(o => o.classList.remove('selected'));
+      coInsFirstOpt.classList.add('selected');
+      document.getElementById('co-ins-label').textContent = coInsFirstOpt.textContent;
+    }
 
     // Open drawer
     checkoutDrawer.classList.add('open');
@@ -2479,6 +2801,7 @@
     checkoutDrawer.classList.remove('open');
     scrim.classList.remove('open');
     checkoutDrawer.setAttribute('aria-hidden', 'true');
+    goToMain();
   }
 
   coCollapseToggle.addEventListener('click', () => coCollapse.classList.toggle('on'));
@@ -2489,10 +2812,12 @@
   const coPixSection = document.getElementById('co-pix-section');
   const coBoletoSection = document.getElementById('co-boleto-section');
 
+  const coInsWrap = document.getElementById('co-installments-wrap');
+
   function coShowPm(pm) {
-    coCardForm.classList.toggle('on', pm === 'debito');
     coPixSection.classList.toggle('on', pm === 'pix');
     coBoletoSection.classList.toggle('on', pm === 'boleto');
+    coInsWrap.classList.toggle('on', pm === 'credito');
     if (pm === 'credito') {
       const first = coSavedCardsEl.querySelector('.saved-card');
       if (first) { coSavedCardsEl.querySelectorAll('.saved-card').forEach(x => x.classList.remove('selected')); first.classList.add('selected'); }
@@ -2507,13 +2832,35 @@
     });
   });
 
+  // New card page navigation
+  const coMain        = document.getElementById('co-main');
+  const coNewCardPage = document.getElementById('co-new-card-page');
+  const coPayBtn2     = document.getElementById('co-pay');
+  const coSaveNewCard = document.getElementById('co-save-new-card');
+
+  function goToNewCard() {
+    coMain.style.display = 'none';
+    coNewCardPage.style.display = '';
+    coPayBtn2.style.display = 'none';
+    coSaveNewCard.style.display = '';
+  }
+  function goToMain() {
+    coMain.style.display = '';
+    coNewCardPage.style.display = 'none';
+    coPayBtn2.style.display = '';
+    coSaveNewCard.style.display = 'none';
+  }
+
+  document.getElementById('co-back-btn').addEventListener('click', goToMain);
+  document.getElementById('co-close-btn').addEventListener('click', closeCheckout);
+  document.getElementById('co-close-btn-2').addEventListener('click', closeCheckout);
+
   // Saved card selection in checkout
   coSavedCardsEl.querySelectorAll('.saved-card').forEach(sc => {
     sc.addEventListener('click', e => {
       if (e.target.closest('.sc-action')) return;
       coSavedCardsEl.querySelectorAll('.saved-card').forEach(x => x.classList.remove('selected'));
       sc.classList.add('selected');
-      coCardForm.classList.remove('on');
     });
   });
 
@@ -2522,29 +2869,34 @@
   });
 
   coSavedCardsEl.querySelectorAll('[data-sc-edit]').forEach(btn => {
-    btn.addEventListener('click', e => {
-      e.stopPropagation();
-      const card = btn.closest('.saved-card');
-      coSavedCardsEl.querySelectorAll('.saved-card').forEach(x => x.classList.remove('selected'));
-      card.classList.add('selected');
-      coCardForm.classList.add('on');
-    });
+    btn.addEventListener('click', e => { e.stopPropagation(); goToNewCard(); });
   });
 
-  coAddNewCardBtn.addEventListener('click', () => {
-    coSavedCardsEl.querySelectorAll('.saved-card').forEach(x => x.classList.remove('selected'));
-    coCardForm.classList.add('on');
-  });
+  coAddNewCardBtn.addEventListener('click', goToNewCard);
 
-  // Installments
-  coInstallments.querySelectorAll('.ins-opt').forEach(opt => {
-    opt.addEventListener('click', () => {
-      coInstallments.querySelectorAll('.ins-opt').forEach(x => x.classList.remove('selected'));
-      opt.classList.add('selected');
-    });
+  // Installments dropdown
+  const coInsTrigger = document.getElementById('co-ins-trigger');
+  const coInsList    = document.getElementById('co-ins-list');
+  coInsTrigger.addEventListener('click', e => {
+    e.stopPropagation();
+    coInsTrigger.classList.toggle('open');
+    coInsList.classList.toggle('open');
   });
-
-  coInsMore.addEventListener('click', () => coInsMore.classList.toggle('on'));
+  coInsList.addEventListener('click', e => {
+    const opt = e.target.closest('[data-ins]');
+    if (!opt) return;
+    coInsList.querySelectorAll('li').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    document.getElementById('co-ins-label').textContent = opt.textContent;
+    coInsTrigger.classList.remove('open');
+    coInsList.classList.remove('open');
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#co-installments')) {
+      coInsTrigger.classList.remove('open');
+      coInsList.classList.remove('open');
+    }
+  });
 
   // Pix copy button
   document.getElementById('co-pix-copy-btn').addEventListener('click', () => {
@@ -2595,8 +2947,8 @@
   });
 
   // Save-card toggle
-  const coSaveCard = document.getElementById('co-save-card');
-  coSaveCard.addEventListener('click', () => {
+  const coSaveCard = document.getElementById('co-autopay-toggle');
+  if (coSaveCard) coSaveCard.addEventListener('click', () => {
     coSaveCard.classList.toggle('on');
     coSaveCard.setAttribute('aria-pressed', coSaveCard.classList.contains('on'));
   });
@@ -2605,6 +2957,171 @@
   scrim.addEventListener('click', closeCheckout);
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && checkoutDrawer.classList.contains('open')) closeCheckout();
+  });
+
+  // ─────────── NEGOTIATION MODAL ───────────
+  const negModalOverlay = document.getElementById('neg-modal-overlay');
+  const negFlipInner    = document.getElementById('neg-flip-inner');
+
+  // Negotiation data: discount per installment count
+  const NEG_DISCOUNTS = {
+    credito: { 1: 0.10, 2: 0.10, 3: 0.10, 4: 0.10, 6: 0.10, 12: 0.10 },
+    pix:     { 1: 0.10 }
+  };
+  const NEG_ORIGINAL = 660.00;
+  let negCurrentPm = 'credito';
+  let negCurrentIns = 1;
+
+  function fmtBRL(n) {
+    return 'R$ ' + n.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
+  function negUpdateSummary() {
+    const discount = (NEG_DISCOUNTS[negCurrentPm] || {})[negCurrentIns] || 0;
+    const discountAmt = NEG_ORIGINAL * discount;
+    const total = NEG_ORIGINAL - discountAmt;
+    const pct = Math.round(discount * 100);
+
+    document.getElementById('neg-discount-label').textContent = pct + '% de desconto';
+    document.getElementById('neg-discount-value').textContent = '− ' + fmtBRL(discountAmt);
+    document.getElementById('neg-total').textContent = fmtBRL(total);
+
+    // Show discount row only when there's an actual discount
+    const discountRow = document.getElementById('neg-discount-label').closest('.neg-summary-row');
+    discountRow.style.display = discount > 0 ? '' : 'none';
+  }
+
+  function negSelectPm(pm) {
+    negCurrentPm = pm;
+    // Update method cards
+    document.querySelectorAll('.neg-method').forEach(m => {
+      m.classList.toggle('selected', m.id === 'neg-method-' + pm);
+    });
+    // Reset installment dropdown to first option
+    negCurrentIns = 1;
+    const firstOpt = document.querySelector('#neg-ins-list li');
+    if (firstOpt) {
+      document.querySelectorAll('#neg-ins-list li').forEach(o => o.classList.remove('selected'));
+      firstOpt.classList.add('selected');
+      document.getElementById('neg-ins-label').textContent = firstOpt.textContent;
+    }
+    negUpdateSummary();
+  }
+
+  function openNegotiationModal() {
+    negSelectPm('credito');
+    negFlipInner.classList.remove('flipped');
+    negModalOverlay.classList.add('open');
+    negModalOverlay.setAttribute('aria-hidden', 'false');
+  }
+  function closeNegotiationModal() {
+    negModalOverlay.classList.remove('open');
+    negModalOverlay.setAttribute('aria-hidden', 'true');
+  }
+
+  function flipToInvoices() {
+    renderNegInvoices();
+    negFlipInner.classList.add('flipped');
+  }
+  function flipToNegotiation() {
+    negFlipInner.classList.remove('flipped');
+  }
+
+  function renderNegInvoices() {
+    const overdue = PLANS.saude.invoices.filter(i => i.status === 'overdue');
+    const total = overdue.reduce((s, i) => s + parseFloat(i.amount.replace(',', '.')), 0);
+    const list = document.getElementById('neg-inv-list');
+    list.innerHTML = overdue.map((inv, idx) => `
+      <div class="neg-inv-item" id="neg-inv-${idx}">
+        <button class="neg-inv-head" data-neg-inv="${idx}" type="button">
+          <div class="neg-inv-left">
+            <span class="neg-inv-ref">${inv.ref}</span>
+            <span class="neg-inv-due">${inv.dueNote}</span>
+          </div>
+          <div class="neg-inv-right">
+            <span class="neg-inv-amount">R$ ${inv.amount}</span>
+            <i class="ph ph-caret-down neg-inv-caret" style="font-size:14px"></i>
+          </div>
+        </button>
+        <div class="neg-inv-body"><div>
+          <div class="neg-inv-details">
+            <div class="kv"><span class="k">Vencimento</span><span class="v">${inv.due}</span></div>
+            <div class="kv"><span class="k">Plano</span><span class="v">Unimed Saúde</span></div>
+            <div class="kv"><span class="k">Apólice</span><span class="v">0021 8334 002</span></div>
+            <div class="kv"><span class="k">Titular</span><span class="v">Lucas Salgado</span></div>
+            <div class="kv"><span class="k">Valor</span><span class="v">R$ ${inv.amount}</span></div>
+          </div>
+        </div></div>
+      </div>`).join('') +
+      `<div class="neg-inv-total">
+        <span class="k">Valor total</span>
+        <span class="v">R$ ${total.toFixed(2).replace('.', ',')}</span>
+      </div>`;
+
+    // accordion
+    list.querySelectorAll('.neg-inv-head').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.neg-inv-item');
+        item.classList.toggle('on');
+      });
+    });
+  }
+
+  // Payment method selection
+  document.querySelectorAll('.neg-method-head[data-neg-pm]').forEach(btn => {
+    btn.addEventListener('click', () => negSelectPm(btn.dataset.negPm));
+  });
+
+  // Installment dropdown
+  const negInsTrigger = document.getElementById('neg-ins-trigger');
+  const negInsList   = document.getElementById('neg-ins-list');
+  negInsTrigger.addEventListener('click', e => {
+    e.stopPropagation();
+    negInsTrigger.classList.toggle('open');
+    negInsList.classList.toggle('open');
+  });
+  negInsList.addEventListener('click', e => {
+    const opt = e.target.closest('[data-neg-ins]');
+    if (!opt) return;
+    negInsList.querySelectorAll('li').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    document.getElementById('neg-ins-label').textContent = opt.textContent;
+    negCurrentIns = parseInt(opt.dataset.negIns);
+    negInsTrigger.classList.remove('open');
+    negInsList.classList.remove('open');
+    negUpdateSummary();
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#neg-ins-select')) {
+      negInsTrigger.classList.remove('open');
+      negInsList.classList.remove('open');
+    }
+  });
+
+  // Close via X button, overlay click, Esc
+  document.getElementById('neg-modal-close').addEventListener('click', closeNegotiationModal);
+  negModalOverlay.addEventListener('click', e => {
+    if (e.target === negModalOverlay) closeNegotiationModal();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && negModalOverlay.classList.contains('open')) closeNegotiationModal();
+  });
+
+  // "Ver faturas" — flip para o verso
+  document.getElementById('neg-modal-see-invoices').addEventListener('click', flipToInvoices);
+
+  // Voltar (seta) — flip para a frente
+  document.getElementById('neg-back-btn').addEventListener('click', flipToNegotiation);
+
+  // Fechar pelo X do verso
+  document.getElementById('neg-back-close').addEventListener('click', closeNegotiationModal);
+
+  // Baixar todas (placeholder)
+  document.getElementById('neg-back-download').addEventListener('click', () => {});
+
+  // "Gerar negociação" — placeholder, fecharia e confirmaria
+  document.getElementById('neg-modal-confirm').addEventListener('click', () => {
+    closeNegotiationModal();
   });
 </script>
 
