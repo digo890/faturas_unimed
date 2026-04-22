@@ -126,7 +126,8 @@ function renderInsight(ins) {
     ${actionsHTML}`;
 }
 
-function fmtDate(d) { return d ? d.slice(0, 6) + d.slice(8) : '—'; }
+// DD/MM/AAAA → DD/MM/AA
+function fmtDateShort(d) { return d ? d.slice(0, 6) + d.slice(8) : '—'; }
 
 function renderInvoices(list, showAddress) {
   const filtered = currentFilter === 'all' ? list : list.filter(inv => inv.status === currentFilter);
@@ -166,14 +167,14 @@ function renderInvoices(list, showAddress) {
         ${showAddress ? `<td><span class="addr-wrap" data-tooltip="${inv.address || ''}"><span class="addr-text">${inv.address || '—'}</span></span></td>` : ''}
         <td>
           <div class="due-cell">
-            <span class="date">${fmtDate(inv.due)}</span>
+            <span class="date">${fmtDateShort(inv.due)}</span>
             <span class="${dueNoteCls}" style="${dueNoteStyle}">${inv.dueNote}</span>
           </div>
         </td>
         <td><span class="amount"><span class="cur">R$</span>${inv.amount}</span></td>
         <td>${STATUS_PILL[inv.status]}</td>
         <td><span class="pay-method clickable" data-open-drawer="payment"><i class="ph ${pmIcon}"></i> ${inv.pmLabel}</span></td>
-        <td>${inv.paidOn ? fmtDate(inv.paidOn) : '<span style="color:var(--color-neutral-500)">—</span>'}</td>
+        <td>${inv.paidOn ? fmtDateShort(inv.paidOn) : '<span style="color:var(--color-neutral-500)">—</span>'}</td>
         <td><div class="row-actions">${action}</div></td>
       </tr>`;
   }).join('');
@@ -644,31 +645,22 @@ document.addEventListener('click', e => {
   }
 });
 
-// Pix copy button
-document.getElementById('co-pix-copy-btn').addEventListener('click', () => {
-  const code = document.getElementById('co-pix-code').textContent;
-  navigator.clipboard.writeText(code).catch(() => {});
-  const btn = document.getElementById('co-pix-copy-btn');
-  btn.classList.add('copied');
-  btn.innerHTML = '<i class="ph-fill ph-check" style="font-size:18px"></i>';
-  setTimeout(() => {
-    btn.classList.remove('copied');
-    btn.innerHTML = '<i class="ph ph-copy" style="font-size:18px"></i>';
-  }, 2000);
-});
+function setupCopyBtn(btnId, codeId) {
+  document.getElementById(btnId).addEventListener('click', () => {
+    const code = document.getElementById(codeId).textContent;
+    navigator.clipboard.writeText(code).catch(() => {});
+    const btn = document.getElementById(btnId);
+    btn.classList.add('copied');
+    btn.innerHTML = '<i class="ph-fill ph-check" style="font-size:16px"></i>';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<i class="ph ph-copy" style="font-size:16px"></i>';
+    }, 2000);
+  });
+}
 
-// Boleto copy button
-document.getElementById('co-boleto-copy-btn').addEventListener('click', () => {
-  const code = document.getElementById('co-boleto-code').textContent;
-  navigator.clipboard.writeText(code).catch(() => {});
-  const btn = document.getElementById('co-boleto-copy-btn');
-  btn.classList.add('copied');
-  btn.innerHTML = '<i class="ph-fill ph-check" style="font-size:16px"></i>';
-  setTimeout(() => {
-    btn.classList.remove('copied');
-    btn.innerHTML = '<i class="ph ph-copy" style="font-size:16px"></i>';
-  }, 2000);
-});
+setupCopyBtn('co-pix-copy-btn',    'co-pix-code');
+setupCopyBtn('co-boleto-copy-btn', 'co-boleto-code');
 
 // Pay-with segmented (inside card-form)
 document.querySelectorAll('.pay-with-seg').forEach(seg => {
