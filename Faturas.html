@@ -427,14 +427,14 @@
 </aside>
 
 <!-- ─────────── CHECKOUT DRAWER ─────────── -->
-<aside class="drawer left" id="checkout-drawer" aria-label="Pagamento" aria-hidden="true">
+<aside class="drawer left" id="checkout-drawer" aria-labelledby="co-header-title" aria-hidden="true">
 
   <!-- PAGE 1: main checkout -->
   <div class="drawer-body" id="co-main">
 
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:var(--space-6)">
       <div class="ttl" id="co-header-title">Pagar fatura</div>
-      <button class="close" id="co-close-btn"><i class="ph ph-x"></i></button>
+      <button class="close" id="co-close-btn" aria-label="Fechar"><i class="ph ph-x"></i></button>
     </div>
 
     <div class="invoice-summary">
@@ -615,7 +615,7 @@
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:var(--space-6)">
       <button class="close" id="co-back-btn"><i class="ph ph-arrow-left"></i></button>
       <div class="ttl" style="flex:1">Adicionar cartão</div>
-      <button class="close" id="co-close-btn-2"><i class="ph ph-x"></i></button>
+      <button class="close" id="co-close-btn-2" aria-label="Fechar"><i class="ph ph-x"></i></button>
     </div>
 
     <div class="card-form on" style="margin-top:0">
@@ -774,7 +774,7 @@
   </div><!-- /neg-modal-front -->
 
   <!-- VERSO: faturas vencidas -->
-  <div class="modal" id="neg-modal-back">
+  <div class="modal" id="neg-modal-back" inert>
 
     <header class="modal-head">
       <div style="display:flex;align-items:center;gap:10px">

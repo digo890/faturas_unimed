@@ -766,9 +766,13 @@ function closeNegotiationModal() {
 function flipToInvoices() {
   renderNegInvoices();
   negFlipInner.classList.add('flipped');
+  document.getElementById('neg-modal-front').inert = true;
+  document.getElementById('neg-modal-back').inert = false;
 }
 function flipToNegotiation() {
   negFlipInner.classList.remove('flipped');
+  document.getElementById('neg-modal-front').inert = false;
+  document.getElementById('neg-modal-back').inert = true;
 }
 
 function renderNegInvoices() {
