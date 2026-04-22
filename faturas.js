@@ -5,7 +5,7 @@ const PLANS = {
     iconBg: 'var(--color-negative-surface)',
     iconColor: 'var(--color-negative-dark)',
     title: 'Unimed Saúde',
-    sub: 'Apólice 0021 8334 002 · 6 faturas no ciclo 2026',
+    sub: 'Apólice 0021 8334 002 · 4 faturas no ciclo 2026',
     insight: {
       tone: 'negative',
       icon: 'ph-fill ph-warning-circle',
@@ -15,11 +15,11 @@ const PLANS = {
       tag: '−10%'
     },
     invoices: [
-      {ref:'Mensalidade · Janeiro', m:'Jan', y:'2026', due:'25/01/2026', dueNote:'Vencida há 82 dias', dueCls:'late', amount:'220,00', status:'overdue', pm:'pix', pmLabel:'Pix', paidOn:null},
-      {ref:'Mensalidade · Fevereiro', m:'Fev', y:'2026', due:'25/02/2026', dueNote:'Vencida há 51 dias', dueCls:'late', amount:'220,00', status:'overdue', pm:'pix', pmLabel:'Pix', paidOn:null},
-      {ref:'Mensalidade · Março', m:'Mar', y:'2026', due:'25/03/2026', dueNote:'Vencida há 23 dias', dueCls:'late', amount:'220,00', status:'overdue', pm:'pix', pmLabel:'Pix', paidOn:null},
-      {ref:'Mensalidade · Abril', m:'Abr', y:'2026', due:'25/04/2026', dueNote:'Vence em 8 dias', dueCls:'upcoming', amount:'220,00', status:'open', pm:'credito', pmLabel:'Crédito •••• 1234', paidOn:null, scheduled:true},
-      {ref:'Mensalidade · Dezembro', m:'Dez', y:'2025', due:'25/12/2025', dueNote:'Quitada', dueCls:'muted', amount:'220,00', status:'paid', pm:'credito', pmLabel:'Crédito •••• 1234', paidOn:'23/12/2025'},
+      {ref:'Mensalidade · Janeiro', m:'Jan', y:'2026', due:'25/01/2026', dueNote:'Vencida há 87 dias', dueCls:'late', amount:'220,00', status:'overdue', pm:'pix', pmLabel:'Pix', paidOn:null},
+      {ref:'Mensalidade · Fevereiro', m:'Fev', y:'2026', due:'25/02/2026', dueNote:'Vencida há 56 dias', dueCls:'late', amount:'220,00', status:'overdue', pm:'pix', pmLabel:'Pix', paidOn:null},
+      {ref:'Mensalidade · Março', m:'Mar', y:'2026', due:'25/03/2026', dueNote:'Vencida há 28 dias', dueCls:'late', amount:'220,00', status:'overdue', pm:'pix', pmLabel:'Pix', paidOn:null},
+      {ref:'Mensalidade · Abril', m:'Abr', y:'2026', due:'25/04/2026', dueNote:'Vence em 3 dias', dueCls:'upcoming', amount:'220,00', status:'open', pm:'credito', pmLabel:'Crédito •••• 8820', paidOn:null, scheduled:true},
+      {ref:'Mensalidade · Dezembro', m:'Dez', y:'2025', due:'25/12/2025', dueNote:'Quitada', dueCls:'muted', amount:'220,00', status:'paid', pm:'credito', pmLabel:'Crédito •••• 8820', paidOn:'23/12/2025'},
       {ref:'Mensalidade · Novembro', m:'Nov', y:'2025', due:'25/11/2025', dueNote:'Quitada', dueCls:'muted', amount:'220,00', status:'paid', pm:'debito', pmLabel:'Débito automático', paidOn:'25/11/2025'}
     ]
   },
@@ -32,7 +32,7 @@ const PLANS = {
     insight: {
       tone: 'positive',
       icon: 'ph-fill ph-check-circle',
-      html: 'Todas as faturas em dia. A próxima <strong>R$ 89,90</strong> será debitada em <strong>15/05/2026</strong> no cartão •••• 5581.',
+      html: 'Todas as faturas em dia. A próxima <strong>R$ 89,90</strong> será debitada automaticamente em <strong>15/05/2026</strong>.',
       cta: null, tag: null
     },
     invoices: [
@@ -52,13 +52,13 @@ const PLANS = {
     insight: {
       tone: 'info',
       icon: 'ph ph-credit-card',
-      html: 'Cadastre seu cartão na recorrência e esqueça dos boletos. Débito automático todo mês, sem se preocupar com vencimento.',
+      html: '<strong>Cadastre seu cartão</strong> no débito automático e nunca mais se preocupe com vencimentos.',
       cta: 'Cadastrar cartão',
       ctaAction: 'openPayment',
       tag: null
     },
     invoices: [
-      {ref:'Parcela 05/12', m:'Mai', y:'2026', due:'10/05/2026', dueNote:'Vence em 23 dias', dueCls:'upcoming', amount:'135,00', status:'open', pm:'boleto', pmLabel:'Boleto', paidOn:null, address:'Rua das Palmeiras, 1280, apto 72 · Pinheiros · São Paulo/SP · 05422-020'},
+      {ref:'Parcela 05/12', m:'Mai', y:'2026', due:'10/05/2026', dueNote:'Vence em 18 dias', dueCls:'upcoming', amount:'135,00', status:'open', pm:'boleto', pmLabel:'Boleto', paidOn:null, address:'Rua das Palmeiras, 1280, apto 72 · Pinheiros · São Paulo/SP · 05422-020'},
       {ref:'Parcela 04/12', m:'Abr', y:'2026', due:'10/04/2026', dueNote:'Quitada', dueCls:'muted', amount:'135,00', status:'paid', pm:'boleto', pmLabel:'Boleto', paidOn:'08/04/2026', address:'Rua das Palmeiras, 1280, apto 72 · Pinheiros · São Paulo/SP · 05422-020'},
       {ref:'Parcela 03/12', m:'Mar', y:'2026', due:'10/03/2026', dueNote:'Quitada', dueCls:'muted', amount:'135,00', status:'paid', pm:'boleto', pmLabel:'Boleto', paidOn:'09/03/2026', address:'Av. Paulista, 900, conj. 51 · Bela Vista · São Paulo/SP · 01310-100'},
       {ref:'Parcela 02/12', m:'Fev', y:'2026', due:'10/02/2026', dueNote:'Quitada', dueCls:'muted', amount:'135,00', status:'paid', pm:'boleto', pmLabel:'Boleto', paidOn:'10/02/2026', address:'Av. Paulista, 900, conj. 51 · Bela Vista · São Paulo/SP · 01310-100'},
@@ -365,14 +365,7 @@ function setDrawerTab(name) {
     b.classList.toggle('on', b.dataset.tab === name);
   });
   document.querySelectorAll('.tab-pane').forEach(p => {
-    const active = p.dataset.pane === name;
-    if (active && !p.classList.contains('on')) {
-      p.classList.remove('on');
-      p.style.animation = 'none';
-      p.offsetHeight;
-      p.style.animation = '';
-    }
-    p.classList.toggle('on', active);
+    p.classList.toggle('on', p.dataset.pane === name);
   });
 }
 
@@ -515,10 +508,11 @@ function openCheckout(data) {
 
   coCollapseToggle.classList.toggle('overdue', data.status === 'overdue');
   coCollapseToggle.classList.toggle('open', data.status !== 'overdue');
-  coCollapseToggle.querySelector('.dot i').className = data.status === 'overdue'
-    ? 'ph-fill ph-warning-circle'
-    : 'ph ph-clock';
-  coCollapseToggle.querySelector('.dot i').style.fontSize = '16px';
+  const collapseIcon = coCollapseToggle.querySelector('.collapse-icon');
+  collapseIcon.className = data.status === 'overdue'
+    ? 'ph-fill ph-warning-circle collapse-icon'
+    : 'ph ph-clock collapse-icon';
+  collapseIcon.style.fontSize = '18px';
 
   coPayBtn.innerHTML = `<i class="ph ph-lock-key" style="font-size:16px"></i> Pagar ${amountStr}`;
 
@@ -608,6 +602,7 @@ coSavedCardsEl.querySelectorAll('.saved-card').forEach(sc => {
     if (e.target.closest('.sc-action')) return;
     coSavedCardsEl.querySelectorAll('.saved-card').forEach(x => x.classList.remove('selected'));
     sc.classList.add('selected');
+    sc.after(coInsWrap);
   });
 });
 
@@ -620,6 +615,14 @@ coSavedCardsEl.querySelectorAll('[data-sc-edit]').forEach(btn => {
 });
 
 coAddNewCardBtn.addEventListener('click', goToNewCard);
+
+// Auto-pay toggle (checkout main page)
+const coAutopayTrack = document.getElementById('co-autopay-track');
+const coAutopayInput = document.getElementById('co-autopay');
+coAutopayTrack.addEventListener('click', () => {
+  coAutopayTrack.classList.toggle('on');
+  coAutopayInput.checked = coAutopayTrack.classList.contains('on');
+});
 
 // Installments dropdown
 const coInsTrigger = document.getElementById('co-ins-trigger');
@@ -684,11 +687,11 @@ document.querySelectorAll('.drawer-body').forEach(el => {
   el.addEventListener('scroll', () => _handleScroll(el), { passive: true });
 });
 
-// Autopay toggle (checkout)
-const coSaveCard = document.getElementById('co-autopay-toggle');
-if (coSaveCard) coSaveCard.addEventListener('click', () => {
-  coSaveCard.classList.toggle('on');
-  coSaveCard.setAttribute('aria-pressed', coSaveCard.classList.contains('on'));
+// Auto-pay toggle (new card page)
+const coAutopayToggle = document.getElementById('co-autopay-toggle');
+if (coAutopayToggle) coAutopayToggle.addEventListener('click', () => {
+  const isOn = coAutopayToggle.classList.toggle('on');
+  coAutopayToggle.setAttribute('aria-pressed', isOn);
 });
 
 
