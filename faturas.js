@@ -47,7 +47,7 @@ const PLANS = {
     icon: 'ph-house-line',
     iconBg: 'var(--color-info-surface)',
     iconColor: 'var(--color-info-dark)',
-    title: 'Seguros Unimed · Residencial Premiável',
+    title: 'Unimed Patrimonial',
     sub: 'Apólice 5512 9981 200 · 12 parcelas anuais',
     insight: {
       tone: 'info',
@@ -83,6 +83,7 @@ const insightBar = document.getElementById('insight-bar');
 const invoicePanel = document.getElementById('invoice-panel');
 let currentPlanTitle = PLANS.saude.title;
 let currentFilter = 'all';
+let currentAddress = 'all';
 let currentPlanKey = 'saude';
 
 function syncCheckAll() {
@@ -130,7 +131,10 @@ function renderInsight(ins) {
 function fmtDateShort(d) { return d ? d.slice(0, 6) + d.slice(8) : '—'; }
 
 function renderInvoices(list, showAddress) {
-  const filtered = currentFilter === 'all' ? list : list.filter(inv => inv.status === currentFilter);
+  let filtered = currentFilter === 'all' ? list : list.filter(inv => inv.status === currentFilter);
+  if (showAddress && currentAddress !== 'all') {
+    filtered = filtered.filter(inv => inv.address === currentAddress);
+  }
   document.getElementById('th-address').style.display = showAddress ? '' : 'none';
   if (filtered.length === 0) {
     invoicesBody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:40px 0;color:var(--color-neutral-600);font-size:14px">Nenhuma fatura encontrada para este filtro.</td></tr>`;
@@ -197,7 +201,21 @@ function selectPlan(key) {
   currentPlanTitle = data.title;
   currentPlanKey = key;
   currentFilter = 'all';
+  currentAddress = 'all';
   const invoices = data.invoices;
+  const enderecoSelect = document.getElementById('endereco-select');
+  if (key === 'residencial') {
+    const addresses = [...new Set(invoices.map(i => i.address).filter(Boolean))];
+    const truncAddr = a => a.length > 40 ? a.slice(0, 40) + '…' : a;
+    const list = enderecoSelect.querySelector('.custom-select-list');
+    list.innerHTML = `<li role="option" class="selected" data-value="all">Todos os endereços</li>` +
+      addresses.map(a => `<li role="option" data-value="${a}" title="${a}">${truncAddr(a)}</li>`).join('');
+    enderecoSelect.querySelector('.cst-label').textContent = 'Todos os endereços';
+    enderecoSelect.style.display = '';
+    rebindCustomSelect(enderecoSelect);
+  } else {
+    enderecoSelect.style.display = 'none';
+  }
   const counts = {
     all:     invoices.length,
     overdue: invoices.filter(i => i.status === 'overdue').length,
@@ -235,12 +253,14 @@ plans.forEach(p => p.addEventListener('click', () => {
 selectPlan('saude');
 
 // Custom select dropdowns
-document.querySelectorAll('.custom-select').forEach(cs => {
+function rebindCustomSelect(cs) {
   const trigger = cs.querySelector('.custom-select-trigger');
   const list    = cs.querySelector('.custom-select-list');
   const label   = cs.querySelector('.cst-label');
 
-  trigger.addEventListener('click', e => {
+  const newTrigger = trigger.cloneNode(true);
+  trigger.parentNode.replaceChild(newTrigger, trigger);
+  newTrigger.addEventListener('click', e => {
     e.stopPropagation();
     const isOpen = list.classList.contains('open');
     document.querySelectorAll('.custom-select-list.open').forEach(l => {
@@ -250,8 +270,8 @@ document.querySelectorAll('.custom-select').forEach(cs => {
     });
     if (!isOpen) {
       list.classList.add('open');
-      trigger.classList.add('open');
-      trigger.setAttribute('aria-expanded', 'true');
+      newTrigger.classList.add('open');
+      newTrigger.setAttribute('aria-expanded', 'true');
     }
   });
 
@@ -261,17 +281,23 @@ document.querySelectorAll('.custom-select').forEach(cs => {
       li.classList.add('selected');
       label.textContent = li.textContent;
       list.classList.remove('open');
-      trigger.classList.remove('open');
-      trigger.setAttribute('aria-expanded', 'false');
+      newTrigger.classList.remove('open');
+      newTrigger.setAttribute('aria-expanded', 'false');
 
+      const planData = PLANS[currentPlanKey];
+      const isResidencial = currentPlanKey === 'residencial';
       if (cs.dataset.cselect === 'situacao') {
         currentFilter = li.dataset.value;
-        const planData = PLANS[currentPlanKey];
-        renderInvoices(planData.invoices, currentPlanKey === 'residencial');
+        renderInvoices(planData.invoices, isResidencial);
+      } else if (cs.dataset.cselect === 'endereco') {
+        currentAddress = li.dataset.value;
+        renderInvoices(planData.invoices, isResidencial);
       }
     });
   });
-});
+}
+
+document.querySelectorAll('.custom-select').forEach(cs => rebindCustomSelect(cs));
 
 document.addEventListener('click', () => {
   document.querySelectorAll('.custom-select-list.open').forEach(l => {
