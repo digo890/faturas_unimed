@@ -27,7 +27,7 @@ const PLANS = {
     icon: 'ph-tooth',
     iconBg: 'var(--color-positive-surface)',
     iconColor: 'var(--color-positive-dark)',
-    title: 'Unimed Odonto · Plano Sorriso Família',
+    title: 'Unimed Odonto',
     sub: 'Apólice 0832 4422 016 · Débito automático',
     insight: {
       tone: 'positive',
@@ -41,6 +41,25 @@ const PLANS = {
       {ref:'Mensalidade · Março', m:'Mar', y:'2026', due:'15/03/2026', dueNote:'Quitada', dueCls:'muted', amount:'89,90', status:'paid', pm:'debito', pmLabel:'Débito automático', paidOn:'15/03/2026'},
       {ref:'Mensalidade · Fevereiro', m:'Fev', y:'2026', due:'15/02/2026', dueNote:'Quitada', dueCls:'muted', amount:'89,90', status:'paid', pm:'debito', pmLabel:'Débito automático', paidOn:'15/02/2026'},
       {ref:'Mensalidade · Janeiro', m:'Jan', y:'2026', due:'15/01/2026', dueNote:'Quitada', dueCls:'muted', amount:'89,90', status:'paid', pm:'debito', pmLabel:'Débito automático', paidOn:'15/01/2026'}
+    ]
+  },
+  previdencia: {
+    icon: 'ph-piggy-bank',
+    iconBg: 'var(--color-positive-surface)',
+    iconColor: 'var(--color-positive-dark)',
+    title: 'Unimed Previdência',
+    sub: 'Apólice 7741 3302 088 · Débito automático',
+    insight: {
+      tone: 'positive',
+      icon: 'ph-fill ph-check-circle',
+      html: 'Todas as contribuições em dia. A próxima <strong>R$ 210,00</strong> será debitada automaticamente em <strong>10/05/2026</strong>.',
+      cta: null, tag: null
+    },
+    invoices: [
+      {ref:'Contribuição · Maio', m:'Mai', y:'2026', due:'10/05/2026', dueNote:'Vence em 18 dias', dueCls:'upcoming', amount:'210,00', status:'open', pm:'debito', pmLabel:'Débito automático', paidOn:null, scheduled:true, titular:'Lucas Salgado'},
+      {ref:'Contribuição · Abril', m:'Abr', y:'2026', due:'10/04/2026', dueNote:'Quitada', dueCls:'muted', amount:'210,00', status:'paid', pm:'debito', pmLabel:'Débito automático', paidOn:'10/04/2026', titular:'Lucas Salgado'},
+      {ref:'Contribuição · Maio', m:'Mai', y:'2026', due:'10/05/2026', dueNote:'Vence em 18 dias', dueCls:'upcoming', amount:'210,00', status:'open', pm:'debito', pmLabel:'Débito automático', paidOn:null, scheduled:true, titular:'Eduardo Salgado'},
+      {ref:'Contribuição · Abril', m:'Abr', y:'2026', due:'10/04/2026', dueNote:'Quitada', dueCls:'muted', amount:'210,00', status:'paid', pm:'debito', pmLabel:'Débito automático', paidOn:'10/04/2026', titular:'Eduardo Salgado'}
     ]
   },
   residencial: {
@@ -84,6 +103,7 @@ const invoicePanel = document.getElementById('invoice-panel');
 let currentPlanTitle = PLANS.saude.title;
 let currentFilter = 'all';
 let currentAddress = 'all';
+let currentTitular = 'all';
 let currentPlanKey = 'saude';
 
 function syncCheckAll() {
@@ -130,12 +150,16 @@ function renderInsight(ins) {
 // DD/MM/AAAA → DD/MM/AA
 function fmtDateShort(d) { return d ? d.slice(0, 6) + d.slice(8) : '—'; }
 
-function renderInvoices(list, showAddress) {
+function renderInvoices(list, showAddress, showTitular) {
   let filtered = currentFilter === 'all' ? list : list.filter(inv => inv.status === currentFilter);
   if (showAddress && currentAddress !== 'all') {
     filtered = filtered.filter(inv => inv.address === currentAddress);
   }
+  if (showTitular && currentTitular !== 'all') {
+    filtered = filtered.filter(inv => inv.titular === currentTitular);
+  }
   document.getElementById('th-address').style.display = showAddress ? '' : 'none';
+  document.getElementById('th-titular').style.display = showTitular ? '' : 'none';
   if (filtered.length === 0) {
     invoicesBody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:40px 0;color:var(--color-neutral-600);font-size:14px">Nenhuma fatura encontrada para este filtro.</td></tr>`;
     return;
@@ -169,6 +193,7 @@ function renderInvoices(list, showAddress) {
           </div>
         </td>
         ${showAddress ? `<td><span class="addr-wrap" data-tooltip="${inv.address || ''}"><span class="addr-text">${inv.address || '—'}</span></span></td>` : ''}
+        ${showTitular ? `<td style="font-size:13px;white-space:nowrap">${inv.titular || '—'}</td>` : ''}
         <td>
           <div class="due-cell">
             <span class="date">${fmtDateShort(inv.due)}</span>
@@ -202,7 +227,20 @@ function selectPlan(key) {
   currentPlanKey = key;
   currentFilter = 'all';
   currentAddress = 'all';
+  currentTitular = 'all';
   const invoices = data.invoices;
+  const titularSelect = document.getElementById('titular-select');
+  if (key === 'previdencia') {
+    const titulares = [...new Set(invoices.map(i => i.titular).filter(Boolean))];
+    const titList = titularSelect.querySelector('.custom-select-list');
+    titList.innerHTML = `<li role="option" class="selected" data-value="all">Todos os titulares</li>` +
+      titulares.map(t => `<li role="option" data-value="${t}">${t}</li>`).join('');
+    titularSelect.querySelector('.cst-label').textContent = 'Todos os titulares';
+    titularSelect.style.display = '';
+    rebindCustomSelect(titularSelect);
+  } else {
+    titularSelect.style.display = 'none';
+  }
   const enderecoSelect = document.getElementById('endereco-select');
   if (key === 'residencial') {
     const addresses = [...new Set(invoices.map(i => i.address).filter(Boolean))];
@@ -238,7 +276,7 @@ function selectPlan(key) {
   }
   document.getElementById('panel-foot').style.display = key === 'saude' ? '' : 'none';
   renderInsight(data.insight);
-  renderInvoices(data.invoices, key === 'residencial');
+  renderInvoices(data.invoices, key === 'residencial', key === 'previdencia');
 }
 
 plans.forEach(p => p.addEventListener('click', () => {
@@ -286,12 +324,16 @@ function rebindCustomSelect(cs) {
 
       const planData = PLANS[currentPlanKey];
       const isResidencial = currentPlanKey === 'residencial';
+      const isPrevidencia = currentPlanKey === 'previdencia';
       if (cs.dataset.cselect === 'situacao') {
         currentFilter = li.dataset.value;
-        renderInvoices(planData.invoices, isResidencial);
+        renderInvoices(planData.invoices, isResidencial, isPrevidencia);
       } else if (cs.dataset.cselect === 'endereco') {
         currentAddress = li.dataset.value;
-        renderInvoices(planData.invoices, isResidencial);
+        renderInvoices(planData.invoices, isResidencial, isPrevidencia);
+      } else if (cs.dataset.cselect === 'titular') {
+        currentTitular = li.dataset.value;
+        renderInvoices(planData.invoices, isResidencial, isPrevidencia);
       }
     });
   });
@@ -299,12 +341,100 @@ function rebindCustomSelect(cs) {
 
 document.querySelectorAll('.custom-select').forEach(cs => rebindCustomSelect(cs));
 
+// ─────────── TOGGLE DE VISÃO ───────────
+const viewToggleBtn  = document.getElementById('view-toggle');
+const viewToggleIcon = document.getElementById('view-toggle-icon');
+const plansContainer = document.querySelector('.plans');
+
+viewToggleBtn.addEventListener('click', () => {
+  const isMini = plansContainer.classList.toggle('plans--mini');
+  viewToggleBtn.classList.toggle('active', isMini);
+  viewToggleIcon.className = isMini ? 'ph ph-list' : 'ph ph-squares-four';
+  viewToggleBtn.setAttribute('aria-pressed', isMini ? 'true' : 'false');
+});
+
+document.querySelectorAll('[data-plan-demo]').forEach(btn => {
+  btn.addEventListener('click', e => e.preventDefault());
+});
+
+// Drag-to-scroll com momentum no carrossel de cards
+(function () {
+  const el = plansContainer;
+  let dragging = false, startX = 0, scrollLeft = 0, moved = false;
+  let velX = 0, lastX = 0, lastT = 0, rafId = null;
+
+  function momentum() {
+    velX *= 0.92;
+    if (Math.abs(velX) < 0.5) return;
+    el.scrollLeft -= velX;
+    rafId = requestAnimationFrame(momentum);
+  }
+
+  el.addEventListener('mousedown', e => {
+    if (el.classList.contains('plans--mini')) return;
+    cancelAnimationFrame(rafId);
+    dragging = true; moved = false; velX = 0;
+    startX = e.pageX - el.offsetLeft;
+    scrollLeft = el.scrollLeft;
+    lastX = e.pageX; lastT = performance.now();
+    el.style.userSelect = 'none';
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const dx = e.pageX - el.offsetLeft - startX;
+    if (Math.abs(dx) > 4) moved = true;
+    el.scrollLeft = scrollLeft - dx;
+    const now = performance.now();
+    const dt = now - lastT || 1;
+    velX = (e.pageX - lastX) / dt * 16;
+    lastX = e.pageX; lastT = now;
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    el.style.userSelect = '';
+    if (Math.abs(velX) > 1) rafId = requestAnimationFrame(momentum);
+  });
+
+  el.addEventListener('click', e => {
+    if (moved) e.stopPropagation();
+  }, true);
+})();
+
+// User dropdown
+const userChip     = document.getElementById('user-chip');
+const userDropdown = document.getElementById('user-dropdown');
+userChip.addEventListener('click', e => {
+  e.stopPropagation();
+  const isOpen = userDropdown.classList.toggle('open');
+  userChip.classList.toggle('open', isOpen);
+  userChip.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  userDropdown.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+});
+userDropdown.querySelectorAll('.user-dropdown-opt').forEach(opt => {
+  opt.addEventListener('click', e => {
+    e.stopPropagation();
+    userDropdown.querySelectorAll('.user-dropdown-opt').forEach(x => x.classList.remove('selected'));
+    opt.classList.add('selected');
+    userDropdown.classList.remove('open');
+    userChip.classList.remove('open');
+    userChip.setAttribute('aria-expanded', 'false');
+    userDropdown.setAttribute('aria-hidden', 'true');
+  });
+});
+
 document.addEventListener('click', () => {
   document.querySelectorAll('.custom-select-list.open').forEach(l => {
     l.classList.remove('open');
     l.previousElementSibling.classList.remove('open');
     l.previousElementSibling.setAttribute('aria-expanded', 'false');
   });
+  userDropdown.classList.remove('open');
+  userChip.classList.remove('open');
+  userChip.setAttribute('aria-expanded', 'false');
+  userDropdown.setAttribute('aria-hidden', 'true');
 });
 
 // Card brand detection

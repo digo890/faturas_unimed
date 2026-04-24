@@ -30,12 +30,27 @@
 
     <!-- ─────────── TOP BAR ─────────── -->
     <header class="topbar">
-      <div class="user-chip">
+      <div style="position:relative">
+      <div class="user-chip" id="user-chip" aria-haspopup="true" aria-expanded="false">
         <div class="avatar">LS</div>
         <div>
           <div class="name">Lucas Salgado</div>
           <div class="role">CPF: 000.000.000-00</div>
         </div>
+        <i class="ph ph-caret-down user-chip-caret" style="font-size:14px;color:var(--color-neutral-500)"></i>
+      </div>
+      <div class="user-dropdown" id="user-dropdown" aria-hidden="true">
+        <div class="user-dropdown-label">Visualizar como</div>
+        <button class="user-dropdown-opt selected">
+          <div class="avatar avatar-sm">LS</div>
+          <div class="udo-name">Lucas Salgado</div>
+          <i class="ph-fill ph-check-circle" style="font-size:16px;color:var(--color-primary);margin-left:auto"></i>
+        </button>
+        <button class="user-dropdown-opt">
+          <div class="avatar avatar-sm" style="background:var(--color-info-surface);color:var(--color-info-dark)">ES</div>
+          <div class="udo-name">Eduardo Salgado</div>
+        </button>
+      </div>
       </div>
       <div class="topbar-right">
         <button class="icon-btn" aria-label="Carteirinha virtual"><i class="ph ph-identification-card" style="font-size:22px"></i></button>
@@ -49,7 +64,12 @@
       <div class="page-head">
         <div>
           <div class="eyebrow"></div>
-          <h1>Suas faturas</h1>
+          <div style="display:flex;align-items:center;gap:10px">
+            <h1>Suas faturas</h1>
+            <button class="btn-icon-md view-toggle" id="view-toggle" aria-label="Alternar visão dos planos" aria-pressed="false" title="Alternar visão">
+              <i class="ph ph-squares-four" id="view-toggle-icon" style="font-size:18px"></i>
+            </button>
+          </div>
           <p class="lede"></p>
         </div>
         <div class="summary-card" role="group" aria-label="Resumo financeiro">
@@ -72,7 +92,7 @@
           <div class="head">
             <div class="title-row">
               <i class="ph ph-heartbeat" style="font-size:22px"></i>
-              <div class="name">Unimed Saúde</div>
+              <div class="name">Saúde</div>
             </div>
             <span class="pill pill-negative"><i class="ph-fill ph-warning-circle" style="font-size:14px"></i> 3 vencidas</span>
           </div>
@@ -93,7 +113,7 @@
           <div class="head">
             <div class="title-row">
               <i class="ph ph-tooth" style="font-size:22px"></i>
-              <div class="name">Unimed Odonto</div>
+              <div class="name">Odonto</div>
             </div>
             <span class="pill pill-positive"><i class="ph-fill ph-check-circle" style="font-size:14px"></i> Em dia</span>
           </div>
@@ -131,6 +151,70 @@
           </div>
         </button>
 
+        <!-- Cards demo — visíveis apenas na visão mini -->
+        <button class="plan alert plan-demo" data-plan-demo="vida" role="tab" aria-disabled="true" tabindex="-1">
+          <div class="head">
+            <div class="title-row">
+              <i class="ph ph-heart" style="font-size:22px"></i>
+              <div class="name">Vida</div>
+            </div>
+            <span class="pill pill-negative"><i class="ph-fill ph-warning-circle" style="font-size:14px"></i> 3 vencidas</span>
+          </div>
+          <div class="body">
+            <span class="label">Total em aberto</span>
+            <span class="value">R$ 440,00</span>
+          </div>
+          <div class="footer">
+            <div class="left">
+              <i class="ph ph-calendar-blank" style="font-size:16px;color:var(--color-neutral-600)"></i>
+              <span style="font-size:13px;color:var(--color-neutral-600)">Mensal · venc. dia 25</span>
+            </div>
+            <span class="open">Ver faturas <i class="ph ph-arrow-right plan-arrow" style="font-size:14px"></i></span>
+          </div>
+        </button>
+
+        <button class="plan healthy" role="tab" aria-selected="false" data-plan="previdencia">
+          <div class="head">
+            <div class="title-row">
+              <i class="ph ph-piggy-bank" style="font-size:22px"></i>
+              <div class="name">Previdência</div>
+            </div>
+            <span class="pill pill-positive"><i class="ph-fill ph-check-circle" style="font-size:14px"></i> Em dia</span>
+          </div>
+          <div class="body">
+            <span class="label">Próximo pagamento</span>
+            <span class="value">R$ 210,00</span>
+          </div>
+          <div class="footer">
+            <div class="left">
+              <i class="ph ph-credit-card" style="font-size:16px;color:var(--color-neutral-600)"></i>
+              <span style="font-size:13px;color:var(--color-neutral-600)">Débito automático</span>
+            </div>
+            <span class="open">Ver faturas <i class="ph ph-arrow-right plan-arrow" style="font-size:14px"></i></span>
+          </div>
+        </button>
+
+        <button class="plan upcoming plan-demo" data-plan-demo="rc" role="tab" aria-disabled="true" tabindex="-1">
+          <div class="head">
+            <div class="title-row">
+              <i class="ph ph-users-three" style="font-size:22px"></i>
+              <div class="name">RC Familiar</div>
+            </div>
+            <span class="pill pill-info"><i class="ph ph-clock" style="font-size:14px"></i> Próximo dia 10</span>
+          </div>
+          <div class="body">
+            <span class="label">Valor a pagar</span>
+            <span class="value">R$ 98,00</span>
+          </div>
+          <div class="footer">
+            <div class="left">
+              <i class="ph ph-barcode" style="font-size:16px;color:var(--color-neutral-600)"></i>
+              <span style="font-size:13px;color:var(--color-neutral-600)">Boleto · 10/05/2026</span>
+            </div>
+            <span class="open">Ver faturas <i class="ph ph-arrow-right plan-arrow" style="font-size:14px"></i></span>
+          </div>
+        </button>
+
       </div>
 
       <!-- ─────────── INVOICE PANEL ─────────── -->
@@ -155,6 +239,15 @@
                 <li role="option" data-value="overdue">Vencidas (3)</li>
                 <li role="option" data-value="open">Em aberto (1)</li>
                 <li role="option" data-value="paid">Pagas (2)</li>
+              </ul>
+            </div>
+            <div class="custom-select" data-cselect="titular" id="titular-select" style="display:none;max-width:180px">
+              <button type="button" class="custom-select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Titular" style="max-width:180px">
+                <span class="cst-label" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px;display:inline-block">Todos os titulares</span>
+                <i class="ph ph-caret-down cst-arrow" style="font-size:14px;flex-shrink:0"></i>
+              </button>
+              <ul class="custom-select-list" role="listbox" aria-label="Titular" style="min-width:200px">
+                <li role="option" class="selected" data-value="all">Todos os titulares</li>
               </ul>
             </div>
             <div class="custom-select" data-cselect="endereco" id="endereco-select" style="display:none;max-width:200px">
@@ -193,7 +286,8 @@
                 <th style="width:40px"><span class="check check-all" aria-label="Selecionar todas"></span></th>
                 <th>Ref.</th>
                 <th id="th-address" style="display:none">Endereço</th>
-                <th class="sortable"><span class="arrow">Vencimento <i class="ph ph-caret-down" style="font-size:12px"></i></span></th>
+                <th id="th-titular" style="display:none"><span class="arrow">Titular <i class="ph ph-caret-down" style="font-size:12px"></i></span></th>
+                <th>Vencimento</th>
                 <th>Valor</th>
                 <th>Situação</th>
                 <th>Forma de pagto</th>

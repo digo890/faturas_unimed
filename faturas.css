@@ -69,25 +69,73 @@ body {
 }
 .user-chip {
   display: flex; align-items: center; gap: 12px;
-  padding: 6px 16px 6px 6px;
+  padding: 6px 12px 6px 6px;
   border-radius: 9999px;
   cursor: pointer;
   transition: background 150ms ease;
+  position: relative;
 }
-.user-chip > div:last-child {
+.user-chip > div:nth-child(2) {
   display: flex; flex-direction: column; gap: 2px;
   text-align: left;
 }
-.user-chip:hover { background: var(--bg-subtle); }
+.user-chip:hover { background: var(--color-neutral-200); }
+.user-chip:hover .user-chip-caret { color: var(--color-primary) !important; }
+.user-chip.open { background: var(--color-neutral-200); }
+.user-chip.open .user-chip-caret { transform: rotate(180deg); color: var(--color-primary) !important; }
+.user-chip.open { border-color: transparent; box-shadow: none; }
+.user-chip-caret { transition: transform 200ms ease, color 150ms ease; flex-shrink: 0; }
 .avatar {
   width: 32px; height: 32px; border-radius: 50%;
   background: var(--color-neutral-200);
   color: var(--color-neutral-700);
   font-weight: 600; font-size: 12px;
   display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
 }
+.avatar-sm { width: 28px; height: 28px; font-size: 11px; }
 .user-chip .name { font-size: 13px; font-weight: 500; color: var(--color-neutral-900); line-height: 1.2; margin: 0; padding: 0; }
 .user-chip .role { font-size: 11px; color: var(--color-neutral-500); line-height: 1.2; margin: 0; padding: 0; }
+
+/* ─── User dropdown ─── */
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  background: #fff;
+  border: 1.5px solid var(--border-default);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.10);
+  padding: 8px;
+  min-width: 220px;
+  z-index: 200;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+.user-dropdown.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.user-dropdown-label {
+  font-size: 11px; font-weight: 600; color: var(--color-neutral-500);
+  text-transform: uppercase; letter-spacing: .04em;
+  padding: 4px 8px 8px;
+}
+.user-dropdown-opt {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 8px 10px;
+  border: none; background: transparent;
+  border-radius: 10px; cursor: pointer;
+  transition: background 120ms ease;
+  text-align: left; font-family: inherit;
+}
+.user-dropdown-opt:hover { background: var(--bg-subtle); }
+.user-dropdown-opt.selected { background: var(--color-primary-surface); }
+.udo-name { font-size: 13px; font-weight: 500; color: var(--color-neutral-900); }
+.udo-role { font-size: 11px; color: var(--color-neutral-500); }
 
 /* ─────────── PAGE ─────────── */
 .page { padding: 48px 64px 80px; max-width: 1440px; }
@@ -123,10 +171,19 @@ body {
 
 /* ─────────── PLAN CARDS ─────────── */
 .plans {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-direction: row;
   gap: 24px;
   margin-bottom: 32px;
+  overflow-x: scroll;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-right: 40px;
+}
+.plans::-webkit-scrollbar { display: none; }
+.plans > .plan {
+  flex: 0 0 calc((100% - 120px) / 3);
+  scroll-snap-align: start;
 }
 .plan {
   background: #fff;
@@ -173,6 +230,66 @@ body {
 .plan.healthy .title-row i { color: var(--color-green); }
 .plan.upcoming .title-row i { color: var(--color-info); }
 .plan.alert .body .value { color: var(--color-negative); }
+
+/* ─────────── TOGGLE DE VISÃO ─────────── */
+.view-toggle { flex-shrink: 0; width: 36px; height: 36px; }
+.view-toggle.active { background: var(--color-primary-surface); color: var(--color-primary); border-color: var(--color-primary-surface); }
+
+/* Cards demo — ocultos na visão padrão */
+.plan-demo { display: none; }
+
+/* ─────────── VISÃO MINI CARDS ─────────── */
+.plans--mini {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 32px;
+  overflow-x: visible;
+  padding-right: 0;
+}
+.plans--mini > .plan {
+  flex: none;
+  width: auto;
+}
+/* Exibe os cards demo na visão mini */
+.plans--mini .plan-demo { display: flex; }
+
+/* Reestiliza todos os cards no modo mini */
+.plans--mini .plan {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  min-height: 52px;
+  border-radius: 12px;
+  border-width: 1.5px;
+}
+.plans--mini .plan .pill { background: #fff; }
+.plans--mini .plan .body,
+.plans--mini .plan .footer { display: none; }
+.plans--mini .plan .head { width: 100%; justify-content: space-between; }
+.plans--mini .plan .title-row i { font-size: 18px; }
+.plans--mini .plan .name { font-size: 14px; }
+
+/* Fundo colorido por status no mini */
+.plans--mini .plan.alert   { background: var(--color-negative-surface); border-color: transparent; }
+.plans--mini .plan.healthy { background: var(--color-positive-surface); border-color: transparent; }
+.plans--mini .plan.upcoming{ background: var(--color-info-surface);     border-color: transparent; }
+
+/* Hover no mini */
+.plans--mini .plan.alert:hover   { border-color: var(--color-negative); }
+.plans--mini .plan.healthy:hover { border-color: var(--color-positive); }
+.plans--mini .plan.upcoming:hover{ border-color: var(--color-info); }
+
+/* Ativo no mini — borda da cor do status, sem shadow azul */
+.plans--mini .plan.active { box-shadow: none; border-color: var(--color-primary); }
+.plans--mini .plan.alert.active   { border-color: var(--color-negative); }
+.plans--mini .plan.healthy.active { border-color: var(--color-positive); }
+.plans--mini .plan.upcoming.active{ border-color: var(--color-info); }
+
+/* Cards demo não têm estado active/hover interativo */
+.plans--mini .plan-demo { cursor: default; }
+.plans--mini .plan-demo:hover { border-color: transparent; }
 
 .pill {
   display: inline-flex; align-items: center; gap: 6px;
