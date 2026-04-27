@@ -54,7 +54,53 @@
       </div>
       <div class="topbar-right">
         <button class="icon-btn" aria-label="Carteirinha virtual"><i class="ph ph-identification-card" style="font-size:22px"></i></button>
-        <button class="icon-btn" aria-label="Notificações"><i class="ph ph-bell" style="font-size:22px"></i><span class="badge"></span></button>
+        <div style="position:relative">
+          <button class="icon-btn" id="notif-btn" aria-label="Notificações" aria-haspopup="true" aria-expanded="false"><i class="ph ph-bell" style="font-size:22px"></i><span class="badge" id="notif-badge"></span></button>
+          <div class="notif-dropdown" id="notif-dropdown" aria-hidden="true">
+            <div class="notif-header">
+              <span class="notif-title">Notificações</span>
+              <button class="notif-mark-all">Marcar todas como lidas</button>
+            </div>
+            <div class="notif-list">
+
+              <div class="notif-item unread">
+                <div class="notif-icon-wrap" style="background:var(--color-negative-surface)">
+                  <i class="ph-fill ph-warning-circle" style="font-size:18px;color:var(--color-negative)"></i>
+                </div>
+                <div class="notif-content">
+                  <div class="notif-text">Você tem <strong>3 faturas vencidas</strong> no plano Saúde totalizando R$ 660,00.</div>
+                  <div class="notif-meta">Hoje · Unimed Saúde</div>
+                </div>
+                <span class="notif-dot"></span>
+              </div>
+
+              <div class="notif-item unread notif-item-clube" id="notif-clube" style="cursor:pointer">
+                <div class="notif-icon-wrap" style="background:var(--color-info-surface)">
+                  <i class="ph ph-gift" style="font-size:18px;color:var(--color-info-dark)"></i>
+                </div>
+                <div class="notif-content">
+                  <div class="notif-text"><strong>Clube de Benefícios Unimed</strong> — você tem cashback disponível para resgatar. Aproveite descontos exclusivos em farmácias e parceiros.</div>
+                  <div class="notif-meta">Ontem · Clube de Benefícios</div>
+                </div>
+                <span class="notif-dot"></span>
+              </div>
+
+              <div class="notif-item">
+                <div class="notif-icon-wrap" style="background:var(--color-positive-surface)">
+                  <i class="ph-fill ph-check-circle" style="font-size:18px;color:var(--color-positive)"></i>
+                </div>
+                <div class="notif-content">
+                  <div class="notif-text">Fatura de <strong>abril</strong> do plano Odonto quitada com sucesso via débito automático.</div>
+                  <div class="notif-meta">15 abr · Unimed Odonto</div>
+                </div>
+              </div>
+
+            </div>
+            <div class="notif-footer">
+              <button class="notif-see-all">Ver todas as notificações <i class="ph ph-arrow-right" style="font-size:13px"></i></button>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -320,6 +366,14 @@
       </div>
 
     </div>
+  </div>
+</div>
+
+<!-- ─────────── CLUBE MODAL ─────────── -->
+<div class="clube-modal-overlay" id="clube-modal-overlay" aria-hidden="true" role="dialog" aria-label="Clube de Benefícios Unimed">
+  <div class="clube-modal">
+    <button class="clube-modal-close" id="clube-modal-close" aria-label="Fechar"><i class="ph ph-x" style="font-size:18px"></i></button>
+    <img src="assets/novo-clube-home.png" alt="Chegou o Clube Seguros — O novo Clube de Benefícios da Seguros Unimed" class="clube-modal-img">
   </div>
 </div>
 

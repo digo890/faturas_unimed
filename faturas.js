@@ -403,6 +403,51 @@ document.querySelectorAll('[data-plan-demo]').forEach(btn => {
   }, true);
 })();
 
+// Clube de Benefícios modal
+const clubeOverlay = document.getElementById('clube-modal-overlay');
+function openClubeModal() {
+  clubeOverlay.classList.add('open');
+  clubeOverlay.setAttribute('aria-hidden', 'false');
+}
+function closeClubeModal() {
+  clubeOverlay.classList.remove('open');
+  clubeOverlay.setAttribute('aria-hidden', 'true');
+}
+document.getElementById('clube-modal-close').addEventListener('click', closeClubeModal);
+clubeOverlay.addEventListener('click', e => { if (e.target === clubeOverlay) closeClubeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && clubeOverlay.classList.contains('open')) closeClubeModal(); });
+
+// Notificações dropdown
+const notifBtn      = document.getElementById('notif-btn');
+const notifDropdown = document.getElementById('notif-dropdown');
+const notifBadge    = document.getElementById('notif-badge');
+
+notifBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  const isOpen = notifDropdown.classList.toggle('open');
+  notifBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  notifDropdown.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+  if (isOpen) {
+    notifBadge.style.display = 'none';
+    notifDropdown.querySelectorAll('.notif-item.unread').forEach(item => {
+      item.dataset.pendingRead = 'true';
+    });
+  }
+});
+
+document.getElementById('notif-clube').addEventListener('click', e => {
+  e.stopPropagation();
+  notifDropdown.classList.remove('open');
+  notifBtn.setAttribute('aria-expanded', 'false');
+  openClubeModal();
+});
+
+notifDropdown.querySelector('.notif-mark-all').addEventListener('click', e => {
+  e.stopPropagation();
+  notifDropdown.querySelectorAll('.notif-item').forEach(item => item.classList.remove('unread'));
+  notifDropdown.querySelectorAll('.notif-dot').forEach(dot => dot.remove());
+});
+
 // User dropdown
 const userChip     = document.getElementById('user-chip');
 const userDropdown = document.getElementById('user-dropdown');
@@ -435,6 +480,9 @@ document.addEventListener('click', () => {
   userChip.classList.remove('open');
   userChip.setAttribute('aria-expanded', 'false');
   userDropdown.setAttribute('aria-hidden', 'true');
+  notifDropdown.classList.remove('open');
+  notifBtn.setAttribute('aria-expanded', 'false');
+  notifDropdown.setAttribute('aria-hidden', 'true');
 });
 
 // Card brand detection
